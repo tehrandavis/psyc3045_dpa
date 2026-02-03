@@ -831,6 +831,30 @@
         </div>
     </section>
 
+    <section class="slide"
+        data-notes="This is the key takeaway for Module 3. The visual system is an 'Adaptive Controller.' It doesn't use a single rigid rule; it combines information based on reliability.">
+        <div class="slide-content">
+            <h2 class="reveal">Adaptive Control Laws</h2>
+            <h3 class="reveal">It's Not "Either/Or"</h3>
+            <div class="two-column reveal">
+                <div class="column-left">
+                    <img src="assets/slide_17_img_2.png" alt="Path Results">
+                </div>
+                <div class="column-right">
+                    <ul>
+                        <li><strong>Sparse World:</strong> We use Egocentric Direction (walk curved paths).</li>
+                        <li><strong>Textured World:</strong> We use Optic Flow (walk straight paths).</li>
+                        <li><strong>Control Law:</strong> &phi;&#775; = -k (&beta; + w &alpha;)
+                            <ul>
+                                <li>We flexibly weight flow based on environmental structure.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Prompt: Goshawk Navigation Video -->
     <section class="slide prompt-slide"
         data-notes="Watch the goshawk navigate through the dense forest. Notice how it maneuvers around obstacles at high speed. This requires incredibly precise timing—not just knowing where things are, but *when* a collision will occur. This is the foundation of Rule 4: Time-to-Contact.">
