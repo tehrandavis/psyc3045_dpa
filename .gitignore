@@ -7,3 +7,4 @@
 *.pdf
 # Keep source.pdf ignored if it's large, but maybe we want to keep it if it's small. Sticking to user prefs.
 source.pdf
+work_log.md
