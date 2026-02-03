@@ -151,9 +151,35 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
+        .prompt-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin: 2rem auto;
+            max-width: 800px;
+        }
+
+        .prompt-gallery .img-container {
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            padding: 0;
+            border: none;
+        }
+
+        .prompt-gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
         @media (max-width: 768px) {
             .locomotion-gallery {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .prompt-gallery {
                 gap: 1rem;
             }
         }
@@ -255,6 +281,57 @@
             color: var(--text-secondary);
             margin-top: 0.5rem;
             font-size: 0.9rem;
+        }
+
+        /* Prompt Slides */
+        .prompt-slide {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-bottom: 4px solid #5a67d8;
+        }
+
+        .prompt-slide .slide-content {
+            text-align: center;
+        }
+
+        .prompt-slide h2 {
+            color: #ffffff;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            margin-bottom: 2rem;
+            line-height: 1.2;
+        }
+
+        .prompt-slide .prompt-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .prompt-slide .prompt-hint {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            font-style: italic;
+            margin-top: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .prompt-slide ul {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 2rem auto;
+            max-width: 800px;
+        }
+
+        .prompt-slide li {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+            padding-left: 2rem;
+        }
+
+        .prompt-slide li::before {
+            background: rgba(255, 255, 255, 0.9);
+            width: 10px;
+            height: 3px;
         }
 
         /* Animations */
@@ -532,6 +609,24 @@
         </div>
     </section>
 
+    <!-- Prompt 1: Locomotion Question -->
+    <section class="slide prompt-slide"
+        data-notes="Interactive prompt: Abstract from biomechanics to control. These animals have totally different body machinery, but they all use light to solve the same control problem. Expected responses: Not crashing, knowing where they're going, steering. If students struggle, hint: 'Think about safety.' Key point: Whether you fly or swim, the optical flow laws are identical—perception is for action control, not just object identification.">
+        <div class="slide-content">
+            <span class="prompt-icon reveal">💭</span>
+            <h2 class="reveal">These animals all move with different mechanics—wings, fins, legs.<br>But what
+                <em>identical problem</em> are they all using light to solve?
+            </h2>
+
+            <div class="prompt-gallery reveal">
+                <div class="img-container"><img src="assets/prompt_gannet.png" alt="Gannet Diving"></div>
+                <div class="img-container"><img src="assets/prompt_fish.png" alt="Fish Swimming"></div>
+                <div class="img-container"><img src="assets/prompt_bee.png" alt="Bee Landing"></div>
+                <div class="img-container"><img src="assets/prompt_cheetah.png" alt="Cheetah Running"></div>
+            </div>
+        </div>
+    </section>
+
     <!-- Slide 3 -->
     <section class="slide"
         data-notes="This demonstrates that 3D spatial layout is specified by transformation, not static structure. The same retinal projection can specify different 3D layouts depending on the flow pattern. Use F/J to change flow speed/direction. Space to pause.">
@@ -633,6 +728,17 @@
         </div>
     </section>
 
+    <!-- Prompt 2: One-Leg Stand Demo -->
+    <section class="slide prompt-slide"
+        data-notes="Demo time: Have students stand on one leg with eyes open (easy), then close eyes (wobble/fall). Ask why they wobbled when inner ear and feet still work fine. Answer: Lost visual proprioception—vision is the primary balance anchor.">
+        <div class="slide-content">
+            <span class="prompt-icon reveal">💭</span>
+            <h2 class="reveal">Demo: Stand on one leg with eyes open... now close your eyes.</h2>
+            <p class="prompt-hint reveal">Why did you wobble? Your inner ear is fine. Your feet are fine. What
+                changed?<br>
+        </div>
+    </section>
+
     <!-- Slide 9 -->
     <section class="slide"
         data-notes="Warren's work demonstrates that we can accurately perceive heading even with eye movements. We can separate Retinal Flow (eye + move) from Ambient Flow (move only).">
@@ -670,6 +776,17 @@
                 <div class="img-container"><img src="assets/slide_13_img_2.png" alt="Locomotor Axis"></div>
                 <div class="img-container"><img src="assets/slide_14_img_1.png" alt="VR Setup"></div>
             </div>
+        </div>
+    </section>
+
+    <!-- Prompt 3: The Great Debate -->
+    <section class="slide prompt-slide"
+        data-notes="Setup the key question before revealing the answer. 50-year debate in the field: Do we steer using optic flow (FOE) or egocentric direction (body-centered)? Build suspense before showing Slide 12's adaptive control law.">
+        <div class="slide-content">
+            <span class="prompt-icon reveal">⚖️</span>
+            <h2 class="reveal">So who wins the debate?<br>Flow or Direction?</h2>
+            <p class="prompt-hint reveal">Think about: Dark hallway with a single light vs. Dense forest with textured
+                trees</p>
         </div>
     </section>
 
@@ -746,6 +863,16 @@
                 <li>&tau;&#775; &lt; -0.5: Crash (Hard collision).</li>
                 <li><strong>Direct Perception of Dynamics:</strong> We see the force (severity) in the optics.</li>
             </ul>
+        </div>
+    </section>
+
+    <!-- Prompt 4: The Scope Problem -->
+    <section class="slide prompt-slide"
+        data-notes="Golonka & Wilson's Scope Problem: Tau only works for constant-velocity spheres. This is where you discuss detection vs. computation and lawful-but-limited information. Key point: Information isn't perfect physics, but it's 'specific enough' for survival. The solution? Combine multiple sources and weight them adaptively (connects back to Slide 12's control law).">
+        <div class="slide-content">
+            <span class="prompt-icon reveal">💭</span>
+            <h2 class="reveal">The Scope Problem:<br>When does tau fail you?</h2>
+            <p class="prompt-hint reveal">If tau only works sometimes, why call it "information"?</p>
         </div>
     </section>
 
