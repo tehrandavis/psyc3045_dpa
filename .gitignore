@@ -1,0 +1,5 @@
+source.pdf
+.DS_Store
+*_backup_*
+*_pre_rebuild.html
+extracted_content.json

@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecological Optics: Geometry of Information</title>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap">
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --text-primary: #1a1a1a;
+            --text-secondary: #64748b;
+            --accent: #3b82f6;
+            --line-color: #e2e8f0;
+            --font-main: 'Satoshi', sans-serif;
+            --slide-padding: clamp(2rem, 8vw, 6rem);
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+            background: var(--bg);
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* Slide Layout */
+        .slide {
+            min-height: 100vh;
+            width: 100vw;
+            padding: var(--slide-padding);
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            border-bottom: 1px solid var(--line-color);
+        }
+
+        .slide-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        p,
+        li {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            max-width: 800px;
+        }
+
+        ul {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.75rem;
+        }
+
+        li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0.7em;
+            width: 8px;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        /* Media */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+            align-items: center;
+        }
+
+        .img-container {
+            background: #fff;
+            padding: 10px;
+            border: 1px solid var(--line-color);
+            border-radius: 4px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: filter 0.5s ease;
+        }
+
+        /* Locomotion Gallery Grid */
+        .locomotion-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 2rem auto;
+            max-width: 1000px;
+        }
+
+        .locomotion-gallery img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .locomotion-gallery {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+        }
+
+        /* Two-Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .column-left img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .column-right ul {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        /* Demo Container Styles */
+        .demo-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 2rem auto;
+            border: 2px solid var(--line-color);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-container iframe {
+            display: block;
+            border: none;
+            background: #fff;
+        }
+
+        /* Embedded iframes (no demo-container wrapper) */
+        iframe[src*="optical_flow_specificity"] {
+            width: 100%;
+            height: 600px;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Ensure demos are visible in presenter mode */
+        body.is-presenter .demo-container {
+            transform: scale(0.6);
+            transform-origin: top left;
+        }
+
+        /* Demo Launcher Button */
+        .demo-launcher {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 400px;
+            background: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--text-primary);
+            margin-top: 2rem;
+        }
+
+        .demo-launcher:hover {
+            background: #e2e8f0;
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .demo-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .demo-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .demo-hint {
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+        }
+
+        .visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+
+        .reveal:nth-child(2) {
+            transition-delay: 0.2s;
+        }
+
+        .reveal:nth-child(3) {
+            transition-delay: 0.3s;
+        }
+
+        .reveal:nth-child(4) {
+            transition-delay: 0.4s;
+        }
+
+        .reveal:nth-child(5) {
+            transition-delay: 0.5s;
+        }
+
+        /* Navigation */
+        .nav-dots {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            z-index: 100;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 2px solid var(--text-secondary);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            transform: scale(1.3);
+        }
+
+        .progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--accent);
+            z-index: 1000;
+            transition: width 0.1s linear;
+        }
+
+        /* Notes Overlay (Toggle with 'N') */
+        .notes-panel {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border: 1px solid var(--line-color);
+            border-left: 4px solid var(--accent);
+            max-width: 400px;
+            z-index: 50;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .notes-panel.active {
+            display: block;
+        }
+
+        .notes-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        /* Presenter View Styles */
+        .presenter-ui {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #0f172a;
+            color: #fff;
+            padding: 3rem;
+            z-index: 9999;
+            grid-template-columns: 1fr 350px;
+            grid-template-rows: auto 1fr auto;
+            gap: 2rem;
+        }
+
+        body.is-presenter .presenter-ui {
+            display: grid;
+        }
+
+        body.is-presenter .slide,
+        body.is-presenter .nav-dots,
+        body.is-presenter .progress {
+            display: none;
+        }
+
+        .p-current-box {
+            grid-column: 1;
+            grid-row: 2;
+            background: #1e293b;
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid #334155;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .p-notes-box {
+            grid-column: 2;
+            grid-row: 2;
+            background: #1e293b;
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid #334155;
+            overflow-y: auto;
+            font-size: 1.2rem;
+            line-height: 1.5;
+            color: #cbd5e1;
+        }
+
+        .p-next-box {
+            grid-column: 1 / span 2;
+            grid-row: 3;
+            background: #0f172a;
+            border-top: 1px solid #334155;
+            padding-top: 1rem;
+            color: #94a3b8;
+            font-family: monospace;
+        }
+
+        .p-meta {
+            grid-column: 1 / span 2;
+            grid-row: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 1rem;
+        }
+
+        .p-timer {
+            font-family: monospace;
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .p-current-slide {
+            transform: scale(0.7);
+            transform-origin: center;
+            width: 100%;
+        }
+
+        .p-next-preview {
+            max-width: 300px;
+            opacity: 0.5;
+        }
+
+        .p-next-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .presenter-ui {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto auto;
+            }
+
+            .p-notes-box {
+                grid-column: 1;
+                grid-row: 3;
+            }
+
+            .p-next-box {
+                grid-row: 4;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-dots {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Progress bar -->
+    <div class="progress"></div>
+
+    <!-- Navigation dots -->
+    <nav class="nav-dots"></nav>
+
+    <!-- Notes panel -->
+    <div class="notes-panel">
+        <span class="notes-label">Speaker Notes</span>
+        <div class="notes-content"></div>
+    </div>
+
+    <!-- Presenter UI -->
+    <div class="presenter-ui">
+        <div class="p-meta">
+            <div>
+                <strong>Presenter Mode</strong> <span style="color: #64748b; margin-left: 1rem;">Press P to
+                    toggle</span>
+            </div>
+            <div class="p-timer">00:00</div>
+        </div>
+        <div class="p-current-box">
+            <div class="p-current-slide"></div>
+        </div>
+        <div class="p-notes-box">
+            <div class="notes-content"></div>
+        </div>
+        <div class="p-next-box">
+            <div class="p-next-label">Next Slide:</div>
+            <div class="p-next-preview"></div>
+        </div>
+    </div>
+
+    <!-- Slide 1 -->
+    <section class="slide"
+        data-notes="Transition from 'Axioms' (Theory) to 'Mechanics' (How it works). Today is about how light carries information.">
+        <div class="slide-content">
+            <h3 class="reveal">Module 03: Ecological Optics</h3>
+            <h1 class="reveal">The Geometry of Information</h1>
+        </div>
+    </section>
+
+    <!-- Slide 2 -->
+    <section class="slide"
+        data-notes="The main point is that it's not all about running. Visual perception makes locomotion truly useful because we can orient to distal objects. This lecture focuses on the visual control of locomotion with particular emphasis on Gibson's rules and current research.">
+        <div class="slide-content">
+            <h2 class="reveal">The Diversity of Locomotion</h2>
+            <h3 class="reveal">Movement Across the Animal Kingdom</h3>
+            <div class="locomotion-gallery reveal">
+                <img src="assets/slide_2_img_1.png" alt="Crawling">
+                <img src="assets/slide_2_img_2.png" alt="Flying">
+                <img src="assets/slide_2_img_3.png" alt="Hopping">
+                <img src="assets/slide_2_img_4.png" alt="Walking">
+                <img src="assets/slide_2_img_5.png" alt="Running">
+                <img src="assets/slide_2_img_6.png" alt="Swimming">
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 3 -->
+    <section class="slide"
+        data-notes="This demonstrates that 3D spatial layout is specified by transformation, not static structure. The same retinal projection can specify different 3D layouts depending on the flow pattern. Use F/J to change flow speed/direction. Space to pause.">
+        <div class="slide-content">
+            <h2 class="reveal">Optical Flow Specificity</h2>
+            <h3 class="reveal">Motion specifies layout</h3>
+            <div class="reveal">
+                <a href="demos/optical_flow_specificity/index.html" target="_blank" class="demo-launcher">
+                    <div class="demo-icon">⬈</div>
+                    <div class="demo-title">Launch Demo</div>
+                    <div class="demo-hint">Opens in new tab</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 4 -->
+    <section class="slide"
+        data-notes="This establishes the ecological approach to locomotion. We're not computing, we're detecting lawful relationships between optical structure and movement possibilities.">
+        <div class="slide-content">
+            <h2 class="reveal">Ecological Context</h2>
+            <h3 class="reveal">Major Premises for Locomotion Regulation</h3>
+            <ul class="reveal">
+                <li><strong>Ambient energy arrays</strong> (optic array specifically) have structure</li>
+                <li>This <strong>structure is information</strong> available to organisms with perceptual systems</li>
+                <li><strong>Detection occurs directly</strong> - no internal mediational states needed</li>
+                <li><strong>Example:</strong> Optic flow fields are used for behavioral control without "high-level
+                    processing, storage, or representation"</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 5 -->
+    <section class="slide"
+        data-notes="Blau & Wagman (Ch 6). Physics cares about photons/energy. Perception cares about structure (edges, texture, occlusion). The 'Optic Array' is this structured arrangement of angles at the eye.">
+        <div class="slide-content">
+            <h2 class="reveal">The Core Problem</h2>
+            <h3 class="reveal">Radiant vs. Ambient Light</h3>
+            <ul class="reveal">
+                <li><strong>Radiant Light:</strong> Physics. Energy radiating from a source. Homogeneous.</li>
+                <li><strong>Ambient Light:</strong> Ecology. Light reflected and structured by the environment.
+                    Heterogeneous.</li>
+                <li><strong>Key Concept:</strong> We don't see light; we see <em>by means of</em> light. <strong>What
+                        would it mean if we "saw" light?</strong></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 6 -->
+    <section class="slide"
+        data-notes="Gibson proposed these 'rules' to show how specific optical invariants control specific actions. Each rule links a perceptual variable to an action outcome. We will test these empirically throughout today's lecture.">
+        <div class="slide-content">
+            <h2 class="reveal">Ecological Rules for Visual Guidance</h2>
+            <h3 class="reveal">Optical Invariants for Locomotor Control</h3>
+            <ul class="reveal">
+                <li><strong>To be still:</strong> Minimize change in the optic flow (Nonflow = stationary)</li>
+                <li><strong>To move forward/backward:</strong> Produce global outflow/inflow (Outflow = forward
+                    movement)</li>
+                <li><strong>To move to a target:</strong> Place the Focus of Expansion (FOE) on the target</li>
+                <li><strong>To change direction:</strong> Change the location of the FOE from its previous position</li>
+                <li><strong>To approach without collision:</strong> Keep rate of object expansion (Tau) steady</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 7 -->
+    <section class="slide"
+        data-notes="This demonstrates Rules 2-4. Move the mouse to change heading direction - notice how the FOE moves with it. Use C/M to adjust star speed and F/J to adjust doorway speed. Press R to sync speeds. Try placing the FOE on the doorway edges to simulate steering.">
+        <div class="slide-content">
+            <h2 class="reveal">Interactive Demo - Optic Flow</h2>
+            <h3 class="reveal">Radial Expansion and Focus of Expansion (FOE)</h3>
+            <div class="reveal">
+                <a href="demos/optic_flow/index.html" target="_blank" class="demo-launcher">
+                    <div class="demo-icon">⬈</div>
+                    <div class="demo-title">Launch Optic Flow Demo</div>
+                    <div class="demo-hint">Opens in new tab</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 8 -->
+    <section class="slide"
+        data-notes="Vision dominates mechanical proprioception. If the room moves forward, you feel like you are swaying backward, so you lean forward to 'correct' it—and fall.">
+        <div class="slide-content">
+            <h2 class="reveal">Rule 1 - Visual Proprioception</h2>
+            <h3 class="reveal">The Moving Room (Lee & Lishman, 1974)</h3>
+            <ul class="reveal">
+                <li><strong>Question:</strong> Does vision tell us about the world (exteroception) or ourselves
+                    (proprioception)?</li>
+                <li><strong>Experiment:</strong> Move the walls, keep the floor still.</li>
+                <li><strong>Result:</strong> Infants (and adults) sway or fall to compensate for illusory self-motion.
+                </li>
+            </ul>
+            <div class="grid reveal">
+                <div class="img-container"><img src="assets/slide_6_img_1.png" alt="Moving Room Setup"></div>
+                <div class="img-container"><img src="assets/slide_6_img_2.png" alt="Sway Data"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 9 -->
+    <section class="slide"
+        data-notes="Warren's work demonstrates that we can accurately perceive heading even with eye movements. We can separate Retinal Flow (eye + move) from Ambient Flow (move only).">
+        <div class="slide-content">
+            <h2 class="reveal">Rule 2 - Heading Perception</h2>
+            <h3 class="reveal">Perceiving Where We're Going (Warren, 1988)</h3>
+
+            <ul class="reveal">
+                <li><strong>Focus of Expansion (FOE):</strong> The point from which all flow originates.</li>
+                <li><strong>Problem:</strong> Eye movements disrupt the FOE on the retina.</li>
+                <li><strong>Result:</strong> We can separate <em>Retinal Flow</em> from <em>Ambient Flow</em>. Heading
+                    judgments are accurate to within 1°.</li>
+            </ul>
+            <div class="grid reveal">
+                <div class="img-container"><img src="assets/slide_11_img_2.png" alt="Retinal vs Ambient Flow"></div>
+                <div class="img-container"><img src="assets/slide_12_img_1.png" alt="Heading Data"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 10 -->
+    <section class="slide"
+        data-notes="The 'Great Debate' tested whether we steer using optic flow or egocentric direction. The conflict was created using prism glasses in VR to displace flow 10 degrees.">
+        <div class="slide-content">
+            <h2 class="reveal">Rule 3 - Visual Control of Steering</h2>
+            <h3 class="reveal">The "Great Debate" (Warren et al., 2001)</h3>
+
+            <ul class="reveal">
+                <li><strong>Hypothesis A (Optic Flow):</strong> Steer by keeping FOE on the goal.</li>
+                <li><strong>Hypothesis B (Egocentric Direction):</strong> Steer by keeping the goal centered in body.
+                </li>
+                <li><strong>The Conflict:</strong> Prism glasses in VR (displace flow 10°).</li>
+            </ul>
+            <div class="grid reveal">
+                <div class="img-container"><img src="assets/slide_13_img_2.png" alt="Locomotor Axis"></div>
+                <div class="img-container"><img src="assets/slide_14_img_1.png" alt="VR Setup"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 11 -->
+    <section class="slide"
+        data-notes="This demonstrates how objects can be perceived purely through motion and texture accretion/deletion at edges. Notice how depth and form emerge from movement alone - no static luminance boundaries required.">
+        <div class="slide-content">
+            <h2 class="reveal">Interactive Demo - Kinetic Occlusion</h2>
+            <h3 class="reveal">Objects Defined by Motion</h3>
+            <div class="reveal">
+                <a href="demos/kinetic_occlusion/index.html" target="_blank" class="demo-launcher">
+                    <div class="demo-icon">⬈</div>
+                    <div class="demo-title">Launch Kinetic Occlusion Demo</div>
+                    <div class="demo-hint">Opens in new tab</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 12 -->
+    <section class="slide"
+        data-notes="This is the key takeaway for Module 3. The visual system is an 'Adaptive Controller.' It doesn't use a single rigid rule; it combines information based on reliability.">
+        <div class="slide-content">
+            <h2 class="reveal">Adaptive Control Laws</h2>
+            <h3 class="reveal">It's Not "Either/Or"</h3>
+            <div class="two-column reveal">
+                <div class="column-left">
+                    <img src="assets/slide_17_img_1.png" alt="Path Results">
+                </div>
+                <div class="column-right">
+                    <ul>
+                        <li><strong>Sparse World:</strong> We use Egocentric Direction (walk curved paths).</li>
+                        <li><strong>Textured World:</strong> We use Optic Flow (walk straight paths).</li>
+                        <li><strong>Control Law:</strong> &phi;&#775; = -k (&beta; + w &alpha;)
+                            <ul>
+                                <li>We flexibly weight flow based on environmental structure.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 13 -->
+    <section class="slide" data-notes="">
+        <div class="slide-content">
+            <h2 class="reveal">Rule 4 - Time-to-Contact</h2>
+            <h3 class="reveal">Tau (&tau;) Theory</h3>
+            <ul class="reveal">
+                <li><strong>Indirect View:</strong> Calculate <em>T = Distance / Speed</em>. (Hard to estimate!)</li>
+                <li><strong>Direct View:</strong> &tau; = 1 / Rate of Expansion. (Directly visible!)</li>
+                <li><strong>Inverse Relationship:</strong> Fast expansion = Low Tau (Crash imminent). Slow expansion =
+                    High Tau (Safe).</li>
+            </ul>
+            <div class="reveal">
+                <a href="demos/tau_demo/index.html" target="_blank" class="demo-launcher">
+                    <div class="demo-icon">⬈</div>
+                    <div class="demo-title">Launch Tau Demo</div>
+                    <div class="demo-hint">Opens in new tab</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 14 -->
+    <section class="slide" data-notes="">
+        <div class="slide-content">
+            <h2 class="reveal">Collision Severity</h2>
+            <h3 class="reveal">Tau-dot (&tau;&#775;) (Kim et al., 1993)</h3>
+            <ul class="reveal">
+                <li>We don't just see <em>when</em> (Tau); we see <em>how hard</em> (Tau-dot).</li>
+                <li>&tau;&#775; &ge; -0.5: Safe stop (Soft collision).</li>
+                <li>&tau;&#775; &lt; -0.5: Crash (Hard collision).</li>
+                <li><strong>Direct Perception of Dynamics:</strong> We see the force (severity) in the optics.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 15 -->
+
+    <!--
+    <section class="slide"
+        data-notes="This extends the steering research to dynamic targets. Real-world locomotion often involves moving targets (other people, vehicles, prey, predators). The visual system flexibly combines multiple information sources depending on task demands and environmental reliability.">
+        <div class="slide-content">
+            <h2 class="reveal">Beyond Stationary Targets</h2>
+            <h3 class="reveal">Pursuit and Interception (Fajen & Warren, 2004)</h3>
+            <p class="reveal"><strong>Question:</strong> How do people walk to a <strong>moving</strong> target? What
+                visual information guides pursuit?</p>
+            <ul class="reveal">
+                <li><strong>&beta;</strong> (beta) = target-heading angle (bearing angle)</li>
+                <li><strong>Two strategies:</strong>
+                    <ul>
+                        <li><strong>Pursuit:</strong> Continuously nullify the bearing angle (keep target centered)</li>
+                        <li><strong>Interception:</strong> Predict future location and walk to intercept point</li>
+                    </ul>
+                </li>
+            </ul>
+            <p class="reveal"><strong>Information sources:</strong></p>
+            <ol class="reveal">
+                <li>Egocentric direction (where is target relative to body?)</li>
+                <li>Global optic flow (where am I heading?)</li>
+                <li>Local optic flow (how is target moving relative to background?)</li>
+            </ol>
+            <p class="reveal"><strong>Result:</strong> People use a <strong>combination strategy</strong> - primarily
+                pursuit with flow-based corrections</p>
+        </div>
+    </section>
+    -->
+
+    <!-- Slide 16 -->
+    <section class="slide" data-notes="">
+        <div class="slide-content">
+            <h2 class="reveal">Summary</h2>
+            <h3 class="reveal">The Perception-Action Loop</h3>
+            <div class="two-column reveal">
+                <div class="column-left">
+                    <img src="assets/perception_action_loop.png" alt="Perception-Action Loop"
+                        style="max-width: 100%; height: auto;">
+                </div>
+                <div class="column-right">
+                    <ul>
+                        <li><strong>Radiant Light</strong> becomes <strong>Ambient Information</strong>.</li>
+                        <li>We detect invariants (Flow, FOE, Tau).</li>
+                        <li>These invariants directly control action (Balance, Steering, Braking).</li>
+                        <li>Action generates new flow, closing the loop.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        /* ===========================================
+           SLIDE PRESENTATION CONTROLLER
+           Handles navigation, animations, and interactions
+           =========================================== */
+        class SlidePresentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.currentIndex = 0;
+                this.notesPanel = document.querySelector('.notes-panel');
+                this.notesContent = document.querySelector('.notes-content');
+                this.progress = document.querySelector('.progress');
+                this.navDots = document.querySelector('.nav-dots');
+                this.presenterMode = false;
+                this.presenterWindow = null;
+                this.startTime = null;
+
+                this.init();
+            }
+
+            init() {
+                this.createDots();
+                this.updateProgress();
+                this.observeSlides();
+                this.bindEvents();
+                this.updateNotes();
+
+                // Initial visibility
+                this.slides[0].classList.add('visible');
+            }
+
+            createDots() {
+                this.slides.forEach((_, i) => {
+                    const dot = document.createElement('div');
+                    dot.classList.add('dot');
+                    if (i === 0) dot.classList.add('active');
+                    dot.addEventListener('click', () => this.goToSlide(i));
+                    this.navDots.appendChild(dot);
+                });
+            }
+
+            observeSlides() {
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('visible');
+                                const index = Array.from(this.slides).indexOf(entry.target);
+                                this.currentIndex = index;
+                                this.updateProgress();
+                                this.updateDots();
+                                this.updateNotes();
+                                this.updatePresenterView();
+                            }
+                        });
+                    },
+                    { threshold: 0.5 }
+                );
+
+                this.slides.forEach((slide) => observer.observe(slide));
+            }
+
+            bindEvents() {
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowRight' || e.key === ' ') {
+                        e.preventDefault();
+                        this.nextSlide();
+                    } else if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        this.prevSlide();
+                    } else if (e.key === 'n' || e.key === 'N') {
+                        e.preventDefault();
+                        this.toggleNotes();
+                    } else if (e.key === 'p' || e.key === 'P') {
+                        e.preventDefault();
+                        this.togglePresenterMode();
+                    }
+                });
+
+                // Mouse wheel navigation
+                let wheelTimeout;
+                document.addEventListener('wheel', (e) => {
+                    clearTimeout(wheelTimeout);
+                    wheelTimeout = setTimeout(() => {
+                        if (e.deltaY > 0) this.nextSlide();
+                        else if (e.deltaY < 0) this.prevSlide();
+                    }, 50);
+                }, { passive: true });
+
+                // Touch swipe
+                let touchStart = 0;
+                document.addEventListener('touchstart', (e) => {
+                    touchStart = e.touches[0].clientY;
+                }, { passive: true });
+
+                document.addEventListener('touchend', (e) => {
+                    const touchEnd = e.changedTouches[0].clientY;
+                    const diff = touchStart - touchEnd;
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0) this.nextSlide();
+                        else this.prevSlide();
+                    }
+                });
+            }
+
+            nextSlide() {
+                if (this.currentIndex < this.slides.length - 1) {
+                    this.goToSlide(this.currentIndex + 1);
+                }
+            }
+
+            prevSlide() {
+                if (this.currentIndex > 0) {
+                    this.goToSlide(this.currentIndex - 1);
+                }
+            }
+
+            goToSlide(index) {
+                this.slides[index].scrollIntoView({ behavior: 'smooth' });
+            }
+
+            updateProgress() {
+                const percent = (this.currentIndex / (this.slides.length - 1)) * 100;
+                this.progress.style.width = percent + '%';
+            }
+
+            updateDots() {
+                document.querySelectorAll('.dot').forEach((dot, i) => {
+                    dot.classList.toggle('active', i === this.currentIndex);
+                });
+            }
+
+            updateNotes() {
+                const notes = this.slides[this.currentIndex].dataset.notes || 'No notes for this slide.';
+                this.notesContent.textContent = notes;
+
+                // Update presenter view notes
+                const pNotes = document.querySelector('.p-notes-box .notes-content');
+                if (pNotes) pNotes.textContent = notes;
+            }
+
+            toggleNotes() {
+                this.notesPanel.classList.toggle('active');
+            }
+
+            togglePresenterMode() {
+                this.presenterMode = !this.presenterMode;
+                document.body.classList.toggle('is-presenter', this.presenterMode);
+
+                if (this.presenterMode) {
+                    this.startTime = Date.now();
+                    this.startTimer();
+                    this.updatePresenterView();
+                } else {
+                    this.stopTimer();
+                }
+            }
+
+            updatePresenterView() {
+                if (!this.presenterMode) return;
+
+                // Helper to get safe content (no iframes)
+                const getSafeContent = (slide) => {
+                    const content = slide.querySelector('.slide-content').cloneNode(true);
+                    // Replace iframes with placeholders to prevent reloading/freezing
+                    content.querySelectorAll('iframe').forEach(iframe => {
+                        const placeholder = document.createElement('div');
+                        placeholder.style.cssText = 'width:100%; height:200px; background:#334155; display:flex; align-items:center; justify-content:center; color:#94a3b8; border-radius:8px;';
+                        placeholder.textContent = '[Interactive Demo]';
+                        iframe.replaceWith(placeholder);
+                    });
+                    return content;
+                };
+
+                // Update current slide preview
+                const currentBox = document.querySelector('.p-current-slide');
+                currentBox.innerHTML = '';
+                currentBox.appendChild(getSafeContent(this.slides[this.currentIndex]));
+
+                // Update next slide preview
+                const nextBox = document.querySelector('.p-next-preview');
+                if (this.currentIndex < this.slides.length - 1) {
+                    const nextContent = getSafeContent(this.slides[this.currentIndex + 1]);
+                    nextContent.style.transform = 'scale(0.5)';
+                    nextContent.style.transformOrigin = 'top left';
+                    nextBox.innerHTML = '';
+                    nextBox.appendChild(nextContent);
+                } else {
+                    nextBox.innerHTML = '<p style="color: #64748b;">End of presentation</p>';
+                }
+            }
+
+            startTimer() {
+                this.timerInterval = setInterval(() => {
+                    const elapsed = Date.now() - this.startTime;
+                    const minutes = Math.floor(elapsed / 60000);
+                    const seconds = Math.floor((elapsed % 60000) / 1000);
+                    const display = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    document.querySelector('.p-timer').textContent = display;
+                }, 1000);
+            }
+
+            stopTimer() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                }
+            }
+        }
+
+        // Initialize presentation
+        new SlidePresentation();
+    </script>
+</body>
+
+</html>

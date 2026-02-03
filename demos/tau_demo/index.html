@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tau (τ) Time-to-Contact Demo</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Tau (τ): Time-to-Contact</h1>
+            <p>Visual information specifies when collision will occur</p>
+        </header>
+
+        <div class="canvas-container">
+            <canvas id="tauCanvas"></canvas>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <div class="control-item">
+                    <span class="key">F / J</span>
+                    <span class="description">Decrease / Increase ball speed</span>
+                </div>
+                <div class="control-item">
+                    <span class="key">SPACE</span>
+                    <span class="description">Launch ball</span>
+                </div>
+                <div class="control-item">
+                    <span class="key">S</span>
+                    <span class="description">Toggle Safe/Unsafe mode</span>
+                </div>
+                <div class="control-item">
+                    <span class="key">R</span>
+                    <span class="description">Reset</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

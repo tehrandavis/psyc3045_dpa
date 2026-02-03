@@ -1,0 +1,64 @@
+:root {
+    --bg-color: #ffffff;
+    --text-color: #1a1a1a;
+    --accent-color: #0088cc;
+    --secondary-color: #cc0066;
+    --tertiary-color: #009966;
+    --glass-bg: rgba(0, 0, 0, 0.05);
+    --glass-border: rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+    color: var(--text-color);
+    font-family: 'Outfit', sans-serif;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#title-container {
+    display: none;
+}
+
+#flowCanvas {
+    border: none;
+    border-radius: 0;
+    background: #ffffff;
+    box-shadow: none;
+    width: 100%;
+    height: 100%;
+}
+
+#controls {
+    display: none;
+}
+
+#info {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: rgba(0, 0, 0, 0.5);
+    background: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 4px;
+    pointer-events: none;
+    font-size: 14px;
+    line-height: 1.5;
+    z-index: 100;
+}
+
+strong {
+    color: #000;
+    font-weight: 700;
+}

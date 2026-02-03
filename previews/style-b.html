@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Style B: Paper & Ink</title>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cormorant-garamond@600,400&f[]=satoshi@400&display=swap">
+    <style>
+        :root {
+            --bg: #fdfcf0;
+            --text: #2d2d2d;
+            --accent: #8b4513;
+            --font-serif: 'Cormorant Garamond', serif;
+            --font-sans: 'Satoshi', sans-serif;
+        }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            background-image: radial-gradient(#dcdcdc 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+        }
+        .slide {
+            max-width: 800px;
+            text-align: center;
+        }
+        .reveal {
+            opacity: 0;
+            animation: fadeIn 1.2s ease forwards;
+        }
+        h1 { font-family: var(--font-serif); font-size: 5rem; font-weight: 600; margin-bottom: 0.5rem; }
+        p { font-family: var(--font-sans); font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent); }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <h1 class="reveal">Locomotion I</h1>
+        <p class="reveal">The Dynamics of Perception & Action</p>
+    </div>
+</body>
+</html>

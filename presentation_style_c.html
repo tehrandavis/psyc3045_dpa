@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locomotion I: Gibson's Rules (Soft Muted)</title>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@700,600,500,400&display=swap">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.2);
+            --border: rgba(255, 255, 255, 0.1);
+            --font-main: 'General Sans', sans-serif;
+            --slide-padding: clamp(2rem, 8vw, 6rem);
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+            background: var(--bg);
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.05) 0px, transparent 50%);
+        }
+
+        /* Slide Layout */
+        .slide {
+            min-height: 100vh;
+            width: 100vw;
+            padding: var(--slide-padding);
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            background: var(--bg-card);
+            padding: clamp(2rem, 5vw, 4rem);
+            border-radius: 32px;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to bottom right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        p, li {
+            font-size: clamp(1.1rem, 1.8vw, 1.3rem);
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        li {
+            padding-left: 2rem;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* Media */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .img-container {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            opacity: 0.8;
+            transition: all 0.5s ease;
+        }
+
+        .slide.visible img {
+            opacity: 1;
+            transform: scale(1.02);
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo);
+        }
+
+        .visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal:nth-child(1) { transition-delay: 0.1s; }
+        .reveal:nth-child(2) { transition-delay: 0.3s; }
+        .reveal:nth-child(3) { transition-delay: 0.5s; }
+
+        /* Navigation */
+        .nav-dots {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            opacity: 0.3;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            opacity: 1;
+            background: var(--accent);
+            box-shadow: 0 0 15px var(--accent);
+            transform: scale(1.5);
+        }
+
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(255,255,255,0.05);
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            width: 0%;
+            transition: width 0.2s ease;
+        }
+
+        /* Notes Overlay */
+        .notes-panel {
+            position: fixed;
+            bottom: 2rem;
+            right: 4rem;
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            max-width: 350px;
+            z-index: 50;
+            display: none;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .notes-panel.active { display: block; }
+        .notes-label { font-size: 0.7rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; display: block; }
+
+        @media (max-width: 768px) {
+            :root { --slide-padding: 1.5rem; }
+            .nav-dots { display: none; }
+            .slide-content { padding: 2rem; border-radius: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+    <nav class="nav-dots" id="navDots"></nav>
+    <div class="notes-panel" id="notesPanel">
+        <span class="notes-label">Speaker Notes</span>
+        <div id="notesContent"></div>
+    </div>
+
+    <!-- Slide 1 -->
+    <section class="slide">
+        <div class="slide-content">
+            <h3 class="reveal">Lecture 04</h3>
+            <h1 class="reveal">Locomotion I</h1>
+            <p class="reveal">Empirical studies of Gibson’s rules for locomotion</p>
+        </div>
+    </section>
+
+    <!-- Slide 2 -->
+    <section class="slide" data-notes="Vision makes locomotion useful because we can orient to distal objects. It's not just about running - includes crawling, flying, hopping, etc.">
+        <div class="slide-content">
+            <h3 class="reveal">Introduction</h3>
+            <h2 class="reveal">Modes of Locomotion</h2>
+            <div class="grid reveal">
+                <div class="img-container"><img src="assets/slide_2_img_1.png" alt=""></div>
+                <div class="img-container"><img src="assets/slide_2_img_2.png" alt=""></div>
+                <div class="img-container"><img src="assets/slide_2_img_3.png" alt=""></div>
+                <div class="img-container"><img src="assets/slide_2_img_4.png" alt=""></div>
+            </div>
+            <p class="reveal">Visual perception orientates us to distal objects, providing essential ecological utility.</p>
+        </div>
+    </section>
+
+    <!-- Slide 3 -->
+    <section class="slide">
+        <div class="slide-content">
+            <h3 class="reveal">Foundation</h3>
+            <h2 class="reveal">Ecological Context</h2>
+            <ul class="reveal">
+                <li>Structure in ambient energy arrays is <strong>information</strong>.</li>
+                <li>Detection is <strong>direct</strong> (no mental representation needed).</li>
+                <li>Optic flow fields are used for direct behavioral control.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 4 -->
+    <section class="slide">
+        <div class="slide-content">
+            <h3 class="reveal">Theory</h3>
+            <h2 class="reveal">Visual Guidance Rules</h2>
+            <ul class="reveal">
+                <li><strong>Stationarity:</strong> Minimize change in the optic flow.</li>
+                <li><strong>Targeting:</strong> Place focus of expansion (FOE) on goal.</li>
+                <li><strong>Direction:</strong> Shift FOE to change course.</li>
+                <li><strong>Collision:</strong> Stabilize expansion rate.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 5 -->
+    <section class="slide" data-notes="Lee & Lishman moving room experiments. Vision often overrides mechanical proprioception in children and adults.">
+        <div class="slide-content">
+            <h3 class="reveal">Empirical Data</h3>
+            <h2 class="reveal">The Moving Room</h2>
+            <div class="grid reveal">
+                <div class="img-container"><img src="assets/slide_6_img_1.png" alt=""></div>
+                <div class="img-container"><img src="assets/slide_6_img_3.png" alt=""></div>
+            </div>
+            <p class="reveal">Visual proprioception dominates mechanical signals during postural conflict.</p>
+        </div>
+    </section>
+
+    <!-- Slide 6 -->
+    <section class="slide" data-notes="Peripheral retina is specialized for lamellar flow, central for radial. Peripheral has stronger influence on egomotion.">
+        <div class="slide-content">
+            <h3 class="reveal">Spatial Tuning</h3>
+            <h2 class="reveal">Peripheral vs. Central</h2>
+            <div class="grid reveal">
+                <div class="img-container"><img src="assets/slide_8_img_2.png" alt=""></div>
+                <div class="img-container"><img src="assets/slide_8_img_4.png" alt=""></div>
+            </div>
+            <p class="reveal">Peripheral flow provides a more robust signal for egomotion and stance control.</p>
+        </div>
+    </section>
+
+    <!-- Slide 7 -->
+    <section class="slide">
+        <div class="slide-content">
+            <h3 class="reveal">Dynamics</h3>
+            <h2 class="reveal">Heading & Eye Movement</h2>
+            <p class="reveal">Heading angle judgments remain accurate even during smooth pursuit eye movements (Warren, 1988).</p>
+            <div class="grid reveal">
+                <div class="img-container" style="max-width: 400px;"><img src="assets/slide_11_img_2.png" alt=""></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 8 -->
+    <section class="slide">
+        <div class="slide-content">
+            <h3 class="reveal">Navigation</h3>
+            <h2 class="reveal">Strategy Preference</h2>
+            <p class="reveal">Locomotion combines optic flow and egocentric strategies. Flow dominates as richness increases.</p>
+            <div class="grid reveal">
+                <div class="img-container"><img src="assets/slide_13_img_2.png" alt=""></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 9 -->
+    <section class="slide">
+        <div class="slide-content">
+            <h3 class="reveal">Safety</h3>
+            <h2 class="reveal">Time-to-Contact (Tau)</h2>
+            <p class="reveal">Specified by the inverse of the expansion rate (τ ~ 1/R). Direct, non-computational pickup of information.</p>
+            <div class="grid reveal">
+                <div class="img-container"><img src="assets/slide_22_img_1.png" alt=""></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 10 -->
+    <section class="slide">
+        <div class="slide-content">
+            <h3 class="reveal">Summary</h3>
+            <h2 class="reveal">Active Perception</h2>
+            <p class="reveal">Perception is not defined in the absence of activity. Control of locomotion and perception are functionally inseparable.</p>
+        </div>
+    </section>
+
+    <script>
+        class SlidePresentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.navDots = document.getElementById('navDots');
+                this.progressBar = document.getElementById('progressBar');
+                this.notesPanel = document.getElementById('notesPanel');
+                this.notesContent = document.getElementById('notesContent');
+                this.currentSlideIndex = 0;
+                this.init();
+            }
+
+            init() {
+                this.slides.forEach((_, i) => {
+                    const dot = document.createElement('div');
+                    dot.classList.add('dot');
+                    dot.addEventListener('click', () => this.goToSlide(i));
+                    this.navDots.appendChild(dot);
+                });
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            const index = Array.from(this.slides).indexOf(entry.target);
+                            this.updateActiveState(index);
+                        }
+                    });
+                }, { threshold: 0.5 });
+
+                this.slides.forEach(slide => observer.observe(slide));
+
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+                        this.nextSlide();
+                    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                        this.prevSlide();
+                    } else if (e.key.toLowerCase() === 'n') {
+                        this.toggleNotes();
+                    }
+                });
+            }
+
+            updateActiveState(index) {
+                this.currentSlideIndex = index;
+                document.querySelectorAll('.dot').forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
+                this.progressBar.style.width = `${((index + 1) / this.slides.length) * 100}%`;
+                const notes = this.slides[index].getAttribute('data-notes');
+                this.notesContent.innerHTML = notes ? `<p>${notes}</p>` : `<p style="opacity: 0.5;">No notes.</p>`;
+            }
+
+            goToSlide(index) {
+                this.slides[index].scrollIntoView({ behavior: 'smooth' });
+            }
+
+            nextSlide() {
+                if (this.currentSlideIndex < this.slides.length - 1) this.goToSlide(this.currentSlideIndex + 1);
+            }
+
+            prevSlide() {
+                if (this.currentSlideIndex > 0) this.goToSlide(this.currentSlideIndex - 1);
+            }
+
+            toggleNotes() {
+                this.notesPanel.classList.toggle('active');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => new SlidePresentation());
+    </script>
+</body>
+</html>
