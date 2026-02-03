@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perception Lecture 3</title>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap">
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --text-primary: #1a1a1a;
+            --text-secondary: #64748b;
+            --accent: #3b82f6;
+            --line-color: #e2e8f0;
+            --font-main: 'Satoshi', sans-serif;
+            --slide-padding: clamp(2rem, 8vw, 6rem);
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+            background: var(--bg);
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* Slide Layout */
+        .slide {
+            min-height: 100vh;
+            width: 100vw;
+            padding: var(--slide-padding);
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            border-bottom: 1px solid var(--line-color);
+        }
+
+        .slide-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        p, li {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            max-width: 800px;
+        }
+
+        ul {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.75rem;
+        }
+
+        li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0.7em;
+            width: 8px;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        /* Media */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+            align-items: center;
+        }
+
+        .img-container {
+            background: #fff;
+            padding: 10px;
+            border: 1px solid var(--line-color);
+            border-radius: 4px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: filter 0.5s ease;
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+        }
+
+        .visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal:nth-child(1) { transition-delay: 0.1s; }
+        .reveal:nth-child(2) { transition-delay: 0.2s; }
+        .reveal:nth-child(3) { transition-delay: 0.3s; }
+        .reveal:nth-child(4) { transition-delay: 0.4s; }
+        .reveal:nth-child(5) { transition-delay: 0.5s; }
+
+        /* Navigation */
+        .nav-dots {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            z-index: 100;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 2px solid var(--text-secondary);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            transform: scale(1.3);
+        }
+
+        .progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--accent);
+            z-index: 1000;
+            transition: width 0.1s linear;
+        }
+
+        /* Presenter View Styles */
+        .presenter-ui {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #0f172a;
+            color: #fff;
+            padding: 3rem;
+            z-index: 9999;
+            grid-template-columns: 1fr 350px;
+            grid-template-rows: auto 1fr auto;
+            gap: 2rem;
+        }
+
+        body.is-presenter .presenter-ui { display: grid; }
+        body.is-presenter .slide, body.is-presenter .nav-dots, body.is-presenter .progress { display: none; }
+
+        .p-current-box { grid-column: 1; grid-row: 2; background: #1e293b; border-radius: 20px; padding: 2rem; border: 1px solid #334155; height: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .p-notes-box { grid-column: 2; grid-row: 2; background: #1e293b; border-radius: 20px; padding: 2rem; border: 1px solid #334155; overflow-y: auto; font-size: 1.2rem; line-height: 1.5; color: #cbd5e1; }
+        .p-next-box { grid-column: 1 / span 2; grid-row: 3; background: #0f172a; border-top: 1px solid #334155; padding-top: 1rem; color: #94a3b8; font-family: monospace; }
+        .p-meta { grid-column: 1 / span 2; grid-row: 1; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 1rem; }
+        .p-timer { font-family: monospace; font-size: 2rem; color: var(--accent); }
+        
+        .p-current-box .slide-content { transform: scale(0.6); transform-origin: center; width: 100%; }
+
+        @media (max-width: 768px) {
+            :root { --slide-padding: 2rem; }
+            .nav-dots { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress" id="progressBar"></div>
+    <nav class="nav-dots" id="navDots"></nav>
+
+    <!-- Presenter UI Overlay -->
+    <div class="presenter-ui">
+        <div class="p-meta">
+            <div><span class="presenter-label">Presenter Mode</span><h2 id="pSlideNum" style="margin:0; font-size: 1.5rem;">Slide 1</h2></div>
+            <div class="p-timer" id="pTimer">00:00:00</div>
+        </div>
+        <div class="p-current-box" id="pCurrentBox"></div>
+        <div class="p-notes-box">
+            <span class="presenter-label">Notes</span>
+            <div id="pNotes"></div>
+        </div>
+        <div class="p-next-box">
+            <span class="presenter-label">Next Up</span>
+            <div id="pNextContent"></div>
+        </div>
+    </div>
+
+    <!-- Slide 1 -->
+    <section class="slide">
+        <div class="slide-content">
+            <h1 class="reveal">Perception Lecture 3</h1>
+            <h2 class="reveal">Information and Ecological Optics</h2>
+        </div>
+    </section>
+
+    <!-- Slide 2: Ambient vs Radiant -->
+    <section class="slide">
+        <div class="slide-content">
+            <h2 class="reveal">Ambient vs. Radiant Light</h2>
+            <p class="reveal">Gibson distinguished between:</p>
+            <ul class="reveal">
+                <li><strong>Radiant Light:</strong> Emitted from a source. Homogeneous. Energy.</li>
+                <li><strong>Ambient Light:</strong> Reflected by the environment. Heterogeneous. Information.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Slide 3: The Optic Array -->
+    <section class="slide">
+        <div class="slide-content">
+            <h2 class="reveal">The Optic Array</h2>
+            <div class="grid reveal">
+                <div class="img-container"><img src="assets/slide_9_img_1.png" alt="Optic Array"></div>
+            </div>
+            <p class="reveal">The structure of light at a point of observation.</p>
+        </div>
+    </section>
+    
+    <!-- Slide 4: Texture Gradients -->
+    <section class="slide">
+        <div class="slide-content">
+            <h2 class="reveal">Texture Gradients</h2>
+            <p class="reveal">Texture density specifies surface orientation and distance.</p>
+            <div class="grid reveal">
+                <div class="img-container"><img src="assets/slide_13_img_1.png" alt="Texture Gradient"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 5: Structure from Motion -->
+    <section class="slide">
+        <div class="slide-content">
+            <h2 class="reveal">Structure from Motion</h2>
+            <h3 class="reveal">The Kinetic Depth Effect</h3>
+            <p class="reveal">A static silhouette is ambiguous. Rotation (motion) reveals the 3D structure.</p>
+            <div class="grid reveal">
+                <div class="img-container"><img src="assets/slide_18_img_1.png" alt="Kinetic Depth"></div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Slide 6: Flow and Events -->
+    <section class="slide">
+        <div class="slide-content">
+            <h2 class="reveal">Flow as an "Event"</h2>
+            <p class="reveal">Optical flow specifies the layout of the environment.</p>
+            <div class="grid reveal">
+                <div class="img-container"><img src="assets/slide_28_img_1.png" alt="Flow Diagram 1"></div>
+                <div class="img-container"><img src="assets/slide_28_img_2.png" alt="Flow Diagram 2"></div>
+            </div>
+            <p class="reveal">Structure in the static image is unnecessary. <strong>Information is in the transformation.</strong></p>
+        </div>
+    </section>
+
+    <!-- Slide 7: Exploration Example -->
+    <section class="slide">
+        <div class="slide-content">
+            <h2 class="reveal">The Open Door Problem</h2>
+            <h3 class="reveal">Is this a rectangle or a door?</h3>
+            <p class="reveal">Gibson: Look for reliable structure generated lawfully by movement.</p>
+            <div class="grid reveal">
+                <div class="img-container"><img src="assets/slide_29_img_1.png" alt="Door Illusion"></div>
+            </div>
+            <p class="reveal">Exploration is part of the theory. We must move to see.</p>
+        </div>
+    </section>
+
+    <!-- Slide 8: Transformation -->
+    <section class="slide">
+        <div class="slide-content">
+            <h2 class="reveal">Transformation & Invariants</h2>
+            <div class="grid reveal">
+                <div class="img-container"><img src="assets/slide_30_img_1.png" alt="Transformation Diagram"></div>
+            </div>
+            <p class="reveal">As we move, the perspective changes (transformation), but the underlying structure of the object remains constant (invariant).</p>
+        </div>
+    </section>
+
+    <script>
+        class SlidePresentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.navDots = document.getElementById('navDots');
+                this.progressBar = document.getElementById('progressBar');
+                this.currentSlideIndex = 0;
+                
+                // Sync & Presenter Mode
+                this.channel = new BroadcastChannel('slide_sync');
+                this.startTime = Date.now();
+                this.isPresenterWindow = window.location.hash === '#presenter';
+
+                this.init();
+            }
+
+            init() {
+                if (this.isPresenterWindow) {
+                    document.body.classList.add('is-presenter');
+                    this.startTimer();
+                }
+
+                // Create dots
+                this.slides.forEach((_, i) => {
+                    const dot = document.createElement('div');
+                    dot.classList.add('dot');
+                    dot.addEventListener('click', () => this.goToSlide(i));
+                    this.navDots.appendChild(dot);
+                });
+
+                // Observer for animations
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            const index = Array.from(this.slides).indexOf(entry.target);
+                            this.updateActiveState(index, true); 
+                        }
+                    });
+                }, { threshold: 0.6 });
+
+                this.slides.forEach(slide => observer.observe(slide));
+
+                // Keyboard Nav
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+                        this.nextSlide();
+                    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                        this.prevSlide();
+                    } else if (e.key.toLowerCase() === 'p' && !this.isPresenterWindow) {
+                        this.openPresenterWindow();
+                    }
+                });
+
+                // Listen for sync
+                this.channel.onmessage = (event) => {
+                    if (event.data.type === 'GOTO_SLIDE') {
+                        this.updateActiveState(event.data.index, false);
+                        if (!this.isPresenterWindow) {
+                            this.slides[event.data.index].scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                };
+            }
+
+            openPresenterWindow() {
+                const url = window.location.href.split('#')[0] + '#presenter';
+                window.open(url, 'PresenterWindow', 'width=1200,height=800');
+            }
+
+            startTimer() {
+                const timerEl = document.getElementById('pTimer');
+                setInterval(() => {
+                    const elapsed = Date.now() - this.startTime;
+                    const h = Math.floor(elapsed / 3600000).toString().padStart(2, '0');
+                    const m = Math.floor((elapsed % 3600000) / 60000).toString().padStart(2, '0');
+                    const s = Math.floor((elapsed % 60000) / 1000).toString().padStart(2, '0');
+                    timerEl.innerText = `${h}:${m}:${s}`;
+                }, 1000);
+            }
+
+            updateActiveState(index, shouldEmit = true) {
+                this.currentSlideIndex = index;
+                
+                // Update dots & Progress
+                document.querySelectorAll('.dot').forEach((dot, i) => dot.classList.toggle('active', i === index));
+                this.progressBar.style.width = `${((index + 1) / this.slides.length) * 100}%`;
+
+                // Update Presenter UI
+                if (this.isPresenterWindow) {
+                    const activeSlide = this.slides[index];
+                    document.getElementById('pSlideNum').innerText = `Slide ${index + 1} / ${this.slides.length}`;
+                    document.getElementById('pCurrentBox').innerHTML = `<div class="slide-content">${activeSlide.querySelector('.slide-content').innerHTML}</div>`;
+                    
+                    const nextSlide = this.slides[index + 1];
+                    document.getElementById('pNextContent').innerText = nextSlide ? `NEXT: ${nextSlide.querySelector('h2')?.innerText || "Next Slide"}` : "END OF DECK";
+                }
+
+                // Sync
+                if (shouldEmit) {
+                    this.channel.postMessage({ type: 'GOTO_SLIDE', index: index });
+                }
+            }
+
+            goToSlide(index) { this.slides[index].scrollIntoView({ behavior: 'smooth' }); }
+            nextSlide() { if (this.currentSlideIndex < this.slides.length - 1) this.goToSlide(this.currentSlideIndex + 1); }
+            prevSlide() { if (this.currentSlideIndex > 0) this.goToSlide(this.currentSlideIndex - 1); }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => new SlidePresentation());
+    </script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+---
+title: "The 8 Dangerous Assumptions"
+subtitle: "Why Traditional Psychology Hits a Wall"
+author: "Tehran Davis"
+format:
+  revealjs:
+    theme: simple
+    transition: slide
+    slide-number: true
+    incremental: false
+    logo: assets/logo.png
+    footer: "Dynamics of Perception & Action | Spring 2026"
+    embed-resources: true
+    include-in-header:
+      - text: |
+          <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700&family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+          <style>
+            .reveal h1 { font-family: 'Open Sans', sans-serif; font-weight: 700; }
+            .reveal h2 { font-family: 'Open Sans', sans-serif; font-weight: 600; }
+            .reveal { font-family: 'Roboto', sans-serif; }
+            .assumption-box { border: 2px solid #333; padding: 20px; border-radius: 10px; background-color: #f0f0f0; margin-bottom: 20px; }
+            .interactive-prompt { color: #d63384; font-weight: bold; margin-top: 20px; }
+          </style>
+---
+
+## The Roadmap
+
+We are going to walk through **8 Assumptions** that traditional psychology makes about how you know the world.
+
+We will see how each assumption forces us into a corner, eventually leading to impossible problems.
+
+::: {.callout-note}
+## The Goal
+To understand why we need a **radical alternative** (Ecological Psychology).
+:::
+
+---
+
+## Assumption 1: The World Exists {auto-animate=true}
+
+<div class="assumption-box">
+**Assumption 1:** The world actually exists.
+</div>
+
+-   Realism.
+-   Not a simulation.
+-   Not a hallucination.
+
+**Why we keep this:**
+If the world *doesn't* exist, science is pointless. We have to assume there is something out there to study.
+
+<div class="interactive-prompt">
+Is this controversial? (Usually no.)
+</div>
+
+---
+
+## Assumption 2: The Blank Slate {auto-animate=true}
+
+<div class="assumption-box">
+**Assumption 2:** We are born with no knowledge. All knowledge comes through the senses.
+</div>
+
+-   *Tabula Rasa* (Locke).
+-   Empiricism.
+
+**The Implication:**
+If you weren't born knowing it, you must have *learned* it through your eyes, ears, skin, etc.
+
+<div class="interactive-prompt">
+**Discussion:** If a baby chick knows to peck at grain immediately after hatching, does this violate Assumption 2?
+</div>
+
+---
+
+## Assumption 3: The Senses Inform Us {auto-animate=true}
+
+<div class="assumption-box">
+**Assumption 3:** Our senses (somehow) inform us about the world.
+</div>
+
+-   The only bridge between "in here" (mind) and "out there" (world).
+-   If the bridge is broken, we know nothing.
+
+**The Trap Begins:**
+If the senses are the *only* path, we better hope they are accurate.
+
+<div class="interactive-prompt">
+**Think:** Have your senses ever lied to you? (Optical illusions, dreams?)
+</div>
+
+---
+
+## Assumption 4: Local Causality {auto-animate=true}
+
+<div class="assumption-box">
+**Assumption 4:** All causality must be local.
+</div>
+
+-   **The Rule:** To cause something, you must *touch* it.
+-   **Example:** A billiard ball hitting another ball.
+
+**The Problem:**
+I can see the tree, but I am not touching the tree.
+How can the tree cause my behavior if it doesn't touch me?
+
+<div class="interactive-prompt">
+**Activity:** Try to move a pencil on your desk without touching it. (You can't.)
+Now, look at the pencil. Did it "move" your mind? How?
+</div>
+
+---
+
+## Assumption 5: The Mediated Copy {auto-animate=true}
+
+<div class="assumption-box">
+**Assumption 5:** Contact with the world is mediated by a COPY.
+</div>
+
+-   Because of Assumption 4 (Local Causality), the tree can't touch my brain.
+-   **Solution:** The tree sends light $\rightarrow$ light touches eye $\rightarrow$ eye makes a COPY (Retinal Image).
+-   **Result:** You never see the tree. You see the *copy*.
+
+::: {.fragment}
+> "We are locked in a prison of our own representations."
+:::
+
+---
+
+## Assumption 6: The Copy is Bad {auto-animate=true}
+
+<div class="assumption-box">
+**Assumption 6:** The copy delivered to the brain is BAD.
+</div>
+
+-   **The "Poverty of the Stimulus"**
+-   2D (World is 3D)
+-   Inverted (World is upright)
+-   Distorted (Peripheral vision is blurry)
+
+**The Crisis:**
+If the only link to the world (the copy) is broken garbage... how do we survive?
+
+<div class="interactive-prompt">
+**Visual:** Look at this photo of a "Beuchet Chair." It looks like a chair.
+(Reveal: It is actually a scattered mess of parts.)
+**Point:** Your eye lied.
+</div>
+
+---
+
+## Assumption 7: Unconscious Inference {auto-animate=true}
+
+<div class="assumption-box">
+**Assumption 7:** The brain must FIX the bad copy using INFERENCE.
+</div>
+
+-   **Helmholtz:** The brain is a detective.
+-   It uses clues + rules to *guess* what is out there.
+-   **Calculation:** `Ambiguous Image` + `Rule (Perspective)` = `3D Cube`.
+
+**The Cost:**
+This requires massive computing power. The "Loan of Intelligence."
+
+<div class="interactive-prompt">
+**Activity:** Catch this ball!
+**Traditional View:** Your brain just solved calculus equations for velocity, gravity, and wind resistance in 200ms. Did it?
+</div>
+
+---
+
+## Assumption 8: The Representation {auto-animate=true}
+
+<div class="assumption-box">
+**Assumption 8:** Your experience is of the FIXED REPRESENTATION, not the world.
+</div>
+
+-   You don't see the raw data (it's upside down).
+-   You don't feel the inference process (it's unconscious).
+-   You only see the final product: The "simulation" your brain built.
+
+::: {.callout-important}
+## The Solipsism Trap
+If you only ever see your brain's simulation... how do you know the real world is actually there?
+:::
+
+---
+
+## The Summary of the Trap
+
+1.  **Local Causality** $\rightarrow$ We need a Copy.
+2.  **The Copy is Bad** $\rightarrow$ We need to Fix it.
+3.  **Fixing requires Intelligence** $\rightarrow$ The Homunculus.
+4.  **We only see the Fix** $\rightarrow$ We are trapped in the head.
+
+**This is the "Standard Story" of Cognitive Science.**
+
+---
+
+## The Ecological Alternative
+
+**What if we reject Assumption 4 (Local Causality)?**
+
+-   What if we don't need a copy?
+-   What if the input isn't bad?
+-   What if we see the world *directly*?
+
+**Next Class:**
+How **Gibson** flipped the table on these assumptions.
+
+<div class="interactive-prompt">
+**Homework:** Read Blau & Wagman Ch 1-2. Find where they attack Assumption 6.
+</div>

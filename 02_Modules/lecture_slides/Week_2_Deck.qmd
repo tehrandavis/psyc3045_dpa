@@ -1,0 +1,174 @@
+---
+title: "Direct Perception & Optic Flow"
+subtitle: "Week 2: Dynamics of Perception & Action"
+author: "Tehran Davis"
+format:
+  revealjs:
+    theme: simple
+    transition: slide
+    slide-number: true
+    incremental: true
+    logo: assets/logo.png
+    footer: "Dynamics of Perception & Action | Spring 2026"
+    embed-resources: true
+    include-in-header:
+      - text: |
+          <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700&family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+          <style>
+            .reveal h1 { font-family: 'Open Sans', sans-serif; font-weight: 700; }
+            .reveal h2 { font-family: 'Open Sans', sans-serif; font-weight: 600; }
+            .reveal { font-family: 'Roboto', sans-serif; }
+          </style>
+---
+
+## Recap: The Computer vs. The Organism
+
+| Traditional View | Ecological View |
+|:--- |:--- |
+| **Poverty of Stimulus** | **Rich Information** |
+| Retinal Image (Snapshot) | Optic Flow (Stream) |
+| Passive Sensation | Active Exploration |
+| Inference (Guessing) | Detection (Resonance) |
+
+::: {.notes}
+Last week, we contrasted the "Computer" view (Helmholtz) with the "Organism" view (Gibson). The core claim of Ecological Psychology is that we don't need to "compute" the world because the information is already there. Today, we look at the proof: **Optic Flow**.
+:::
+
+## The Ambient Optic Array
+
+Gibson's first move was to redefine the "stimulus."
+
+-   **Not:** A flat image on the retina.
+-   **But:** A structured array of light converging at a point.
+
+:::{.fragment}
+> "The environment is not a collage of images. It is a nested set of solid angles." — Gibson
+:::
+
+::: {.notes}
+Imagine you are a point in space. Light is coming at you from all directions (360 degrees). This light has structure because it has reflected off textured surfaces. This surrounding structure is the **Ambient Optic Array**.
+:::
+
+## Motion is Information
+
+What happens when you **move**?
+
+-   The array changes.
+-   But it doesn't change randomly. It changes **lawfully**.
+-   This change is called **Optic Flow**.
+
+::: {.notes}
+Gibson realized that "static" vision is a myth. We are always moving (even just breathing). Motion reveals the 3D structure of the world that is lost in a 2D snapshot.
+:::
+
+## The Rules of Locomotion
+
+Gibson proposed simple "Control Laws" based on flow:
+
+1.  **To Move Forward:** Generate global **Outflow** (Expansion).
+2.  **To Move Backward:** Generate global **Inflow** (Contraction).
+3.  **To Stop:** Minimize flow.
+4.  **To Go to a Target:** Place the **Focus of Expansion (FOE)** on the target.
+
+::: {.notes}
+This is huge. You don't need to calculate coordinates. You just need to control the flow. If the FOE is on the door, you will walk through the door.
+:::
+
+## Evidence: The Moving Room
+
+**Lee & Lishman (1975)**
+
+-   **Subject:** Stands on a solid floor.
+-   **Room:** Walls move forward/backward.
+-   **Result:** The subject falls over.
+
+:::{.fragment}
+Why?
+:::
+
+-   **Visual Proprioception:** Vision told them they were falling forward, so they leaned back to compensate.
+
+::: {.notes}
+This experiment destroyed the idea that vision is just for "object recognition." Vision is for **balance**. It overrides your inner ear (vestibular system). The toddler falls down because the optical information says "you are moving," even though the mechanical information says "you are standing still."
+:::
+
+## The Problem: "Time to Contact"
+
+Imagine you are a gannet diving into the sea at 60 mph.
+You need to fold your wings exactly **0.5 seconds** before impact.
+If you fold too early: You crash (too fast).
+If you fold too late: You break your wings.
+
+**How does the bird know *when* to fold?**
+
+::: {.notes}
+This is the classic "Time-to-Contact" problem. In the traditional view, the bird has to do math.
+:::
+
+## The Computational Solution (Hard)
+
+$$ Time = \frac{Distance}{Velocity} $$
+
+To solve this, the brain must estimate:
+1.  **Distance** ($d$): "I am 50 meters away." (Hard to judge)
+2.  **Velocity** ($v$): "I am going 20 m/s." (Hard to judge)
+3.  **Compute:** $50 / 20 = 2.5$ seconds.
+
+**Problem:** We are terrible at judging absolute distance and speed.
+
+::: {.notes}
+If you ask a person "how many meters is that car?" they will guess. If their survival depended on it, they would die. Yet, we catch baseballs and brake our cars perfectly every day.
+:::
+
+## The Ecological Solution: Tau ($\tau$)
+
+There is an optical variable available on the retina right now.
+
+-   **$A$**: The size of the object's image on the eye.
+-   **$\\dot{A}$**: The rate of expansion of that image.
+
+$$ \tau = \frac{A}{\\dot{A}} $$
+
+**Rule:** The inverse rate of expansion specifies time-to-contact directly.
+
+::: {.notes}
+This is the magic. You don't need to know distance. You don't need to know speed. You just need to know how fast the image is exploding.
+:::
+
+## Why Tau Matters
+
+1.  **It is Direct:** No inference required.
+2.  **It is Lawful:** It works for birds, bugs, and humans.
+3.  **It controls Action:**
+    -   **Braking:** Keep $\\dot{\\tau}$ constant.
+    -   **Catching:** Couple hand closure to $\\tau$.
+
+::: {.notes}
+David Lee showed that drivers don't calculate stopping distance. They adjust their braking pressure to keep the time-derivative of Tau constant. This is a "perceptual-motor coupling."
+:::
+
+## Active Perception
+
+> "We must perceive in order to move, but we must also move in order to perceive." — Gibson (1979)
+
+-   **Old View:** Sensation $\\rightarrow$ Perception $\\rightarrow$ Action
+-   **New View:** Perception-Action Loop
+
+We generate the information (flow) that we use to control our behavior.
+
+::: {.notes}
+This closes the loop. We are not passive receivers. We are active explorers. We create the flow that guides us.
+:::
+
+## Next Week: Affordances
+
+We have seen how we detect **Events** (collisions).
+Next, we ask how we perceive **Possibilities**.
+
+**Readings:**
+1.  Warren (1984): *Stair Climbing*
+2.  Gibson Ch. 8: *The Theory of Affordances*
+
+::: {.notes}
+For next week, we move from "Time to Contact" to "Climbability." How do you know if a step is too high? The answer involves the first "dimensionless number" in psychology: Pi.
+:::

@@ -1,0 +1,157 @@
+---
+title: "Affordances: The Geometry of Action"
+subtitle: "Week 3: Dynamics of Perception & Action"
+author: "Tehran Davis"
+format:
+  revealjs:
+    theme: simple
+    transition: slide
+    slide-number: true
+    incremental: true
+    logo: assets/logo.png
+    footer: "Dynamics of Perception & Action | Spring 2026"
+    embed-resources: true
+    include-in-header:
+      - text: |
+          <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700&family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+          <style>
+            .reveal h1 { font-family: 'Open Sans', sans-serif; font-weight: 700; }
+            .reveal h2 { font-family: 'Open Sans', sans-serif; font-weight: 600; }
+            .reveal { font-family: 'Roboto', sans-serif; }
+          </style>
+---
+
+## Recap: From Time to Possibility
+
+Last week, we saw how **Time-to-Contact ($\tau$)** specifies *when* an event will happen.
+
+Today, we ask a deeper question:  
+**What can I do?**
+
+-   Is that surface walk-on-able?
+-   Is that object grasp-able?
+-   Is that gap jump-over-able?
+
+::: {.notes}
+We are moving from the perception of events (collisions) to the perception of possibilities. This is the heart of Ecological Psychology.
+:::
+
+## Definition of Affordance
+
+> "The affordances of the environment are what it offers the animal, what it provides or furnishes, either for good or ill."
+> — J.J. Gibson (1979, p. 127)
+
+**Key Concept:**
+Affordances are **properties of the environment** taken with reference to the **animal**.
+
+::: {.notes}
+Notice the language. It offers, it furnishes. It's not just "physics." It's physics *for* biology.
+:::
+
+## Subjective or Objective? 
+
+Is "climb-ability" a fact about the stairs? Or a fact about me?
+
+:::{.callout-note}
+## Gibson's Answer
+"An affordance is neither an objective property nor a subjective property; or it is both if you like... It cuts across the dichotomy of subjective-objective."
+:::
+
+It is a **Relational Property**.
+
+::: {.notes}
+This is the philosophical core. We are used to thinking of physics (objective) and psychology (subjective). Affordances break that wall.
+:::
+
+## Body Scaling
+
+Imagine you are Alice in Wonderland.
+You drink the potion and shrink to 6 inches tall.
+
+-   The stairs haven't changed (Physics is constant).
+-   But the **Affordance** has changed.
+    -   The stairs are no longer "climb-able."
+    -   They are now "cliff-like."
+
+**Conclusion:** We measure the world in "body-units," not inches.
+
+::: {.notes}
+This means that standard metrics (meters, feet) are biologically irrelevant. The only metric that matters is your own body.
+:::
+
+## The Classic Study: Warren (1984)
+
+**Question:** When does a step become "unclimbable"?
+
+-   **Hypothesis:** It depends on your leg length ($L$).
+-   **Experiment:**
+    -   Group A: Short people.
+    -   Group B: Tall people.
+    -   Task: Look at stairs of different heights ($R$) and judge "Can you climb this without using your hands?"
+
+::: {.notes}
+William Warren wanted to prove that affordances are real, mathematical ratios.
+:::
+
+## The Results
+
+If you plot the data in **Inches**:
+-   Tall people stop at 30 inches.
+-   Short people stop at 24 inches.
+-   *The curves are different.*
+
+If you plot the data in **Ratios** ($R/L$):
+-   Everyone stops at **0.88**.
+-   *The curves overlap perfectly.*
+
+::: {.notes}
+This was a bombshell. It showed that despite physical differences, the "perceptual category" was identical for everyone. It was defined by a dimensionless number.
+:::
+
+## The Pi Number ($\\pi$)
+
+In physics, $\pi$ refers to a dimensionless ratio (like $C/D$).
+In biology, we have "Intrinsic Metrics."
+
+$$ \pi = \frac{Riser Height (R)}{Leg Length (L)} $$
+
+-   **Critical Point (Max):** $R/L = 0.88$
+-   **Optimal Point (Easiest):** $R/L = 0.26$
+
+::: {.notes}
+We don't just perceive the maximum. We perceive the optimal. The 0.26 ratio corresponds to the minimum metabolic cost. You perceive the "path of least resistance."
+:::
+
+## Mark (1987): Eye Height
+
+How do you know how long your legs are? You don't look at them.
+
+**Hypothesis:** Eye Height ($E$) specifies Leg Length ($L$).
+If you are standing on 10cm blocks, you feel taller.
+Does the world look "smaller"?
+
+-   **Result:** Yes.
+-   **Adaptation:** After walking for 10 minutes, people recalibrate.
+
+::: {.notes}
+This shows the system is flexible. If you wear platform shoes, the world's affordances change, and your perception updates to match your new "effectivities."
+:::
+
+## Summary: The Geometry of Action
+
+1.  Perception is **Relational** (Animal-Environment).
+2.  The units of perception are **Dimensionless Ratios** ($\\pi$ numbers).
+3.  We perceive **Effectivities** (what we can do), not just properties (what things are).
+
+::: {.notes}
+We have now established the foundation. Perception is Direct (Week 2) and Scaled (Week 3). Next week, we look at Dynamic Touch—how we perceive the world by wielding tools.
+:::
+
+## Next Week: Dynamic Touch
+
+**Reading:**
+Turvey, M.T. & Carello, C. (1995). *Dynamic Touch.*
+
+**Topic:**
+How does a blind person "see" the sidewalk with a cane?
+The answer lies in the **Inertia Tensor**.

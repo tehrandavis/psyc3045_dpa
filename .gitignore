@@ -1,5 +1,9 @@
-source.pdf
+00_Admin/
+05_Student_Work/
 .DS_Store
-*_backup_*
-*_pre_rebuild.html
-extracted_content.json
+*.key
+*.pptx
+*.zip
+*.pdf
+# Keep source.pdf ignored if it's large, but maybe we want to keep it if it's small. Sticking to user prefs.
+source.pdf

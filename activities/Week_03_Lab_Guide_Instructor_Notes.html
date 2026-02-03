@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>week_03_lab_guide_instructor_notes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="Week_03_Lab_Guide_Instructor_Notes_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Week_03_Lab_Guide_Instructor_Notes_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="Week_03_Lab_Guide_Instructor_Notes_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="Week_03_Lab_Guide_Instructor_Notes_files/libs/quarto-html/popper.min.js"></script>
+<script src="Week_03_Lab_Guide_Instructor_Notes_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Week_03_Lab_Guide_Instructor_Notes_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Week_03_Lab_Guide_Instructor_Notes_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Week_03_Lab_Guide_Instructor_Notes_files/libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Week_03_Lab_Guide_Instructor_Notes_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Week_03_Lab_Guide_Instructor_Notes_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Week_03_Lab_Guide_Instructor_Notes_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+
+<section id="week-3-lab-guide-instructor-notes" class="level1">
+<h1>Week 3 Lab Guide: Instructor Notes</h1>
+<p><strong>Activity:</strong> Action vs.&nbsp;Perception (Ebbinghaus Illusion Suite) <strong>Date:</strong> Tuesday, January 27, 2026 <strong>Duration:</strong> 15-20 minutes total</p>
+<hr>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>This lab uses <strong>one combined packet</strong> (<code>Week_03_Lab_Packet_Ebbinghaus_Suite.md</code>) containing two sequential activities that reveal a dissociation between perception and action:</p>
+<ol type="1">
+<li><strong>Activity 1: Perception Task</strong> (5-7 min) - Establish the illusion</li>
+<li><strong>Activity 2: Fitts Task</strong> (10-12 min) - Test continuous movement performance</li>
+</ol>
+<p><strong>Pedagogical Goal:</strong> Students discover that conscious perception (fooled by illusion) and motor control (largely immune to illusion) operate on different information sources. This sets up the critical discussion in Question 1 about “task specificity” vs.&nbsp;“two visual systems.”</p>
+<p><strong>Format:</strong> Students receive one complete packet at the start of class and work through it sequentially, building observations and reflections that culminate in the Final Synthesis section.</p>
+<hr>
+</section>
+<section id="materials-needed" class="level2">
+<h2 class="anchored" data-anchor-id="materials-needed">Materials Needed</h2>
+<section id="for-activity-1-computerized-test" class="level3">
+<h3 class="anchored" data-anchor-id="for-activity-1-computerized-test">For Activity 1 (Computerized Test):</h3>
+<ul>
+<li><strong>Computer/laptop</strong> with Python installed</li>
+<li><strong>Python script:</strong> <code>99_Demos/ebbinghaus_illusion/ebbinghaus_illusion.py</code></li>
+<li><strong>Projector</strong> (optional - for demonstration)</li>
+<li>Pygame library installed (<code>pip install pygame</code>)</li>
+</ul>
+</section>
+<section id="for-activity-2-fitts" class="level3">
+<h3 class="anchored" data-anchor-id="for-activity-2-fitts">For Activity 2 (Fitts):</h3>
+<ul>
+<li><strong>Tapping surface</strong> with Ebbinghaus targets printed/mounted
+<ul>
+<li>Targets separated by 20 cm (center-to-center)</li>
+<li>Central circles ~3 cm diameter</li>
+</ul></li>
+<li><strong>Stylus or pointer</strong> (or use index finger)</li>
+<li><strong>Stopwatch</strong> (or phone timer)</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="timing-flow" class="level2">
+<h2 class="anchored" data-anchor-id="timing-flow">Timing &amp; Flow</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 9%">
+<col style="width: 61%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>Duration</th>
+<th>Key Outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Activity 1: Perception</strong></td>
+<td>5-7 min</td>
+<td>Establish that illusion works for conscious judgment</td>
+</tr>
+<tr class="even">
+<td><strong>Activity 2: Fitts</strong></td>
+<td>10-12 min</td>
+<td>Show that continuous action is immune to illusion</td>
+</tr>
+<tr class="odd">
+<td><strong>Transition to Discussion</strong></td>
+<td>2 min</td>
+<td>“How did your movements stay accurate?” → Move to Question 1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total:</strong> 15-20 minutes</p>
+<hr>
+</section>
+<section id="activity-1-computerized-susceptibility-test-5-7-min" class="level2">
+<h2 class="anchored" data-anchor-id="activity-1-computerized-susceptibility-test-5-7-min">Activity 1: Computerized Susceptibility Test (5-7 min)</h2>
+<section id="setup-required" class="level3">
+<h3 class="anchored" data-anchor-id="setup-required">Setup Required:</h3>
+<ul>
+<li><strong>Computer/laptop</strong> running the Python script (<code>ebbinghaus_illusion.py</code>)</li>
+<li><strong>Projector</strong> (optional - for demonstrating first)</li>
+<li>Students can run individually or in pairs</li>
+</ul>
+</section>
+<section id="procedure" class="level3">
+<h3 class="anchored" data-anchor-id="procedure">Procedure:</h3>
+<ol type="1">
+<li><strong>Introduce the Test</strong> (1 min)
+<ul>
+<li>“You’ll complete a computerized test that measures your susceptibility to the Ebbinghaus illusion.”</li>
+<li>“The computer will track how often the surrounding context fools you, even when circles are the same size.”</li>
+<li>Demonstrate controls: F (left bigger), J (right bigger), Space (equal)</li>
+</ul></li>
+<li><strong>Students Make Predictions</strong> (1 min)
+<ul>
+<li>Complete Section 2: Personal and class predictions</li>
+<li>“How susceptible do you think you’ll be?”</li>
+</ul></li>
+<li><strong>Run the Test</strong> (3-4 min)
+<ul>
+<li>Students complete the computerized test</li>
+<li>Multiple trials with varying combinations</li>
+<li>Computer calculates susceptibility score at the end</li>
+</ul></li>
+<li><strong>Record Results</strong> (1 min)
+<ul>
+<li>Students record their susceptibility score in Section 3</li>
+<li>Collect scores on board for class average (Section 4)</li>
+</ul></li>
+</ol>
+</section>
+<section id="expected-results" class="level3">
+<h3 class="anchored" data-anchor-id="expected-results">Expected Results:</h3>
+<ul>
+<li><strong>Class Average:</strong> Typically 50-70% susceptibility</li>
+<li><strong>Range:</strong> Wide variation (some students 20%, others 90%)</li>
+<li><strong>Key insight:</strong> Even knowing it’s an illusion doesn’t prevent it</li>
+</ul>
+</section>
+<section id="teaching-notes" class="level3">
+<h3 class="anchored" data-anchor-id="teaching-notes">Teaching Notes:</h3>
+<ul>
+<li><strong>Technical backup:</strong> If computer issues, can use static displays and manual judgment (but lose the quantitative score)</li>
+<li><strong>Emphasize:</strong> “Even experts who study this illusion are still fooled by it!”</li>
+<li><strong>Set up the puzzle (Section 6):</strong> “Your score shows the illusion worked. So what happens when you try to TAP on the circles repeatedly and rapidly?”</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="activity-2-fitts-task-10-12-min" class="level2">
+<h2 class="anchored" data-anchor-id="activity-2-fitts-task-10-12-min">Activity 2: Fitts Task (10-12 min)</h2>
+<section id="procedure-1" class="level3">
+<h3 class="anchored" data-anchor-id="procedure-1">Procedure:</h3>
+<ol type="1">
+<li><strong>Demonstrate</strong> (1-2 min)
+<ul>
+<li>Show the oscillatory tapping task</li>
+<li>Emphasize: “Fast and accurate—like a drummer keeping time.”</li>
+</ul></li>
+<li><strong>Student Trials</strong> (7-9 min)
+<ul>
+<li>Students work in pairs (performer and timer)</li>
+<li>Each student completes 6 conditions (3 contexts × 2 sizes), 3 trials per condition</li>
+<li>Timer records:
+<ul>
+<li>Total movement time</li>
+<li>Errors</li>
+</ul></li>
+<li>Record data in Section 4</li>
+</ul></li>
+<li><strong>Quick Class Debrief</strong> (1-2 min)
+<ul>
+<li>“Show of hands: Was there a difference across context conditions?”</li>
+<li>“Did large surrounding circles slow you down or cause more errors?”</li>
+<li><strong>Expected result:</strong> No systematic difference across context conditions (but 2cm targets should be harder than 3cm)</li>
+</ul></li>
+</ol>
+</section>
+<section id="expected-results-1" class="level3">
+<h3 class="anchored" data-anchor-id="expected-results-1">Expected Results:</h3>
+<ul>
+<li><strong>Movement time:</strong> Similar across all context conditions (illusion doesn’t slow you down)</li>
+<li><strong>Accuracy:</strong> Equal error rates across context conditions (illusion doesn’t make targets “harder” to hit)</li>
+<li><strong>Size effect:</strong> 2 cm targets should show slower MT and more errors than 3 cm targets (Fitts’ Law)</li>
+</ul>
+</section>
+<section id="teaching-notes-1" class="level3">
+<h3 class="anchored" data-anchor-id="teaching-notes-1">Teaching Notes:</h3>
+<ul>
+<li><strong>If students rush and make lots of errors:</strong> Remind them it’s “fast AND accurate,” not just fast.</li>
+<li><strong>If data are noisy:</strong> That’s OK. The pattern should emerge at the group level (pool class data).</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="transition-to-discussion-2-min" class="level2">
+<h2 class="anchored" data-anchor-id="transition-to-discussion-2-min">Transition to Discussion (2 min)</h2>
+<p>After completing both activities, <strong>pause and frame the puzzle:</strong></p>
+<p><strong>Say:</strong> &gt; “So let’s review: &gt; - <strong>Perception Task:</strong> The illusion worked. Targets surrounded by small circles looked larger than those surrounded by large circles. &gt; - <strong>Fitts Task:</strong> Your movements were equally fast and accurate across all context conditions. The illusion didn’t affect your performance. &gt; &gt; <strong>Here’s the puzzle:</strong> If your brain built a mental picture, and that picture was wrong (illusion), <strong>how did your movements stay accurate?</strong>”</p>
+<p><strong>Then:</strong> Transition to Discussion Questions (start with Question 1).</p>
+<hr>
+</section>
+<section id="pedagogical-strategy" class="level2">
+<h2 class="anchored" data-anchor-id="pedagogical-strategy">Pedagogical Strategy</h2>
+<section id="why-two-activities" class="level3">
+<h3 class="anchored" data-anchor-id="why-two-activities">Why Two Activities?</h3>
+<ul>
+<li><strong>Activity 1:</strong> Establishes baseline (illusion works for conscious judgment)</li>
+<li><strong>Activity 2:</strong> Shows dissociation (continuous action is immune to illusion)</li>
+</ul>
+<p><strong>Together, they build a compelling case</strong> that perception and action use different information.</p>
+</section>
+<section id="key-insight-from-fitts-task" class="level3">
+<h3 class="anchored" data-anchor-id="key-insight-from-fitts-task">Key Insight from Fitts Task</h3>
+<ul>
+<li><strong>Movement performance is immune to context:</strong> Movement time and accuracy are unaffected by surrounding circles, even though those circles create a strong perceptual illusion.</li>
+<li><strong>Implication:</strong> The motor system doesn’t use the same information as conscious perception for controlling ongoing action.</li>
+<li><strong>Theoretical payoff:</strong> Supports <strong>task specificity</strong> and <strong>direct perception</strong> (the motor system directly detects action-relevant properties from the optic array, not from mental representations).</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="common-student-questions-responses" class="level2">
+<h2 class="anchored" data-anchor-id="common-student-questions-responses">Common Student Questions &amp; Responses</h2>
+<section id="so-is-the-hand-smarter-than-the-eye" class="level3">
+<h3 class="anchored" data-anchor-id="so-is-the-hand-smarter-than-the-eye">“So is the hand smarter than the eye?”</h3>
+<p><strong>Your response:</strong> &gt; “Hold that thought—that’s exactly what we’re going to discuss next. (Move to Question 1)”</p>
+</section>
+<section id="what-if-my-movements-were-affected-by-the-context" class="level3">
+<h3 class="anchored" data-anchor-id="what-if-my-movements-were-affected-by-the-context">“What if my movements WERE affected by the context?”</h3>
+<p><strong>Your response:</strong> &gt; “That can happen, especially if you’re overthinking or focusing too much on the illusion. The key is the <strong>group pattern</strong>. When we pool class data, the effect should emerge - most people show no systematic difference across context conditions.”</p>
+</section>
+<section id="why-does-the-physical-size-2cm-vs-3cm-matter-but-the-illusory-size-doesnt" class="level3">
+<h3 class="anchored" data-anchor-id="why-does-the-physical-size-2cm-vs-3cm-matter-but-the-illusory-size-doesnt">“Why does the physical size (2cm vs 3cm) matter but the illusory size doesn’t?”</h3>
+<p><strong>Your response:</strong> &gt; “Excellent observation! That’s exactly the point. Fitts’ Law tells us that your motor system is sensitive to <strong>actual physical target size</strong>, which affects movement difficulty. But it’s NOT sensitive to the <strong>surrounding context</strong>, which affects your conscious judgment. This suggests the motor system picks up different information than conscious perception.”</p>
+<hr>
+</section>
+</section>
+<section id="integration-with-lesson-plan" class="level2">
+<h2 class="anchored" data-anchor-id="integration-with-lesson-plan">Integration with Lesson Plan</h2>
+<p>These activities replace and expand Section I (“The Lab: Action vs.&nbsp;Perception”) in your lesson plan.</p>
+<p><strong>Updated Timing:</strong> - <strong>Section I (Lab):</strong> 15-20 min (using these 2 activities) - <strong>Section II (Discussion):</strong> 40-45 min (Questions 1-4) - <strong>Section III (Prime):</strong> 10-15 min (Ecological Optics whiteboard)</p>
+<p><strong>Critical Bridge:</strong> The activities generate <strong>data and observations</strong> that fuel the discussion. Students arrive at Question 1 with: - Personal experience of the dissociation - Confusion about how it’s possible - Predictions they can now test against their data</p>
+<p>This makes the discussion <strong>evidence-driven</strong>, not abstract.</p>
+<hr>
+</section>
+<section id="file-locations" class="level2">
+<h2 class="anchored" data-anchor-id="file-locations">File Locations</h2>
+<p>Lab materials saved to:</p>
+<pre><code>20_Teaching/Dynamics of Perception &amp; Action/activities/
+├── Week_03_Lab_Packet_Ebbinghaus_Suite.md (STUDENT PACKET - print this)
+└── Week_03_Lab_Guide_Instructor_Notes.md (this file)</code></pre>
+<p><strong>Before class tomorrow:</strong> - [ ] Print one copy of the lab packet per student (~8-9 pages) - [ ] Set up computer with Python script for susceptibility test - [ ] Set up Fitts tapping surfaces (3 context conditions × 2 target sizes)</p>
+<hr>
+</section>
+<section id="post-lab-using-data-in-discussion" class="level2">
+<h2 class="anchored" data-anchor-id="post-lab-using-data-in-discussion">Post-Lab: Using Data in Discussion</h2>
+<p><strong>During Question 1 discussion:</strong> - Reference student data: “Remember, your movements were equally fast and accurate across all context conditions.” - Use the whiteboard table (from Q1 facilitation notes) to map their findings: - Judgment task → Detected contrast → Illusion worked - Tapping task → Detected target locations/sizes for movement control → Illusion didn’t work</p>
+<p><strong>This makes the “task specificity” argument concrete and evidence-based.</strong></p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

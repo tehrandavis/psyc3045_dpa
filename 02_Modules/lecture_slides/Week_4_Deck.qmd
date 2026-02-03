@@ -1,0 +1,166 @@
+---
+title: "Dynamic Touch: Muscles as the Medium"
+subtitle: "Week 4: Dynamics of Perception & Action"
+author: "Tehran Davis"
+format:
+  revealjs:
+    theme: simple
+    transition: slide
+    slide-number: true
+    incremental: true
+    logo: assets/logo.png
+    footer: "Dynamics of Perception & Action | Spring 2026"
+    embed-resources: true
+    include-in-header:
+      - text: |
+          <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700&family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+          <style>
+            .reveal h1 { font-family: 'Open Sans', sans-serif; font-weight: 700; }
+            .reveal h2 { font-family: 'Open Sans', sans-serif; font-weight: 600; }
+            .reveal { font-family: 'Roboto', sans-serif; }
+          </style>
+---
+
+## Recap: Action-Scaled World
+
+We have seen that we perceive the world in terms of our **capabilities**.
+
+-   **Optic Flow:** Where am I going? (Locomotion)
+-   **Affordances:** What can I do? (Climbing, Passing through)
+-   **Body Scaling:** How do I fit? (\(\pi\) numbers)
+
+Today: How do we perceive the world **through** our body?
+
+::: {.notes}
+We are moving from vision to touch. But not just "feeling textures." We are talking about feeling the world by moving it.
+:::
+
+## The Problem: The Blind Man's Cane
+
+> "If a blind man uses a cane, he feels the sidewalk, not the cane." — Merleau-Ponty / Gibson
+
+-   **Proximal Stimulus:** Pressure on the palm of the hand.
+-   **Distal Perception:** The texture and distance of the sidewalk.
+
+How do we perceive the **tip** of the tool when we are holding the **handle**?
+
+::: {.notes}
+This is the core mystery of tool use. When you use a hammer, you feel the nail. When you write, you feel the paper. The tool becomes part of your body.
+:::
+
+## Three Kinds of Touch
+
+1.  **Cutaneous Touch:** (Passive)
+    -   Stimulation of skin (heat, texture, pain).
+    -   *Example:* A fly landing on your arm.
+2.  **Haptic Touch:** (Active)
+    -   Exploratory movement of hands.
+    -   *Example:* Identifying a key in your pocket.
+3.  **Dynamic Touch:** (Effortful)
+    -   Muscular exertion / Wielding.
+    -   *Example:* Swinging a tennis racket.
+
+::: {.notes}
+We are focusing on Dynamic Touch. This is the sense of muscular effort. It allows us to perceive objects that are too big to hold in our hands.
+:::
+
+## The Wielding Experiment
+
+**Solomon & Turvey (1988)**
+
+-   **Task:** Hold a rod behind a curtain. Wield it (wrist only).
+-   **Question:** How long is it?
+-   **Result:** Participants are incredibly accurate (\(r^2 = .99\)).
+
+:::{.fragment}
+**Crucial Point:** They never see the rod. They never touch the tip. They only feel the forces in the handle.
+:::
+
+::: {.notes}
+This proves that the "length" of the object is specified by the forces required to move it. But which forces?
+:::
+
+## Hypothesis 1: Is it Mass (Weight)?
+
+If I give you a heavy rod and a light rod, does the heavy one feel longer?
+
+-   **Not necessarily.**
+-   A short, heavy steel rod feels *short and heavy*.
+-   A long, light wooden rod feels *long and light*.
+
+**Conclusion:** Mass alone does not specify length.
+
+## The Physics of Rotation
+
+When you wield an object, you are **rotating** it.
+To rotate an object, you must overcome its resistance to rotation.
+
+**Moment of Inertia (\(I\)):**
+$$ I = m \times d^2 $$
+
+-   \(m\) = Mass (How heavy is it?)
+-   \(d\) = Distance of mass from axis of rotation (How far away is it?)
+
+::: {.notes}
+Look at the equation. Distance (\(d\)) is squared. This means that mass far away (at the tip) counts WAY more than mass near the hand.
+:::
+
+## Why Distance Matters
+
+Imagine holding a sledgehammer.
+
+1.  **Hold the handle:** Heavy head is far away (\(d\) is large). Hard to rotate. **Feels Long.**
+2.  **Hold the head:** Heavy head is close (\(d\) is small). Easy to rotate. **Feels Short.**
+
+The **Moment of Inertia** specifies the reachability of the object.
+
+## The Inertia Tensor (\(I_{ij}\))
+
+Objects aren't just lines. They are 3D shapes.
+You can rotate them in 3 dimensions (Pitch, Yaw, Roll).
+
+The **Inertia Tensor** is a \(3 \times 3\) matrix that captures resistance to rotation in all directions.
+
+$$ I = \begin{bmatrix}
+I_{xx} & I_{xy} & I_{xz} \\
+I_{yx} & I_{yy} & I_{yz} \\
+I_{zx} & I_{zy} & I_{zz}
+\end{bmatrix} $$
+
+::: {.notes}
+Don't panic about the math. Just know this: The Tensor captures the geometry of the mass distribution. It tells your hand "this object resists twisting" (it's wide) or "this object resists swinging down" (it's long).
+:::
+
+## Perception via Dynamics
+
+| Physics | Perception |
+| :--- | :--- |
+| **Moment of Inertia** (\(I\)) | $\rightarrow$ | **Length / Reach** |
+| **Product of Inertia** (\(I_{xy}\)) | $\rightarrow$ | **Orientation / Bent-ness** |
+| **Principal Axes** | $\rightarrow$ | **Sweet Spot** |
+
+We detect the **invariant** physical dynamics (Inertia) to perceive the **variant** spatial properties (Length).
+
+## Application: Tool Use
+
+This is how we use tools.
+
+-   When we pick up a tool, we "probe" its inertia tensor by wielding it.
+-   We instantly know "how far it reaches" and "where the heavy part is."
+-   The tool becomes a **transparent** extension of the body.
+
+::: {.notes}
+This connects back to Heidegger's "Ready-to-hand." The tool disappears. We perceive the world *through* the tool.
+:::
+
+## Next Class: Thursday
+
+**Activity:** "The Wielding Game"
+
+-   You will wield unseen objects.
+-   You will predict their length and shape.
+-   We will see if you are sensitive to the **Inertia Tensor**.
+
+**Reading:**
+*   Turvey & Carello (1995)
+*   Blau & Wagman Chapter 8

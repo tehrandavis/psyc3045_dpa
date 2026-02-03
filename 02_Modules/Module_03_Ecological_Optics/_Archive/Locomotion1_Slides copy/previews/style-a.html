@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Style A: Swiss Minimal</title>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&display=swap">
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --text: #1a1a1a;
+            --accent: #3b82f6;
+            --font: 'Satoshi', sans-serif;
+        }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .slide {
+            max-width: 800px;
+            padding: 4rem;
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        h1 { font-size: 4rem; margin-bottom: 1rem; letter-spacing: -0.02em; }
+        p { font-size: 1.5rem; color: #666; }
+        .line { width: 60px; height: 4px; background: var(--accent); margin-bottom: 2rem; }
+        @keyframes reveal {
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="line reveal"></div>
+        <h1 class="reveal">Locomotion I</h1>
+        <p class="reveal">Empirical studies of some of Gibson’s rules for locomotion</p>
+    </div>
+</body>
+</html>

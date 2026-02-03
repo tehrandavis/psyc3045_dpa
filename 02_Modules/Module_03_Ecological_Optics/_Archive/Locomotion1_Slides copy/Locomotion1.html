@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locomotion I</title>
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f3f4f6;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --accent: #2563eb;
+            --accent-light: #eff6ff;
+            --border: #e5e7eb;
+            --font-main: 'Satoshi', sans-serif;
+            --slide-padding: clamp(2rem, 5vw, 4rem);
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Navigation Dots */
+        .nav-dots {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            z-index: 100;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background: var(--accent);
+            transform: scale(1.4);
+        }
+
+        /* Slide Container */
+        .slide {
+            min-height: 100vh;
+            width: 100vw;
+            padding: var(--slide-padding);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            /* Scroll Snap */
+            scroll-snap-align: start;
+        }
+        
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        /* Content Layouts */
+        .content-wrapper {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            display: grid;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .layout-center { grid-template-columns: 1fr; text-align: center; }
+        .layout-split { grid-template-columns: 1fr 1fr; text-align: left; }
+        .layout-grid { grid-template-columns: 1fr; }
+        
+        @media (max-width: 1024px) {
+            .layout-split { grid-template-columns: 1fr; }
+        }
+
+        /* Typography */
+        h1 {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+        
+        p, li {
+            font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+        
+        li::before {
+            content: "•";
+            color: var(--accent);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Images */
+        .img-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
+            object-fit: contain;
+        }
+        
+        .grid-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        /* Slide Number */
+        .slide-number {
+            position: absolute;
+            bottom: 2rem;
+            right: 3rem;
+            font-family: var(--font-main);
+            color: var(--text-secondary);
+            opacity: 0.5;
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+        }
+
+        .slide.visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slide.visible .reveal:nth-child(1) { transition-delay: 0.1s; }
+        .slide.visible .reveal:nth-child(2) { transition-delay: 0.2s; }
+        .slide.visible .reveal:nth-child(3) { transition-delay: 0.3s; }
+        .slide.visible .reveal:nth-child(4) { transition-delay: 0.4s; }
+
+        /* Notes (Hidden by default, toggleable?) */
+        .notes { display: none; }
+
+    </style>
+</head>
+<body>
+    <nav class="nav-dots"></nav>
+
+    <!-- Slide 1 -->
+    <section class="slide" id="slide-1">
+        <div class="content-wrapper layout-center">
+            <div class="text-col">
+                <h1 class="reveal">Locomotion I</h1>
+                <ul class="reveal">
+                    <li>Empirical studies of some of Gibson’s rules for locomotion</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-number">1 / 26</div>
+    </section>
+
+    <!-- Slide 2 -->
+    <section class="slide" id="slide-2">
+        <div class="content-wrapper layout-center">
+            <div class="img-container reveal">
+                <div class="grid-images">
+                    <img src="assets/slide2_img1.png" alt="Slide Image">
+                    <img src="assets/slide2_img2.png" alt="Slide Image">
+                    <img src="assets/slide2_img3.png" alt="Slide Image">
+                    <img src="assets/slide2_img4.png" alt="Slide Image">
+                    <img src="assets/slide2_img5.png" alt="Slide Image">
+                    <img src="assets/slide2_img6.png" alt="Slide Image">
+                    <img src="assets/slide2_img7.png" alt="Slide Image">
+                    <img src="assets/slide2_img8.png" alt="Slide Image">
+                    <img src="assets/slide2_img9.png" alt="Slide Image">
+                    <img src="assets/slide2_img10.png" alt="Slide Image">
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">2 / 26</div>
+    </section>
+
+    <!-- Slide 3 -->
+    <section class="slide" id="slide-3">
+        <div class="content-wrapper layout-center">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>Major premises of ecological approach to locomotion regulation:</li>
+                    <li>Ecological context – ambient energy arrays (optic array specifically) have structure.</li>
+                    <li>This structure is information and it is available to be detected by any organism that has a perceptual system to do so.</li>
+                    <li>Detection of information occurs directly (i.e., without any need for the internal mediational states).</li>
+                    <li>For example, optic flow fields are directly used for behavioral control without any “high-level processing, storage, or representation.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-number">3 / 26</div>
+    </section>
+
+    <!-- Slide 4 -->
+    <section class="slide" id="slide-4">
+        <div class="content-wrapper layout-center">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>Gibson proposed several rules for visual guidance of locomotion:</li>
+                    <li>1) To be still – coordinate your body (DOFs) in such a way so as to minimize change in the optic flow. Nonflow is information about being stationary.</li>
+                    <li>2) To move forward/backward – coordinate your body in such a way so as to produce global infllow/outflow of the optic flow. Inflow is information about forward movement.</li>
+                    <li>3) To move to a target – put focus of expansion (FOE) is on the target. FOE is information about movement to a target.</li>
+                    <li>4) To change direction – change the location of the focus of expansion (FOE) from it’s previous position. FOE change is information about change in movement direction.</li>
+                    <li>5) Approach without collision – keep rate of object expansion steady.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-number">4 / 26</div>
+    </section>
+
+    <!-- Slide 5 -->
+    <section class="slide" id="slide-5">
+        <div class="content-wrapper layout-center">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>To be still – coordinate your body (DOFs) in such a way so as to minimize change in the optic flow. Nonflow is information about being stationary.</li>
+                    <li>To move forward/backward – coordinate your body in such a way so as to produce global infllow/outflow of the optic flow. Inflow is information about forward movement.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-number">5 / 26</div>
+    </section>
+
+    <!-- Slide 6 -->
+    <section class="slide" id="slide-6">
+        <div class="content-wrapper layout-split">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>Moving Room Paradigm</li>
+                    <li>Independent variable: room oscillation (forward/backward)</li>
+                    <li>Dependent variable: postural sway</li>
+                    <li>Visual proprioception or visual kinesthesis</li>
+                    <li>Results:</li>
+                    <li>Children data:</li>
+                    <li>Sway: 26%</li>
+                    <li>Stagger: 23%</li>
+                    <li>Fall: 33%</li>
+                    <li>No response: 18%</li>
+                    <li>Lee &amp; Lishman (1974)</li>
+                    <li>Ernst Mach</li>
+                </ul>
+            </div>
+            <div class="img-container reveal">
+                <div class="grid-images">
+                    <img src="assets/slide6_img1.png" alt="Slide Image">
+                    <img src="assets/slide6_img2.png" alt="Slide Image">
+                    <img src="assets/slide6_img3.png" alt="Slide Image">
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">6 / 26</div>
+    </section>
+
+    <!-- Slide 7 -->
+    <section class="slide" id="slide-7">
+        <div class="content-wrapper layout-center">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>Radial flow</li>
+                    <li>Lamellar flow</li>
+                    <li>Is there a difference in how radial and lamellar flow affect us?</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-number">7 / 26</div>
+    </section>
+
+    <!-- Slide 8 -->
+    <section class="slide" id="slide-8">
+        <div class="content-wrapper layout-split">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>What is the effect of central vs. peripheral optic flow on postural control?</li>
+                    <li>Stoffregen (1985)</li>
+                    <li>The diagonal line through the left wall in the side condition indicates that that wall was out of sight behind the observer&#x27;s head.</li>
+                    <li>The data shown are mean correlations between room movement and observer sway.</li>
+                    <li>The small squares in the schematic layout and in the side condition indicate the area of gaze.</li>
+                    <li>Sample records of room and observer movement. (Scale is the same on both records.)</li>
+                    <li>Conclusion: Peripheral flow has a stronger influence on perceived egomotion than central flow.</li>
+                </ul>
+            </div>
+            <div class="img-container reveal">
+                <div class="grid-images">
+                    <img src="assets/slide8_img1.png" alt="Slide Image">
+                    <img src="assets/slide8_img2.png" alt="Slide Image">
+                    <img src="assets/slide8_img3.png" alt="Slide Image">
+                    <img src="assets/slide8_img4.png" alt="Slide Image">
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">8 / 26</div>
+    </section>
+
+    <!-- Slide 9 -->
+    <section class="slide" id="slide-9">
+        <div class="content-wrapper layout-split">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>However, retinal position is not the only factor to affect egomotion</li>
+                    <li>Peripheral retina appears to be specialized for pick up of lamellar optical flow, but not radial flow.</li>
+                    <li>Additional conclusions: retinal location is not the whole story; structure of the ambient optic array also matters (radial vs. lamellar). Retinal specialization and the AOE structure are complimentary.</li>
+                    <li>Stoffregen, T. A. (1985). Flow structure versus retinal location in the optical control of stance. Journal of Experimental Psychology: Human Perception and Performance, 11(5), 554–565. https://doi.org/10.1037/0096-1523.11.5.554</li>
+                </ul>
+            </div>
+            <div class="img-container reveal">
+                <img src="assets/slide9_img1.png" alt="Slide Image">
+            </div>
+        </div>
+        <div class="slide-number">9 / 26</div>
+    </section>
+
+    <!-- Slide 10 -->
+    <section class="slide" id="slide-10">
+        <div class="content-wrapper layout-center">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>3) To move to a target – put focus of expansion (FOE) is on the target. FOE is information about movement to a target.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-number">10 / 26</div>
+    </section>
+
+    <!-- Slide 11 -->
+    <section class="slide" id="slide-11">
+        <div class="content-wrapper layout-split">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>Warren (1988): Can people actually determine the direction of locomotion based on the optic flow patterns?</li>
+                    <li>FOE specifies direction of egomotion or heading</li>
+                    <li>Retinal flow vs. ambient optic flow</li>
+                    <li>Effect of eye movement on retinal flow – disrupts the flow pattern</li>
+                    <li>Question: Can we still perceive heading direction?</li>
+                    <li>Warren (1988)</li>
+                </ul>
+            </div>
+            <div class="img-container reveal">
+                <div class="grid-images">
+                    <img src="assets/slide11_img1.png" alt="Slide Image">
+                    <img src="assets/slide11_img2.png" alt="Slide Image">
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">11 / 26</div>
+    </section>
+
+    <!-- Slide 12 -->
+    <section class="slide" id="slide-12">
+        <div class="content-wrapper layout-split">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>Independent variable:</li>
+                    <li>Eye movement fixed</li>
+                    <li>Smooth pursuit eye movement</li>
+                    <li>Dependent variable:</li>
+                    <li>Chance level</li>
+                    <li>“Are you going to the left or right of the blue bar?”</li>
+                    <li>Result: Heading angle judgments were accurate in both conditions</li>
+                    <li>Warren (1988)</li>
+                </ul>
+            </div>
+            <div class="img-container reveal">
+                <div class="grid-images">
+                    <img src="assets/slide12_img1.png" alt="Slide Image">
+                    <img src="assets/slide12_img2.png" alt="Slide Image">
+                    <img src="assets/slide12_img3.png" alt="Slide Image">
+                    <img src="assets/slide12_img4.png" alt="Slide Image">
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">12 / 26</div>
+    </section>
+
+    <!-- Slide 13 -->
+    <section class="slide" id="slide-13">
+        <div class="content-wrapper layout-split">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>Warren et al. (2001): Is locomotion controlled using FOE or using a simpler egocentric direction strategy?</li>
+                    <li>Walk in the egocentric direction of the goal</li>
+                    <li>Walk so as to keep the FOE on the goal</li>
+                    <li>“Locomotor axis”</li>
+                </ul>
+            </div>
+            <div class="img-container reveal">
+                <div class="grid-images">
+                    <img src="assets/slide13_img1.png" alt="Slide Image">
+                    <img src="assets/slide13_img2.png" alt="Slide Image">
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">13 / 26</div>
+    </section>
+
+    <!-- Slide 14 -->
+    <section class="slide" id="slide-14">
+        <div class="content-wrapper layout-split">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>VenLab</li>
+                    <li>directed by Bill Warren at Brown University</li>
+                    <li>https://sites.brown.edu/venlab/</li>
+                </ul>
+            </div>
+            <div class="img-container reveal">
+                <div class="grid-images">
+                    <img src="assets/slide14_img1.png" alt="Slide Image">
+                    <img src="assets/slide14_img2.png" alt="Slide Image">
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">14 / 26</div>
+    </section>
+
+    <!-- Slide 15 -->
+    <section class="slide" id="slide-15">
+        <div class="content-wrapper layout-split">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>Virtual heading manipulation: Offset FOE from the direction of walking by δ = 10°</li>
+                    <li>Task: walk to the goal</li>
+                    <li>Dependent measure: Path in the physical world</li>
+                    <li>Additional independent variable: richness of the virtual world</li>
+                    <li>Warren et al. (2001)</li>
+                </ul>
+            </div>
+            <div class="img-container reveal">
+                <div class="grid-images">
+                    <img src="assets/slide15_img1.png" alt="Slide Image">
+                    <img src="assets/slide15_img2.png" alt="Slide Image">
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">15 / 26</div>
+    </section>
+
+    <!-- Slide 16 -->
+    <section class="slide" id="slide-16">
+        <div class="content-wrapper layout-split">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>Predictions:</li>
+                    <li>Optic flow strategy</li>
+                    <li>Egocentric strategy</li>
+                    <li>Optic flow strategy predicts linear trajectories in locomotion</li>
+                    <li>Walk so that FOE and the target overlap</li>
+                    <li>Egocentric strategy predicts curved trajectories</li>
+                    <li>Walk toward the target and ignore FOE</li>
+                </ul>
+            </div>
+            <div class="img-container reveal">
+                <div class="grid-images">
+                    <img src="assets/slide16_img1.png" alt="Slide Image">
+                    <img src="assets/slide16_img2.png" alt="Slide Image">
+                    <img src="assets/slide16_img3.png" alt="Slide Image">
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">16 / 26</div>
+    </section>
+
+    <!-- Slide 17 -->
+    <section class="slide" id="slide-17">
+        <div class="content-wrapper layout-split">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>Results mostly favored the optic flow hypothesis but showed that egocentric direction also matters.</li>
+                    <li>Conclusion: locomotion was governed by a combination of the two variables.</li>
+                    <li>When no flow was available, behavior was consistent with the egocentric direction hypothesis, but as flow was added to the display, it increasingly dominated behavior, following the optic flow hypothesis more consistently.</li>
+                </ul>
+            </div>
+            <div class="img-container reveal">
+                <div class="grid-images">
+                    <img src="assets/slide17_img1.png" alt="Slide Image">
+                    <img src="assets/slide17_img2.png" alt="Slide Image">
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">17 / 26</div>
+    </section>
+
+    <!-- Slide 18 -->
+    <section class="slide" id="slide-18">
+        <div class="content-wrapper layout-center">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>5) Approach without collision – keep the rate of object expansion steady.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-number">18 / 26</div>
+    </section>
+
+    <!-- Slide 19 -->
+    <section class="slide" id="slide-19">
+        <div class="content-wrapper layout-center">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>Perceiving Collisions &amp; Interceptions With Objects</li>
+                    <li>Information about time-to-contact</li>
+                    <li>Animals can control their approach to objects by using a particular kind of information in the optical array: so-called tau (τ)</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-number">19 / 26</div>
+    </section>
+
+    <!-- Slide 20 -->
+    <section class="slide" id="slide-20">
+        <div class="content-wrapper layout-center">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>A Computational Approach (Indirect Perception)</li>
+                    <li>Since it is true that</li>
+                    <li>d = vt (distance = speed  time),</li>
+                    <li>and by algebra,</li>
+                    <li>d/v = t</li>
+                    <li>an observer can compute time-to-contact by:</li>
+                    <li>(1) Judging the distance between the self and object</li>
+                    <li>(2) Judging speed</li>
+                    <li>(3) Dividing distance by speed</li>
+                    <li>Problem: People are bad at judging absolute distance &amp; speed (pretty much bad at any kind of absolute judgment of this kind)</li>
+                    <li>If humans are horrible at these tasks, how do gannets compute time-to-contact in this way? The gannet somehow knows when to fold its wings back before hitting the water, but how?</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-number">20 / 26</div>
+    </section>
+
+    <!-- Slide 21 -->
+    <section class="slide" id="slide-21">
+        <div class="content-wrapper layout-split">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>Direct Perception Approach</li>
+                    <li>Don’t need to judge distance &amp; time; there is information</li>
+                    <li>available to the visual system that specifies time-to-contact</li>
+                    <li>Has to do with how image size changes with distance</li>
+                </ul>
+            </div>
+            <div class="img-container reveal">
+                <img src="assets/slide21_img1.png" alt="Slide Image">
+            </div>
+        </div>
+        <div class="slide-number">21 / 26</div>
+    </section>
+
+    <!-- Slide 22 -->
+    <section class="slide" id="slide-22">
+        <div class="content-wrapper layout-split">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>• S = size of closed optical contour (size of image an object forms on the retina)</li>
+                    <li>• As an object gets closer to an observer, S increases</li>
+                    <li>SD</li>
+                    <li>SC &gt; SD</li>
+                    <li>SC</li>
+                    <li>• R is the rate at which S changes; determined by approach speed</li>
+                    <li>• Time-to-contact is specified by t  (tau), which is inversely</li>
+                    <li>proportional to the rate of expansion of a closed optical contour: t ~ 1/R</li>
+                    <li>- Slow object: R is low, therefore t is high</li>
+                    <li>More time to duck, catch, etc.</li>
+                    <li>- Fast object: R is high, therefore t is low</li>
+                    <li>Less time to duck, catch, etc.</li>
+                    <li>• Time-to-contact does not need to be computed, because an animal can perceive time-to-contact by detecting the optical variable tau</li>
+                    <li>• Tau is information</li>
+                </ul>
+            </div>
+            <div class="img-container reveal">
+                <div class="grid-images">
+                    <img src="assets/slide22_img1.png" alt="Slide Image">
+                    <img src="assets/slide22_img2.png" alt="Slide Image">
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">22 / 26</div>
+    </section>
+
+    <!-- Slide 23 -->
+    <section class="slide" id="slide-23">
+        <div class="content-wrapper layout-center">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>Approach a moving target (pursuit): How do people walk to a moving target, and what visual information do they use to do so?</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-number">23 / 26</div>
+    </section>
+
+    <!-- Slide 24 -->
+    <section class="slide" id="slide-24">
+        <div class="content-wrapper layout-split">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>Results showed that people seem to use this strategy</li>
+                    <li>β</li>
+                    <li>β – target-heading angle (bearing angle)</li>
+                    <li>Illustration of the two strategies (pursuit and interception) and three sources of information (egocentric direction, global optic flow, and local optic flow) for walking to a moving target.</li>
+                    <li>Fajen &amp; Warren (2004)</li>
+                </ul>
+            </div>
+            <div class="img-container reveal">
+                <img src="assets/slide24_img1.png" alt="Slide Image">
+            </div>
+        </div>
+        <div class="slide-number">24 / 26</div>
+    </section>
+
+    <!-- Slide 25 -->
+    <section class="slide" id="slide-25">
+        <div class="content-wrapper layout-center">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>• Optic flow demonstrates importance of activity for perception—not defined in  absence of observer motion, but  without optic flow the control of motion would be difficult</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-number">25 / 26</div>
+    </section>
+
+    <!-- Slide 26 -->
+    <section class="slide" id="slide-26">
+        <div class="content-wrapper layout-center">
+            <div class="text-col">
+                <ul class="reveal">
+                    <li>Overall, Gibson’s 1978 book instigated much research.</li>
+                    <li>There are some changes to thinking, but overall, it seems on a good track.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-number">26 / 26</div>
+    </section>
+
+    <script>
+        // Slide Navigation & Animation
+        const slides = document.querySelectorAll('.slide');
+        const dotsContainer = document.querySelector('.nav-dots');
+        
+        // Create Dots
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            dot.addEventListener('click', () => {
+                slides[index].scrollIntoView({ behavior: 'smooth' });
+            });
+            dotsContainer.appendChild(dot);
+        });
+        
+        const dots = document.querySelectorAll('.dot');
+
+        // Intersection Observer for Animation & Active Dot
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Add visible class for animation
+                    entry.target.classList.add('visible');
+                    
+                    // Update Active Dot
+                    const index = Array.from(slides).indexOf(entry.target);
+                    dots.forEach(d => d.classList.remove('active'));
+                    if(dots[index]) dots[index].classList.add('active');
+                }
+            });
+        }, { threshold: 0.5 });
+
+        slides.forEach(slide => observer.observe(slide));
+        
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            const currentSlide = Array.from(slides).findIndex(s => {
+                const rect = s.getBoundingClientRect();
+                return rect.top >= -100 && rect.top < 100; // Roughly in view
+            });
+            
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+                e.preventDefault();
+                if (currentSlide < slides.length - 1) {
+                    slides[currentSlide + 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (currentSlide > 0) {
+                    slides[currentSlide - 1].scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

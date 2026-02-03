@@ -1,0 +1,750 @@
+[
+  {
+    "number": 1,
+    "title": "Locomotion I",
+    "content": [
+      {
+        "type": "text",
+        "content": "Empirical studies of some of Gibson\u2019s rules for locomotion"
+      }
+    ],
+    "images": [],
+    "notes": ""
+  },
+  {
+    "number": 2,
+    "title": "",
+    "content": [],
+    "images": [
+      {
+        "path": "assets/slide2_img1.png",
+        "width": 2313004,
+        "height": 1734682
+      },
+      {
+        "path": "assets/slide2_img2.png",
+        "width": 2395088,
+        "height": 3532992
+      },
+      {
+        "path": "assets/slide2_img3.png",
+        "width": 2552220,
+        "height": 1719478
+      },
+      {
+        "path": "assets/slide2_img4.png",
+        "width": 1962150,
+        "height": 2200275
+      },
+      {
+        "path": "assets/slide2_img5.png",
+        "width": 3149839,
+        "height": 2361051
+      },
+      {
+        "path": "assets/slide2_img6.png",
+        "width": 1632287,
+        "height": 2345847
+      },
+      {
+        "path": "assets/slide2_img7.png",
+        "width": 2057316,
+        "height": 1369878
+      },
+      {
+        "path": "assets/slide2_img8.png",
+        "width": 4224526,
+        "height": 2376337
+      },
+      {
+        "path": "assets/slide2_img9.png",
+        "width": 2711310,
+        "height": 1806746
+      },
+      {
+        "path": "assets/slide2_img10.png",
+        "width": 1098248,
+        "height": 1405757
+      }
+    ],
+    "notes": "Crawling, flying, hopping, walking, running, swimming\n\nThe main point is that it\u2019s not all about running.\n\nVisual perception makes locomotion truly useful bc we can orient to distal objects.\n\nFirst lecture I would devote to the visual control of locomotion with a particular emphasis on Gibson\u2019s rules for locomotion and the current research in this area.\n"
+  },
+  {
+    "number": 3,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "Major premises of ecological approach to locomotion regulation:"
+      },
+      {
+        "type": "text",
+        "content": "Ecological context \u2013 ambient energy arrays (optic array specifically) have structure.\n\nThis structure is information and it is available to be detected by any organism that has a perceptual system to do so.\n\nDetection of information occurs directly (i.e., without any need for the internal mediational states). \n\nFor example, optic flow fields are directly used for behavioral control without any \u201chigh-level processing, storage, or representation."
+      }
+    ],
+    "images": [],
+    "notes": ""
+  },
+  {
+    "number": 4,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "Gibson proposed several rules for visual guidance of locomotion:"
+      },
+      {
+        "type": "text",
+        "content": "1) To be still \u2013 coordinate your body (DOFs) in such a way so as to minimize change in the optic flow. Nonflow is information about being stationary."
+      },
+      {
+        "type": "text",
+        "content": "2) To move forward/backward \u2013 coordinate your body in such a way so as to produce global infllow/outflow of the optic flow. Inflow is information about forward movement."
+      },
+      {
+        "type": "text",
+        "content": "3) To move to a target \u2013 put focus of expansion (FOE) is on the target. FOE is information about movement to a target."
+      },
+      {
+        "type": "text",
+        "content": "4) To change direction \u2013 change the location of the focus of expansion (FOE) from it\u2019s previous position. FOE change is information about change in movement direction."
+      },
+      {
+        "type": "text",
+        "content": "5) Approach without collision \u2013 keep rate of object expansion steady."
+      }
+    ],
+    "images": [],
+    "notes": ""
+  },
+  {
+    "number": 5,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "To be still \u2013 coordinate your body (DOFs) in such a way so as to minimize change in the optic flow. Nonflow is information about being stationary.\n\nTo move forward/backward \u2013 coordinate your body in such a way so as to produce global infllow/outflow of the optic flow. Inflow is information about forward movement."
+      }
+    ],
+    "images": [],
+    "notes": ""
+  },
+  {
+    "number": 6,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "Moving Room Paradigm"
+      },
+      {
+        "type": "text",
+        "content": "Independent variable: room oscillation (forward/backward)\nDependent variable: postural sway"
+      },
+      {
+        "type": "text",
+        "content": "Visual proprioception or visual kinesthesis"
+      },
+      {
+        "type": "text",
+        "content": "Results:"
+      },
+      {
+        "type": "text",
+        "content": "Children data:\nSway: 26%\nStagger: 23%\nFall: 33%\nNo response: 18%"
+      },
+      {
+        "type": "text",
+        "content": "Lee & Lishman (1974)"
+      },
+      {
+        "type": "text",
+        "content": "Ernst Mach"
+      }
+    ],
+    "images": [
+      {
+        "path": "assets/slide6_img1.png",
+        "width": 4147656,
+        "height": 2909399
+      },
+      {
+        "path": "assets/slide6_img2.png",
+        "width": 2745634,
+        "height": 3137868
+      },
+      {
+        "path": "assets/slide6_img3.png",
+        "width": 2765871,
+        "height": 3556120
+      }
+    ],
+    "notes": "Sensory conflict: mechanical and visual proprioception are discrepant. Typically, vision overrides other sources of information (i.e. haptic).\n"
+  },
+  {
+    "number": 7,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "Radial flow"
+      },
+      {
+        "type": "text",
+        "content": "Lamellar flow"
+      },
+      {
+        "type": "text",
+        "content": "Is there a difference in how radial and lamellar flow affect us?"
+      }
+    ],
+    "images": [],
+    "notes": "With any linear motion, if we look in the direction of motion, optical flow expands radially outward from the point toward which we are moving and sweeps laterally past us, converging behind. If we look at different parts\nof this overall flow, we find different local structures. Near the line of motion, the pattern of flow is almost exclusively radial, whereas at those points where the flow sweeps past the observer, the lines of flow have become nearly parallel, much like the lines of longitude on a globe, which converge at the poles but are parallel at the equator\n\n\n"
+  },
+  {
+    "number": 8,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "What is the effect of central vs. peripheral optic flow on postural control?"
+      },
+      {
+        "type": "text",
+        "content": "Stoffregen (1985)"
+      },
+      {
+        "type": "text",
+        "content": "The diagonal line through the left wall in the side condition indicates that that wall was out of sight behind the observer's head. \n\nThe data shown are mean correlations between room movement and observer sway."
+      },
+      {
+        "type": "text",
+        "content": "The small squares in the schematic layout and in the side condition indicate the area of gaze."
+      },
+      {
+        "type": "text",
+        "content": "Sample records of room and observer movement. (Scale is the same on both records.)"
+      },
+      {
+        "type": "text",
+        "content": "Conclusion: Peripheral flow has a stronger influence on perceived egomotion than central flow."
+      }
+    ],
+    "images": [
+      {
+        "path": "assets/slide8_img1.png",
+        "width": 1961162,
+        "height": 2500958
+      },
+      {
+        "path": "assets/slide8_img2.png",
+        "width": 1959586,
+        "height": 1843328
+      },
+      {
+        "path": "assets/slide8_img3.png",
+        "width": 4026175,
+        "height": 2374887
+      },
+      {
+        "path": "assets/slide8_img4.png",
+        "width": 1959586,
+        "height": 1863602
+      }
+    ],
+    "notes": "But full view frontal also influenced sway \u2013 frontal of can also influence posture, but less so.\n\nField of view\n\nSpecialization of the retinal surface and perceptual effectiveness of flow.\n\nUnoccupied ambient optic array vs. occupied\n\nField of view"
+  },
+  {
+    "number": 9,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "However, retinal position is not the only factor to affect egomotion"
+      },
+      {
+        "type": "text",
+        "content": "Peripheral retina appears to be specialized for pick up of lamellar optical flow, but not radial flow."
+      },
+      {
+        "type": "text",
+        "content": "Additional conclusions: retinal location is not the whole story; structure of the ambient optic array also matters (radial vs. lamellar). Retinal specialization and the AOE structure are complimentary."
+      },
+      {
+        "type": "text",
+        "content": "Stoffregen, T. A. (1985). Flow structure versus retinal location in the optical control of stance. Journal of Experimental Psychology: Human Perception and Performance, 11(5), 554\u2013565. https://doi.org/10.1037/0096-1523.11.5.554"
+      }
+    ],
+    "images": [
+      {
+        "path": "assets/slide9_img1.png",
+        "width": 5978187,
+        "height": 2989094
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "number": 10,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "3) To move to a target \u2013 put focus of expansion (FOE) is on the target. FOE is information about movement to a target."
+      }
+    ],
+    "images": [],
+    "notes": ""
+  },
+  {
+    "number": 11,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "Warren (1988): Can people actually determine the direction of locomotion based on the optic flow patterns?"
+      },
+      {
+        "type": "text",
+        "content": "FOE specifies direction of egomotion or heading"
+      },
+      {
+        "type": "text",
+        "content": "Retinal flow vs. ambient optic flow"
+      },
+      {
+        "type": "text",
+        "content": "Effect of eye movement on retinal flow \u2013 disrupts the flow pattern"
+      },
+      {
+        "type": "text",
+        "content": "Question: Can we still perceive heading direction?"
+      },
+      {
+        "type": "text",
+        "content": "Warren (1988)"
+      }
+    ],
+    "images": [
+      {
+        "path": "assets/slide11_img1.png",
+        "width": 4202648,
+        "height": 2924281
+      },
+      {
+        "path": "assets/slide11_img2.png",
+        "width": 4343400,
+        "height": 2971800
+      }
+    ],
+    "notes": "Brings up the issue of retinal and optical flow.\n\nWhat is the thinking about this? Now the debate slowed down. Easy to be confused by this. Again, for Gibson AOE is independent of the animal. Retinal flow assumes an animal present.\n\nDescribe differences between retinal and ambient optic flow.\n\n\nManipulation of retinal flow, if we can still tell the heading direction, then information for heading direction is not in the retinal flow. Need to be careful about the retinal and AOE flows.\n\nIt really is an empirical question worth studying."
+  },
+  {
+    "number": 12,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "Independent variable:"
+      },
+      {
+        "type": "text",
+        "content": "Eye movement fixed"
+      },
+      {
+        "type": "text",
+        "content": "Smooth pursuit eye movement"
+      },
+      {
+        "type": "text",
+        "content": "Dependent variable:"
+      },
+      {
+        "type": "text",
+        "content": "Chance level"
+      },
+      {
+        "type": "text",
+        "content": "\u201cAre you going to the left or right of the blue bar?\u201d"
+      },
+      {
+        "type": "text",
+        "content": "Result: Heading angle judgments were accurate in both conditions"
+      },
+      {
+        "type": "text",
+        "content": "Warren (1988)"
+      }
+    ],
+    "images": [
+      {
+        "path": "assets/slide12_img1.png",
+        "width": 3588749,
+        "height": 2455460
+      },
+      {
+        "path": "assets/slide12_img2.png",
+        "width": 3264092,
+        "height": 2271216
+      },
+      {
+        "path": "assets/slide12_img3.png",
+        "width": 4025900,
+        "height": 3124200
+      },
+      {
+        "path": "assets/slide12_img4.png",
+        "width": 3264092,
+        "height": 2271216
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "number": 13,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "Warren et al. (2001): Is locomotion controlled using FOE or using a simpler egocentric direction strategy?"
+      },
+      {
+        "type": "text",
+        "content": "Walk in the egocentric direction of the goal"
+      },
+      {
+        "type": "text",
+        "content": "Walk so as to keep the FOE on the goal"
+      },
+      {
+        "type": "text",
+        "content": "\u201cLocomotor axis\u201d"
+      }
+    ],
+    "images": [
+      {
+        "path": "assets/slide13_img1.png",
+        "width": 2514263,
+        "height": 3835071
+      },
+      {
+        "path": "assets/slide13_img2.png",
+        "width": 2779224,
+        "height": 3835071
+      }
+    ],
+    "notes": "Locomotor axis \u2013 walking observer\u2019s direction of travel specified proprioceptively (Telford, 1995)."
+  },
+  {
+    "number": 14,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "VenLab\ndirected by Bill Warren at Brown University"
+      },
+      {
+        "type": "text",
+        "content": "https://sites.brown.edu/venlab/"
+      }
+    ],
+    "images": [
+      {
+        "path": "assets/slide14_img1.png",
+        "width": 7315200,
+        "height": 6565900
+      },
+      {
+        "path": "assets/slide14_img2.png",
+        "width": 3815951,
+        "height": 2862226
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "number": 15,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "Virtual heading manipulation: Offset FOE from the direction of walking by \u03b4 = 10\u00b0\nTask: walk to the goal\nDependent measure: Path in the physical world\nAdditional independent variable: richness of the virtual world"
+      },
+      {
+        "type": "text",
+        "content": "Warren et al. (2001)"
+      }
+    ],
+    "images": [
+      {
+        "path": "assets/slide15_img1.png",
+        "width": 1653463,
+        "height": 6179034
+      },
+      {
+        "path": "assets/slide15_img2.png",
+        "width": 6578498,
+        "height": 4258281
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "number": 16,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "Predictions:"
+      },
+      {
+        "type": "text",
+        "content": "Optic flow strategy"
+      },
+      {
+        "type": "text",
+        "content": "Egocentric strategy"
+      },
+      {
+        "type": "text",
+        "content": "Optic flow strategy predicts linear trajectories in locomotion"
+      },
+      {
+        "type": "text",
+        "content": "Walk so that FOE and the target overlap"
+      },
+      {
+        "type": "text",
+        "content": "Egocentric strategy predicts curved trajectories"
+      },
+      {
+        "type": "text",
+        "content": "Walk toward the target and ignore FOE"
+      }
+    ],
+    "images": [
+      {
+        "path": "assets/slide16_img1.png",
+        "width": 3020814,
+        "height": 5493665
+      },
+      {
+        "path": "assets/slide16_img2.png",
+        "width": 2178050,
+        "height": 5508359
+      },
+      {
+        "path": "assets/slide16_img3.png",
+        "width": 2616200,
+        "height": 1409700
+      }
+    ],
+    "notes": "In the critical manipulation, the heading direction specified by optic flow was displaced by an angle of 10 deg from the actual direction of walking.\n\nIf subject walks in the egocentric direction, then the FOE would appear on the left from the target, yielding a virtual heading error of 10.\n\nIf the subject walked placing the FOE on the goal, the virtual heading error would be 0 and the path would be straight, but the subject would actually walk slightly to the left of the goal.\n\nIf the subject walked based on their locomotor axis, \n\n"
+  },
+  {
+    "number": 17,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "Results mostly favored the optic flow hypothesis but showed that egocentric direction also matters."
+      },
+      {
+        "type": "text",
+        "content": "Conclusion: locomotion was governed by a combination of the two variables. \nWhen no flow was available, behavior was consistent with the egocentric direction hypothesis, but as flow was added to the display, it increasingly dominated behavior, following the optic flow hypothesis more consistently."
+      }
+    ],
+    "images": [
+      {
+        "path": "assets/slide17_img1.png",
+        "width": 3847478,
+        "height": 3611500
+      },
+      {
+        "path": "assets/slide17_img2.png",
+        "width": 3966689,
+        "height": 3702243
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "number": 18,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "5) Approach without collision \u2013 keep the rate of object expansion steady."
+      }
+    ],
+    "images": [],
+    "notes": ""
+  },
+  {
+    "number": 19,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "Perceiving Collisions & Interceptions With Objects\nInformation about time-to-contact"
+      },
+      {
+        "type": "text",
+        "content": "Animals can control their approach to objects by using a particular kind of information in the optical array: so-called tau (\u03c4)"
+      }
+    ],
+    "images": [],
+    "notes": ""
+  },
+  {
+    "number": 20,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "A Computational Approach (Indirect Perception)\n\nSince it is true that\n\n     d = vt (distance = speed \uf0b4 time),\n\nand by algebra,\n\n     d/v = t\n\nan observer can compute time-to-contact by:\n\n\t(1) Judging the distance between the self and object\n\t(2) Judging speed\n\t(3) Dividing distance by speed"
+      },
+      {
+        "type": "text",
+        "content": "Problem: People are bad at judging absolute distance & speed (pretty much bad at any kind of absolute judgment of this kind)"
+      },
+      {
+        "type": "text",
+        "content": "If humans are horrible at these tasks, how do gannets compute time-to-contact in this way? The gannet somehow knows when to fold its wings back before hitting the water, but how?"
+      }
+    ],
+    "images": [],
+    "notes": ""
+  },
+  {
+    "number": 21,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "Direct Perception Approach\n\nDon\u2019t need to judge distance & time; there is information\navailable to the visual system that specifies time-to-contact\n\nHas to do with how image size changes with distance"
+      }
+    ],
+    "images": [
+      {
+        "path": "assets/slide21_img1.png",
+        "width": 1905000,
+        "height": 1358900
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "number": 22,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "\u2022 S = size of closed optical contour (size of image an object forms on the retina)\n\u2022 As an object gets closer to an observer, S increases"
+      },
+      {
+        "type": "text",
+        "content": "SD"
+      },
+      {
+        "type": "text",
+        "content": "SC > SD"
+      },
+      {
+        "type": "text",
+        "content": "SC"
+      },
+      {
+        "type": "text",
+        "content": "\u2022 R is the rate at which S changes; determined by approach speed\n\n\u2022 Time-to-contact is specified by t  (tau), which is inversely \nproportional to the rate of expansion of a closed optical contour: t ~ 1/R\n     - Slow object: R is low, therefore t is high\n\tMore time to duck, catch, etc.\n\n     - Fast object: R is high, therefore t is low\n\tLess time to duck, catch, etc."
+      },
+      {
+        "type": "text",
+        "content": "\u2022 Time-to-contact does not need to be computed, because an animal can perceive time-to-contact by detecting the optical variable tau\n\u2022 Tau is information"
+      }
+    ],
+    "images": [
+      {
+        "path": "assets/slide22_img1.png",
+        "width": 228600,
+        "height": 163513
+      },
+      {
+        "path": "assets/slide22_img2.png",
+        "width": 1905000,
+        "height": 1358900
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "number": 23,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "Approach a moving target (pursuit): How do people walk to a moving target, and what visual information do they use to do so?"
+      }
+    ],
+    "images": [],
+    "notes": ""
+  },
+  {
+    "number": 24,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "Results showed that people seem to use this strategy"
+      },
+      {
+        "type": "text",
+        "content": "\u03b2"
+      },
+      {
+        "type": "text",
+        "content": "\u03b2 \u2013 target-heading angle (bearing angle)"
+      },
+      {
+        "type": "text",
+        "content": "Illustration of the two strategies (pursuit and interception) and three sources of information (egocentric direction, global optic flow, and local optic flow) for walking to a moving target."
+      },
+      {
+        "type": "text",
+        "content": "Fajen & Warren (2004)"
+      }
+    ],
+    "images": [
+      {
+        "path": "assets/slide24_img1.png",
+        "width": 6753225,
+        "height": 5258459
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "number": 25,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "\u2022 Optic flow demonstrates importance of activity for perception\u2014not defined in  absence of observer motion, but  without optic flow the control of motion would be difficult"
+      }
+    ],
+    "images": [],
+    "notes": ""
+  },
+  {
+    "number": 26,
+    "title": "",
+    "content": [
+      {
+        "type": "text",
+        "content": "Overall, Gibson\u2019s 1978 book instigated much research.\nThere are some changes to thinking, but overall, it seems on a good track."
+      }
+    ],
+    "images": [],
+    "notes": ""
+  }
+]

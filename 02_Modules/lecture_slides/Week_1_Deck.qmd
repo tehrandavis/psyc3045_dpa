@@ -1,0 +1,185 @@
+---
+title: "The Computer vs. The Organism"
+subtitle: "Week 1: Dynamics of Perception & Action"
+author: "Tehran Davis"
+format:
+  revealjs:
+    theme: simple
+    transition: slide
+    slide-number: true
+    incremental: true   # Bullet points appear one by one
+    logo: assets/logo.png # Placeholder
+    footer: "Dynamics of Perception & Action | Spring 2026"
+    embed-resources: true
+    include-in-header:
+      - text: |
+          <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700&family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+          <style>
+            .reveal h1 { font-family: 'Open Sans', sans-serif; font-weight: 700; }
+            .reveal h2 { font-family: 'Open Sans', sans-serif; font-weight: 600; }
+            .reveal { font-family: 'Roboto', sans-serif; }
+          </style>
+---
+
+## The "Standard" Story {auto-animate=true}
+
+We all know how perception works, right?
+
+1.  **Input:** Light hits the eye (Camera).
+2.  **Transmission:** Signals travel to the brain (Cable).
+3.  **Processing:** The brain computes an image (Computer).
+4.  **Output:** We "see" the world (Screen).
+
+::: {.notes}
+Most of you have taken Intro Psych. This is the story you were told. It's the story of the "Cognitive Revolution." It treats the organism fundamentally as an information processing device.
+:::
+
+## The "5 Senses" Model
+
+In this view, the senses are **passive**.
+
+-   They are just measuring devices.
+-   They don't "know" anything.
+-   They just send raw data to the CPU.
+
+![](assets/eye_brain_computer.png){width=60%}
+
+::: {.notes}
+In the traditional view, the eye is just a camera. It doesn't interpret; it just captures light intensity. All the "intelligence" is in the brain.
+:::
+
+## The Problem: The "Bad Copy"
+
+Why do we need a brain to "process" vision?  
+Because the raw data is **terrible**.
+
+:::{.fragment}
+**Proximal Stimulus** (The Retina) vs. **Distal Stimulus** (The World)
+:::
+
+-   Inverted (Upside down)
+-   2D (Flat)
+-   Distorted (Curved)
+-   Full of holes (Blind spot)
+
+::: {.notes}
+If you looked directly at the image on your retina, it would be a mess. It's upside down, it's flat, and it's full of holes.
+:::
+
+## The "Poverty of the Stimulus"
+
+> "The stimulus is too poor to determine the perception."
+
+If the input is 2D, how do we see 3D?  
+If the input is inverted, how do we see upright?
+
+**Conclusion:** The senses *under-specify* the world.
+
+::: {.notes}
+This is the foundational argument of Cognitive Science. Because the input (sensation) is *poor*, the processing (perception) must be *rich*.
+:::
+
+## The Solution: Unconscious Inference
+
+**Hermann von Helmholtz (1821–1894)**
+
+If the data is bad, the brain must **guess**.
+
+:::{.callout-tip}
+## The Logic of Perception
+1.  **Rule:** Parallel lines converge at a distance.
+2.  **Cue:** These lines are converging.
+3.  **Inference:** That thing is far away.
+:::
+
+::: {.notes}
+Helmholtz realized that if the eye is a bad camera, the brain must be a brilliant logician. It uses "cues" from the environment and "rules" of geometry to infer what is out there.
+:::
+
+## Perception as Simulation
+
+In this view, you never see the world directly.  
+You see the **Brain's Best Guess**.
+
+-   **Illusion:** When the brain guesses wrong.
+-   **Reality:** When the brain guesses right.
+
+**Mechanistically, they are the same.**
+
+::: {.notes}
+This leads to a startling conclusion: You are never actually in contact with reality. You are living inside a simulation created by your brain.
+:::
+
+## The Critique: The Homunculus
+
+If "seeing" is just the brain creating an image...  
+**Who is looking at that image?**
+
+![](assets/homunculus.png){width=40%}
+
+**The Infinite Regress Problem.**
+
+::: {.notes}
+If the brain creates a "picture" for us to see... who is the "us"? Is there a little man (a Homunculus) inside your head watching the screen?
+:::
+
+## The Alternative: Ecological Psychology
+
+**James J. Gibson (1904–1979)**
+
+What if the "Poverty of the Stimulus" is a myth?
+
+-   What if the information isn't poor?
+-   What if it's just **different** than we thought?
+
+::: {.notes}
+This is the radical turn. Gibson asked: What if we stopped treating the eye like a camera? What if we treated it like a system for exploring the world?
+:::
+
+## The Computer vs. The Organism {auto-animate=true}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+### The Computer
+*(Cognitivism)*
+
+-   **Metaphor:** Hardware
+-   **Input:** Passive sensation
+-   **Data:** Poor & Ambiguous
+-   **Process:** Inference
+-   **Goal:** Internal Model
+:::
+
+::: {.column width="50%"}
+### The Organism
+*(Ecological)*
+
+-   **Metaphor:** Animal/Niche
+-   **Input:** Active exploration
+-   **Data:** Rich & Lawful
+-   **Process:** Resonance
+-   **Goal:** Control Action
+:::
+
+::::
+
+::: {.notes}
+This is the roadmap for our course. We are moving from the left column to the right. From "how does the brain process" to "what information is available?"
+:::
+
+## Next Class: Direct Perception
+
+**Reading:**  
+Lee, D.N. (1976). *A theory of visual control of braking...*
+
+**Topic:**  
+How do we see "Time to Contact" without calculating speed or distance?
+
+$$ \tau(t) = \frac{1}{\dot{\phi}(t)} $$
+
+**Enter: Tau ($\tau$).**
+
+::: {.notes}
+For next time, read the Lee paper. It shows mathematically how a bird can know exactly when to brake just by detecting the rate of expansion of an image.
+:::

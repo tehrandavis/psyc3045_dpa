@@ -1,0 +1,188 @@
+---
+title: "The Pivot: Starting Over"
+subtitle: "Dynamics of Perception & Action | Week 2"
+format:
+  revealjs:
+    theme: simple
+    slide-number: true
+    width: 1280
+    height: 720
+    transition: fade
+    css: assets/custom.css
+    embed-resources: true
+---
+
+## The Pivot
+
+We just discussed the limits of the **Computer** model in the real world.
+(Infinite Regress, Too Slow, Ambiguous).
+
+If we want to better explain how you *actually* survived your drive here...
+
+**We need a new Metaphor.**
+
+![](assets/ghost_with_files.png){fig-align="center"}
+
+
+---
+
+## Metaphor 1: The Computer
+
+*   **Input:** Poor (2D, Static, Ambiguous).
+*   **Mechanism:** **Computation** (Inference, Calculation).
+*   **Intelligence:** In the Head (The Software).
+*   **Relationship:** **Indirect** (Mediated by a copy).
+
+::: {layout-ncol=2}
+
+![](assets/2term_grandma.png){width="10%"}
+
+![](assets/3term_grandma.png){width="10%"}
+
+:::
+
+---
+
+## Metaphor 2: The Sunflower
+
+![](assets/coupled_sunflower.png){fig-align="center"}
+
+---
+
+## Metaphor 2: The Sunflower
+
+![](assets/coupled_sunflower.png){fig-align="center"}
+
+*   **Input:** Rich (The Sun).
+*   **Mechanism:** **Resonance** (Phototropism / Coupling).
+*   **Intelligence:** In the **System** (Plant + Light).
+*   **Relationship:** **Direct** (Mechanical linkage).
+
+---
+
+## Concept: The Animal-Environment System
+
+The biggest mistake of the Computer model was **Dualism**:
+Treating the *Animal* and the *Environment* as separate things.
+
+*   **Old View:** Animal $\leftarrow$ Gap $\rightarrow$ Environment
+*   **New View:** **Animal-Environment System**
+
+::: {.callout-note}
+"You cannot define an animal without its niche. You cannot define a niche without an animal." (Blau & Wagman, Ch 3)
+:::
+
+---
+
+## The Consequence: Changing the Question
+
+If the **System** is the unit, we stop asking about the brain processing inputs.
+We start asking about the relationship.
+
+**Bill Mace's Rule:**
+
+> "Ask not what's inside your head, but what your head is inside of."
+
+We are inside an **Ambient Optic Array**.
+*   We don't measure *Distance* (Physics).
+*   We measure *Relational Structure* (Ecology).
+
+---
+
+## 
+
+::: {.r-stack}
+![](assets/coupled_sunflower.png)
+
+![](assets/coupled_of.png){.fragment}
+:::
+
+---
+
+## Concept: Measuring Directly
+
+**The Polar Planimeter Metaphor:**
+A tool that measures Area directly without measuring Length or Width.
+
+::: {.columns}
+::: {.column width="50%"}
+**Smart vs. Dumb Instruments:**
+
+*   **Smart** about the goal (Area).
+*   **Dumb** about the components (Length).
+
+**Ecological Insight:**
+
+We are **Smart** about Catching (Tau) but **Dumb** about Distance.
+We perceive the *useful* variable directly.
+:::
+
+::: {.column width="50%"}
+![](assets/polar_planimeter.png){fig-align="center"}
+
+:::
+:::
+
+
+---
+
+## Concept: Self-Organization
+
+**The Orchestra Problem:**
+How do musicians play together?
+
+*   **Model A (Central Executive):** Dr. Pick conducts. Everyone watches him. (Top-Down).
+*   **Model B (Self-Organization):** Dr. Pick is sick. Everyone listens to their neighbor. (Bottom-Up).
+
+::: {layout-ncol=2}
+![](assets/orchestra.png)
+
+![](assets/jazz.png)
+:::
+
+
+---
+
+## The New Axioms (Starting Over)
+
+| The Standard Story | The Ecological Approach |
+| :--- | :--- |
+| **Poverty** of Stimulus | **Richness** of Stimulus |
+| **Ambiguous** Input | **Lawful** Information |
+| **Linear** Causality | **Circular/System** Causality |
+| **Computation** | **Detection / Resonance** |
+| **Indirect** Perception | **Direct** Perception |
+
+::: {.fragment}
+*Reference: Blau & Wagman Ch 3 (The Assumptions) & Ch 4 (Systems)*
+:::
+
+---
+
+## A Mystery for Thursday: The Two Visual Systems
+
+If the Ecological approach is right, **Perception is for Action**.
+
+*   **Standard View:** We see the world to build a picture (Perception). Then we act on that picture.
+*   **Ecological View:** We see the world to move.
+
+**The Test:** Can your hand be smarter than your eye?
+
+---
+
+## Haffenden et al (2001)
+
+![](assets/ebbing_illusion.png){fig-align="center"}
+
+*   **Perception:** "The middle circles look different sizes." (Illusion).
+*   **Action:** "When you pick them up, does your hand make the same mistake?"
+
+---
+
+**Thursday's Meeting:** We will test if **Action** breaks the Illusion.
+
+::: {.callout-important}
+### Assignments
+1.  **By Thursday Read:** Haffenden (2001) - *Intro & Figures only*.
+2.  **By next Tuesday Read:** Blau & Wagman Ch 3-4 (The New Assumptions).
+:::

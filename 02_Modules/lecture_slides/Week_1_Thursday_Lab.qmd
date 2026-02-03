@@ -1,0 +1,555 @@
+---
+title: "The Logic Trap"
+subtitle: "Why the Traditional Story Breaks Itself"
+author: "Tehran Davis"
+format:
+  revealjs:
+    theme: simple
+    transition: slide
+    slide-number: true
+    incremental: false
+    logo: assets/logo.png
+    footer: "Dynamics of Perception & Action | Spring 2026"
+    embed-resources: true
+    include-in-header:
+      - text: |
+          <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700&family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+          <style>
+            .reveal h1 { font-family: 'Open Sans', sans-serif; font-weight: 700; }
+            .reveal h2 { font-family: 'Open Sans', sans-serif; font-weight: 600; }
+            .reveal { font-family: 'Roboto', sans-serif; }
+            .intro-box { border: 2px solid #3498db; padding: 15px; border-radius: 8px; background-color: #ebf5fb; margin: 15px 0; }
+            .assumption-box { border: 2px solid #8e44ad; padding: 15px; border-radius: 8px; background-color: #f5eef8; margin: 15px 0; }
+            .trap-box { border: 2px solid #c0392b; padding: 15px; border-radius: 8px; background-color: #fdedec; margin: 15px 0; }
+            .activity-box { border: 2px solid #27ae60; padding: 15px; border-radius: 8px; background-color: #e8f8f5; margin: 15px 0; }
+          </style>
+---
+
+## Today's Goal
+
+Tuesday: We sketched the **Traditional Story** of perception.
+
+Today: We **stress-test** that story and provide context for your assigned readings
+
+---
+
+## The 8 Core Assumptions
+
+**The "Standard Story" rests on these pillars:**
+
+1.  **Realism:** The world actually exists.
+2.  **Empiricism:** We start with no knowledge (Blank Slate).
+3.  **Senses Inform:** Senses are our only bridge to the world.
+4.  **Local Causality:** To cause perception, something must *touch* the sensor.
+5.  **Mediated Contact:** We contact a *copy* (image), not the world.
+6.  **Poverty of Stimulus:** The copy is bad/ambiguous.
+7.  **Unconscious Inference:** The brain *fixes* the copy using rules.
+8.  **Representation:** We experience the *fix*, not the raw input.
+
+---
+
+# Part 1: Local Causality & The Outness Problem
+
+---
+
+## What You Learned in Intro S&P
+
+<div class="intro-box">
+**Transduction:** Light energy → Neural signals
+
+The process:
+
+1. Light reflects off object
+2. Light enters eye, hits photoreceptors
+3. Photoreceptors convert light to electrical signals
+4. Signals travel via optic nerve to brain
+</div>
+
+The critical point: stimulation happens **at the receptor**.
+
+The light *touches* your retina. The sound wave *touches* your cochlea.
+
+---
+
+## The Hidden Assumption
+
+<div class="assumption-box">
+**Local Causality:** For A to cause B, A must be in direct contact with B.
+</div>
+
+This seems obvious. Billiard balls work this way.
+
+![](assets/pool_break.png){fig-align="center" width="125%"}
+
+
+## The Hidden Assumption
+
+**But consider:** You're skiing downhill and a tree is 100 feet away. It never touches you. Yet it *causes* your behavior - you steer away from it. 
+
+{{< video https://www.youtube.com/watch?v=nV9k5b2sVtI start="0" end="30" width="100%" height="100%" >}}
+
+
+
+
+---
+
+## The Traditional Solution
+Q: How can a distant object cause your behavior if causality requires contact?
+
+A: We insert a **mediator**:
+
+  Tree --> Light
+  Light == "the 'touching'" ==> Retina
+  Retina --> Brain
+  Brain --> Behavior
+
+
+The tree doesn't touch you. But light does.
+
+Light carries a **copy** of the tree to your eye.
+
+Problem solved, right?
+
+---
+
+## The Outness Problem
+
+<div class="trap-box">
+**The Trap:** All stimulation is *local* - literally on your eyeball, in your ear, on your skin.
+
+But you don't experience light *on your retina*.
+
+You experience a tree *over there*.
+</div>
+
+The Central Executive only receives signals from receptors **inside the body**.
+
+It has never touched the tree. It has no direct access to "out there."
+
+**How does it know to project the experience outward?**
+
+---
+
+## The Outness Problem (cont.)
+
+Think about what the brain actually receives:
+
+- Photoreceptors firing (location: back of eyeball)
+- Frequency of firing
+- Which receptors fired
+
+That's it. Just neural signals from **in here**.
+
+Where in that data does it say "50 feet away"?
+
+What **rule** converts "signal from inside my head" to "experience out in the world"?
+
+---
+
+## Activity: The Cane Demo
+
+
+::: {.fragment}
+You feel the object **at the tip of the cane**.
+
+You feel the **distance** of the object.
+
+But your nerves are **in your hand**.
+
+The stimulation is local (pressure on palm). The experience is distal (at the object).
+
+How did your brain "project" the feeling to the end of the cane?
+:::
+
+
+# Part 2: The Poverty of the Stimulus
+
+---
+
+## What You Learned in Intro S&P
+
+:::: {.columns}
+
+::: {.column width="60%"}
+<div class="intro-box">
+**Depth Cues** - You probably memorized a list:
+
+- Binocular disparity
+- Convergence
+- Texture gradient
+- Linear perspective
+- Relative size
+- Motion parallax
+- ...and more
+</div>
+
+:::
+
+::: {.column width="40%"}
+![](assets/linear_perspective.jpg)
+:::
+**Question:** Why do we need so many cues for depth?
+
+
+::::
+
+---
+
+## The Hidden Assumption
+
+<div class="assumption-box">
+**The Poverty of the Stimulus:** The retinal image is fundamentally inadequate.
+
+- 3D world → 2D image (depth lost)
+- Upright world → Inverted image
+- Stable world → Constantly shifting image
+</div>
+
+We need 15 depth cues because the input **doesn't contain depth**.
+
+The information is "impoverished" - too poor to specify the world.
+
+The brain must **add back** what the image lacks.
+
+---
+
+## The Geometry of Ambiguity
+
+![](assets/Inverse_Optics_Problem.png){width=70%}
+
+An infinite number of objects at different sizes and distances produce the **same** retinal image.
+
+The image is geometrically **ambiguous**.
+
+---
+
+## The Classic Problem: The Walking "Professor"
+
+<div class="activity-box">
+Watch me walk away from you.
+
+When I am 10 feet away, I cast a large image on your retina.
+
+When I am 20 feet away, that image is **cut in half**.
+
+Did I shrink? No.
+</div>
+
+::: {.fragment}
+
+So what **rule** tells your brain "ignore the shrinking image, the professor is constant"?
+
+**Size Constancy:** The brain "corrects" for distance. *But* how does it know distance in order to correct for it?
+:::
+
+---
+
+## The Beuchet Chair Illusion
+
+![](assets/Beuchet_Chair_Illusion.jpg){width=180%}
+
+Two people appear drastically different in size.
+
+All your depth cues are working "correctly."
+
+They just happen to be **wrong**.
+
+One step to the side and the illusion collapses. What does that tell you?
+
+---
+
+# Part 3: Unconscious Inference
+## The Logical Necessity
+
+<div class="intro-box">
+**Why *must* the brain infer?**
+
+Because of our first two assumptions:
+
+1. **Poverty of Stimulus:** The sensory data is ambiguous/bad.
+2. **Indirect contact:** You have no direct access to the world.
+</div>
+
+If the data is broken and you have no direct access to the world...
+**You have to guess.** You have to use rules to "fix" the input.
+
+The logic is sound. **IF** the data is impoverished, then inference is necessary.
+
+**But here is a question we rarely ask:**
+
+How do we *know* the data is impoverished?
+
+---
+
+## What You Learned in Intro / S&P
+
+<div class="assumption-box">
+**Unconscious Inference (Helmholtz):**
+
+The brain uses **cues** + **rules** + **prior experience** to compute what's probably out there given its understanding of the world.
+
+
+Cue + Rule + Likelihood → Perception
+
+
+Example: "Lines converging + rule about perspective + most things aren't shrinking = that object is receding"
+</div>
+
+This happens unconsciously, automatically, effortlessly.
+
+---
+
+## The Trap: Where Do Rules Come From?
+
+<div class="trap-box">
+**The Loan of Intelligence Problem:**
+
+To interpret the first image, you need rules.
+
+To learn rules, you need interpreted images.
+
+Where does the first rule come from?
+</div>
+
+The Central Executive starts with the **tabula rasa** (blank slate).
+
+Yet it needs prior knowledge to interpret *any* input.
+
+This is a logical impossibility.
+
+---
+
+
+## The Riddle of Abduction
+
+**Abduction** = "Inference to the **Best** Explanation."
+
+Your brain receives ambiguous input and must guess the single *best* cause.
+
+**The Dilemma:**
+1. There are infinite possible causes (hypotheses).
+
+2. To be **sure** you picked the *best* one, you'd need to check them all against everything you know (Holism).
+
+3. But you have to perceive in **milliseconds** (Encapsulation).
+
+**The Trap:**
+If you check everything, you'll never decide in time.
+If you use shortcuts (rules), how do you know you didn't miss the right answer?
+
+---
+
+## The Literal Rule Problem
+
+Every rule requires a rule to apply it.
+
+Every interpretation requires an interpretation.
+
+The Instructions Need to be Exact 
+
+{{< video https://www.youtube.com/watch?v=n4rh2jD8OkY width="100%" height="500" >}}
+
+**The Point:** Literal rules fail because the world is messy. You need context. But you need a rule to interpret the context...
+
+
+# Part 4: The Processing Time Problem
+
+---
+
+## Rationality is Computational
+
+If perception is **Unconscious Inference**, then it is a **computational process**.
+
+You are taking data, applying rules, and calculating the "best guess".
+
+**Calculation takes time.**
+
+Therefore, if perception is rational, **it cannot be instantaneous.**
+
+---
+
+## What You Learned in Intro / S&P
+
+
+
+<div class="intro-box">
+**Reaction Time:**
+
+- Simple RT: ~150-200ms
+- Choice RT: ~250-350ms
+
+**Neural Conduction:**
+
+- Signals travel at ~100 m/s (not instant)
+- Processing adds delay at every synapse
+</div>
+
+The nervous system is **not instantaneous**.
+
+---
+
+## The Hidden Assumption
+
+<div class="assumption-box">
+If perception requires **processing** (inference, computation, construction)...
+
+Then perception takes **time**.
+
+You are always perceiving the **past**.
+</div>
+
+By the time signals reach your brain, get processed, and generate a response...
+
+The world has already moved on.
+
+---
+
+## The Math Problem
+
+:::: {.columns}
+
+::: {.column width="75%"}
+<div class="trap-box">
+**A fastball:**
+
+- Speed: ~90 mph
+- Distance: 60 feet
+- Travel time: ~400ms
+
+**Your visual processing:**
+
+- Retina to cortex: ~50ms
+- "Interpretation": ~50-100ms
+- Motor planning: ~50ms
+- Motor execution: ~100ms
+
+**Total:** 250-300ms just to *start* swinging
+</div>
+:::
+
+::: {.column width="25%"}
+{{< video https://www.youtube.com/shorts/NA0MeU5EkEA?feature=share width="100%" height="500" >}}
+:::
+
+::::
+
+The ball is 2/3 of the way there before you begin to move.
+
+
+
+## The Mars Rover Problem
+
+You're controlling your body like NASA controls a Mars rover:
+
+- See ball → Process → Decide → Swing
+- Each step takes time
+- You're always **behind**
+
+::: {.fragment}
+Yet somehow, batters hit 90mph fastballs.
+
+Outfielders catch fly balls.
+
+You catch your keys when someone tosses them.
+
+**How?**
+:::
+
+---
+
+## Activity: The Ball Toss
+
+<div class="activity-box">
+I'm going to toss this [crumpled paper ball] to one of you.
+
+Catch it.
+</div>
+
+::: {.fragment}
+Congratulations. You just did something **impossible** according to the traditional model.
+
+If you had to:
+
+1. See the ball
+2. Compute its trajectory
+3. Predict where it will be
+4. Plan your arm movement
+5. Execute the catch
+
+...you'd be too late. Always.
+
+Yet you caught it. How?
+:::
+
+---
+
+# The Summary
+
+---
+
+## The Chain of Assumptions
+
+1. Local Causality (must touch to cause)
+2. Need a mediator (the copy/retinal image)
+3. Copy is bad (poverty of stimulus)
+4. Must fix the copy (unconscious inference)
+
+---
+
+## The Traps We Found
+
+| Problem | What Breaks |
+|---------|-------------|
+| Outness Problem | How does "in here" become "out there"? |
+| Poverty of Stimulus | Infinite objects → same image |
+| Infinite Regress | Rules need rules need rules... |
+| Processing Time | Always behind, can't catch a ball |
+
+**All trace back to the assumption that perception is indirect.**
+
+---
+
+## The Escape Hatch
+
+What if we **reject** local causality?
+
+- What if the tree *can* affect Fred without a mediator?
+- What if there is no "copy"?
+- What if the input **isn't** bad?
+- What if perception **doesn't** require inference?
+
+::: {.fragment}
+This is exactly what **James Gibson** proposed.
+
+This is exactly what you'll read this weekend.
+:::
+
+---
+
+## Your Reading
+
+**Blau & Wagman, Chapters 1-2**
+
+*Introduction to Ecological Psychology: A Lawful Approach to Perceiving, Acting, and Cognizing*
+
+As you read, look for:
+
+1. How do they trace all these problems to their **root cause**?
+2. What **alternative** do they propose?
+3. Does it actually solve the traps we found today?
+
+---
+
+## For Tuesday
+
+**1. Come with Questions**
+From the reading or today's lecture.
+
+<div class="activity-box">
+**2. The "Real World" Challenge**
+
+Find one example of a daily task (walking, driving, catching) where the "Traditional Story" (Local Causality, Processing Time, etc.) seems to fail.
+
+*Be ready to share how the "Standard Story" can't explain what we actually do.*
+
+</div>
