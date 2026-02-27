@@ -257,6 +257,12 @@
           <span class="slider-value" id="ba-value">1.00</span>
         </div>
         <button id="clear-btn">Clear all balls</button>
+        <div class="control-row">
+          <button id="btn-add" class="primary-btn">Add Random Ball (Click or Space)</button>
+          <button id="btn-reset" class="secondary-btn"
+            style="border-color: #cbd5e0; color: #718096; padding: 4px 12px; height: 32px; font-size: 0.85rem;">Reset
+            Demo</button>
+        </div>
       </div>
     </div>
 
@@ -802,6 +808,53 @@
       document.getElementById('score-in').textContent = '0';
       document.getElementById('score-anti').textContent = '0';
     });
+
+    // Add Random Ball
+    const btnAdd = document.getElementById('btn-add');
+    if (btnAdd) {
+      btnAdd.addEventListener('click', () => {
+        const randomPhi = (Math.random() - 0.5) * 2 * Math.PI;
+        spawnBall(randomPhi);
+      });
+    }
+
+    // Reset Demo
+    const btnReset = document.getElementById('btn-reset');
+    if (btnReset) {
+      btnReset.addEventListener('click', () => {
+        // Clear balls
+        balls.forEach(b => removeBallDOM(b));
+        balls = [];
+
+        // Reset scores
+        scoreIn = 0;
+        scoreAnti = 0;
+        document.getElementById('score-in').textContent = '0';
+        document.getElementById('score-anti').textContent = '0';
+
+        // Reset parameters
+        a = 1.0;
+        b = 1.0;
+
+        // Update UI
+        const slider = document.getElementById('ba-slider');
+        slider.value = 1.0;
+        document.getElementById('ba-value').textContent = '1.00';
+
+        // Refresh landscape
+        landscapeData = buildLandscapeData();
+        fixedPoints = findFixedPoints();
+        const vVals = landscapeData.map(d => d.v);
+        const vMin = d3.min(vVals);
+        const vMax = d3.max(vVals);
+        const pad = (vMax - vMin) * 0.18;
+        yScale.domain([vMin - pad, vMax + pad]);
+
+        drawAll();
+        attachClick();
+        document.getElementById('bifurcation-note').style.display = 'none';
+      });
+    }
 
     // ─────────────────────────────────────────────────────────────────────────────
     // b/a SLIDER

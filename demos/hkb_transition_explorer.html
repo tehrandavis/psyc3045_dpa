@@ -340,7 +340,8 @@
             </div>
           </div>
           <p id="avatar-mode-label" style="font-size:0.76rem; color:#4a5568; margin-bottom:10px; line-height:1.4;">
-            Homologous muscles co-activate &#8212; in-phase looks like mirror movement, fingers move toward and away together (&#8592;&#8594;).
+            Homologous muscles co-activate &#8212; in-phase looks like mirror movement, fingers move toward and away
+            together (&#8592;&#8594;).
           </p>
           <div
             style="display: flex; justify-content: space-around; align-items: flex-end; height: 160px; padding-bottom: 10px;">
@@ -469,23 +470,29 @@
           </div>
 
           <!-- Transition event badge — hidden until transition occurs -->
-          <div id="transition-badge" style="display:none; margin-bottom:8px; padding:8px 10px; border-radius:8px; background:#fffaf0; border:1px solid #fbd38d; font-size:0.78rem;">
+          <div id="transition-badge"
+            style="display:none; margin-bottom:8px; padding:8px 10px; border-radius:8px; background:#fffaf0; border:1px solid #fbd38d; font-size:0.78rem;">
             <div style="font-weight:700; color:#c05621;">&#9889; Phase Transition Detected</div>
             <div id="transition-omega-label" style="color:#744210; margin-top:2px;"></div>
-            <div id="hysteresis-note" style="display:none; margin-top:4px; font-style:italic; color:#553c9a; font-size:0.74rem;"></div>
+            <div id="hysteresis-note"
+              style="display:none; margin-top:4px; font-style:italic; color:#553c9a; font-size:0.74rem;"></div>
           </div>
 
           <div class="section-divider"></div>
 
           <!-- Pause / Resume -->
-          <button class="pause-btn" id="pause-btn">⏸ Pause</button>
+          <button class="pause-btn" id="pause-btn" style="margin-bottom: 8px;">⏸ Pause</button>
+          <!-- Reset button -->
+          <button class="pause-btn" id="reset-btn"
+            style="background: #ffffff; border-color: #cbd5e0; color: #718096;">Reset Demo</button>
         </div>
 
         <!-- Callout box -->
         <div class="callout">
           <div class="callout-title">What to Notice</div>
           <ul>
-            <li id="callout-avatar-bullet"><strong>The b/a Ratio</strong> governs the strength of the coordination attractors. At 1.0, Anti-phase
+            <li id="callout-avatar-bullet"><strong>The b/a Ratio</strong> governs the strength of the coordination
+              attractors. At 1.0, Anti-phase
               is strongly stable.</li>
             <li><strong>Speeding up</strong> past 1.3× preferred frequency forces b/a below 0.25 (the bifurcation
               point).</li>
@@ -1047,7 +1054,7 @@
 
       const absDisplay = phiDeg > 180 ? 360 - phiDeg : phiDeg;
       const isAntiPhase = absDisplay >= 140;
-      const isInPhase   = absDisplay <= 40;
+      const isInPhase = absDisplay <= 40;
 
       if (isAntiPhase) transitionTracker.wasAntiPhase = true;
 
@@ -1088,12 +1095,12 @@
       const isFingers = mode === "fingers";
       const fBtn = document.getElementById("btn-fingers");
       const mBtn = document.getElementById("btn-metronomes");
-      fBtn.style.background   = isFingers ? "#2b6cb0" : "";
-      fBtn.style.color        = isFingers ? "#fff"    : "";
-      fBtn.style.borderColor  = isFingers ? "#2b6cb0" : "";
-      mBtn.style.background   = isFingers ? ""        : "#2b6cb0";
-      mBtn.style.color        = isFingers ? ""        : "#fff";
-      mBtn.style.borderColor  = isFingers ? ""        : "#2b6cb0";
+      fBtn.style.background = isFingers ? "#2b6cb0" : "";
+      fBtn.style.color = isFingers ? "#fff" : "";
+      fBtn.style.borderColor = isFingers ? "#2b6cb0" : "";
+      mBtn.style.background = isFingers ? "" : "#2b6cb0";
+      mBtn.style.color = isFingers ? "" : "#fff";
+      mBtn.style.borderColor = isFingers ? "" : "#2b6cb0";
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
@@ -1337,14 +1344,53 @@
     });
 
     // Pause / Resume
-    document.getElementById("pause-btn").addEventListener("click", function () {
+    const pauseBtn = document.getElementById("pause-btn");
+    pauseBtn.addEventListener("click", () => {
       state.paused = !state.paused;
-      if (state.paused) {
-        this.textContent = "▶ Resume";
-        this.classList.add("paused");
-      } else {
-        this.textContent = "⏸ Pause";
-        this.classList.remove("paused");
+      pauseBtn.textContent = state.paused ? "▶ Resume" : "⏸ Pause";
+      pauseBtn.classList.toggle("paused", state.paused);
+      if (!state.paused) {
+        requestAnimationFrame(tick);
+      }
+    });
+
+    // Reset Demo
+    document.getElementById("reset-btn").addEventListener("click", () => {
+      // Reset state
+      state.omega0 = 1.0;
+      state.omega = 1.0;
+      state.noiseLevel = 0.05; // Corrected from noiseMag to noiseLevel
+      state.theta1 = 0;
+      state.theta2 = Math.PI;
+      state.t = 0;
+      state.paused = false;
+      state.lastTimestamp = null;
+      tsBuffer.length = 0;
+
+      // Update UI
+      document.getElementById("omega0-slider").value = 1.0;
+      document.getElementById("omega-slider").value = 1.0;
+      document.getElementById("noise-slider").value = 0.05;
+      document.getElementById("omega0-val").textContent = "1.00 Hz";
+      document.getElementById("omega-val").textContent = "1.00 Hz";
+      document.getElementById("noise-val").textContent = "0.05";
+
+      pauseBtn.textContent = "⏸ Pause";
+      pauseBtn.classList.remove("paused");
+
+      // Reset charts
+      initTimeSeries();
+      initOscTimeSeries();
+      // Re-initialize the state of the phase tracker
+      transitionTracker.occurred = false;
+      transitionTracker.wasAntiPhase = false;
+      transitionTracker.consecutiveInPhaseFrames = 0;
+      transitionTracker.transitionOmega = null;
+      document.getElementById("transition-badge").style.display = "none";
+      document.getElementById("hysteresis-note").style.display = "none";
+
+      if (!state.paused) {
+        requestAnimationFrame(tick);
       }
     });
 

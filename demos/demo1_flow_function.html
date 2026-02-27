@@ -183,6 +183,7 @@
     <div class="toggle-row">
       <button class="toggle-btn active-attractor" id="btn-attractor">Attractor: f(x) = &#x2212;kx</button>
       <button class="toggle-btn" id="btn-repeller">Repeller: f(x) = +kx</button>
+      <button class="toggle-btn" id="btn-reset" style="margin-left: auto; border-color: #cbd5e0; color: #718096;">Reset Demo</button>
     </div>
 
     <div id="chart-container">
@@ -570,6 +571,22 @@
     btnRepeller.className  = "toggle-btn active-repeller";
     btnAttractor.className = "toggle-btn";
     particleX = 0.4;
+    lastTime = null;
+    updateChart(true);
+  });
+
+  /* ── Reset button ── */
+  document.getElementById("btn-reset").addEventListener("click", () => {
+    mode = "attractor";
+    k = 1.0;
+    particleX = 2.0;
+    
+    // Update UI elements
+    btnAttractor.className = "toggle-btn active-attractor";
+    btnRepeller.className  = "toggle-btn";
+    kSlider.value = 1.0;
+    kDisplay.textContent = "1.0";
+    
     lastTime = null;
     updateChart(true);
   });

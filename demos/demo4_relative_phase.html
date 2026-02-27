@@ -460,7 +460,10 @@
           <div class="section-divider"></div>
 
           <!-- Pause / Resume -->
-          <button class="pause-btn" id="pause-btn">⏸ Pause</button>
+          <button class="pause-btn" id="pause-btn" style="margin-bottom: 8px;">⏸ Pause</button>
+          <!-- Reset button -->
+          <button class="pause-btn" id="reset-btn"
+            style="background: #ffffff; border-color: #cbd5e0; color: #718096;">Reset Demo</button>
         </div>
 
         <!-- Callout box -->
@@ -716,7 +719,7 @@
     const avSvg1 = setupAvatar("avatar1-svg", "#2b6cb0");
     const avSvg2 = setupAvatar("avatar2-svg", "#c05621");
 
-    function updateAvatar(svg, thetaRad, sign=1) {
+    function updateAvatar(svg, thetaRad, sign = 1) {
       const maxSwing = Math.PI / 4.5; // ~40 deg max swing
       // Use cos to match phase circle x-position (0 phase = rightmost)
       const angle = sign * Math.cos(thetaRad) * maxSwing;
@@ -1206,6 +1209,42 @@
         this.textContent = "⏸ Pause";
         this.classList.remove("paused");
       }
+    });
+
+    // Reset
+    document.getElementById("reset-btn").addEventListener("click", function () {
+      // Reset state
+      state.omega1 = 1.0;
+      state.omega2 = 1.0;
+      state.theta0_1 = 0;
+      state.theta0_2 = 0;
+      state.theta1 = 0;
+      state.theta2 = 0;
+      state.noiseLevel = 0.0;
+      state.t = 0.0;
+      state.paused = false;
+      state.lastTimestamp = null;
+      tsBuffer.length = 0;
+
+      // Update UI sliders
+      document.getElementById("omega1-slider").value = 1.0;
+      document.getElementById("omega2-slider").value = 1.0;
+      document.getElementById("offset-slider").value = 0;
+      document.getElementById("noise-slider").value = 0;
+
+      // Update UI labels
+      document.getElementById("omega1-val").textContent = "1.00 Hz";
+      document.getElementById("omega2-val").textContent = "1.00 Hz";
+      document.getElementById("offset-val").textContent = "0°";
+      document.getElementById("noise-val").textContent = "0.00";
+
+      const pBtn = document.getElementById("pause-btn");
+      pBtn.textContent = "⏸ Pause";
+      pBtn.classList.remove("paused");
+
+      // Clear time series
+      initTimeSeries();
+      initOscTimeSeries();
     });
 
     // ─────────────────────────────────────────────────────────────────────────────
