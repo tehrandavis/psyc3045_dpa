@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase Portrait Animator — HKB Landscape</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #2d3748;
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 6px;
+    }
+
+    header .course-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: #718096;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      color: #1a365d;
+      line-height: 1.3;
+    }
+
+    .instruction {
+      font-size: 14px;
+      color: #718096;
+      margin: 8px 0 14px;
+    }
+
+    .instruction strong {
+      color: #2d3748;
+    }
+
+    /* Main chart panel */
+    .chart-panel {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      cursor: crosshair;
+      position: relative;
+    }
+
+    #landscape-svg {
+      display: block;
+      width: 100%;
+    }
+
+    /* Score + controls row */
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .score-display {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 10px 18px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #2d3748;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .score-inphase {
+      color: #2b6cb0;
+    }
+
+    .score-antiphase {
+      color: #c05621;
+    }
+
+    .right-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .slider-group {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #2d3748;
+    }
+
+    .slider-group label {
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .slider-group input[type=range] {
+      width: 110px;
+      accent-color: #d69e2e;
+      cursor: pointer;
+    }
+
+    .slider-value {
+      font-weight: 600;
+      color: #d69e2e;
+      min-width: 28px;
+      text-align: right;
+    }
+
+    button#clear-btn {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 9px 18px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: #2d3748;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+
+    button#clear-btn:hover {
+      background: #f7fafc;
+      border-color: #cbd5e0;
+    }
+
+    /* What to notice callout */
+    .callout {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 16px 20px;
+      margin-top: 16px;
+    }
+
+    .callout-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a365d;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .callout ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .callout li {
+      font-size: 13px;
+      color: #2d3748;
+      line-height: 1.55;
+      padding-left: 18px;
+      position: relative;
+    }
+
+    .callout li::before {
+      content: "›";
+      position: absolute;
+      left: 0;
+      color: #d69e2e;
+      font-weight: 700;
+    }
+
+    .callout li strong {
+      color: #c53030;
+    }
+
+    /* Bifurcation note */
+    #bifurcation-note {
+      font-size: 12px;
+      color: #c53030;
+      font-weight: 600;
+      margin-top: 4px;
+      min-height: 16px;
+      text-align: center;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <header>
+      <div class="course-label">Dynamics of Perception &amp; Action</div>
+      <h1>Phase Portrait Animator</h1>
+    </header>
+
+    <p class="instruction">
+      <strong>Click anywhere on the landscape</strong> to drop a ball and watch where it rolls.
+      Balls near the red peaks (the <strong>separatrix</strong>) can land in opposite valleys — tiny differences,
+      dramatic consequences.
+    </p>
+
+    <div class="chart-panel">
+      <svg id="landscape-svg"></svg>
+    </div>
+
+    <div id="bifurcation-note"></div>
+
+    <div class="controls-row">
+      <div class="score-display">
+        <span>Score:</span>
+        <span class="score-inphase">In-phase: <span id="score-in">0</span></span>
+        <span class="score-antiphase">Anti-phase: <span id="score-anti">0</span></span>
+      </div>
+      <div class="right-controls">
+        <div class="slider-group">
+          <label for="ba-slider">b/a ratio:</label>
+          <input type="range" id="ba-slider" min="0.25" max="2.0" step="0.05" value="1.0">
+          <span class="slider-value" id="ba-value">1.00</span>
+        </div>
+        <button id="clear-btn">Clear all balls</button>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">What to notice</div>
+      <ul>
+        <li>Balls starting on the <em>left</em> side of a red peak roll to <strong
+            style="color:#2b6cb0">in-phase</strong>; the <em>right</em> side rolls to <strong
+            style="color:#c05621">anti-phase</strong>.</li>
+        <li>The red peaks are the <strong>SEPARATRIX</strong> — the invisible boundary between the two coordination
+          patterns.</li>
+        <li>Try dropping two balls very close together on either side of a red peak and watch them diverge.</li>
+        <li>When <strong>b/a &lt; 0.5</strong>, the anti-phase attractor disappears — all balls roll to in-phase. This
+          explains why coordination snaps to in-phase at high movement frequency.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <script>
+    // ─────────────────────────────────────────────────────────────────────────────
+    // CONSTANTS & STATE
+    // ─────────────────────────────────────────────────────────────────────────────
+    const PHI_DOMAIN = [-Math.PI, Math.PI]; // x axis
+    const MAX_BALLS = 10;
+    const DT = 0.02;               // Euler step
+    const TRAIL_LEN = 30;
+    const SETTLE_VEL = 0.01;
+    const SETTLE_FRAMES = 10;
+    const ANIM_FPS = 60;
+
+    let a = 1, b = 1;                      // HKB parameters
+    let balls = [];                        // active ball objects
+    let scoreIn = 0, scoreAnti = 0;
+    let animHandle = null;
+    let lastTimestamp = null;
+    let accumTime = 0;
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // HKB MATH
+    // ─────────────────────────────────────────────────────────────────────────────
+    function V(phi) { return -a * Math.cos(phi) - b * Math.cos(2 * phi); }
+    function dV(phi) { return a * Math.sin(phi) + 2 * b * Math.sin(2 * phi); }
+    // dφ/dt = -dV/dφ  with light damping already implicit in the potential gradient
+    // We add a viscous damping term: velocity is approximate via gradient
+    // For visual rolling we integrate: φ_new = φ + (-dV/dφ)*dt
+    // (this gives good-looking trajectories; no separate velocity variable needed
+    //  because overdamped dynamics: inertia-free gradient descent)
+
+    function phiStep(phi) {
+      // overdamped: dφ/dt = -dV/dφ
+      return phi + (-dV(phi)) * DT;
+    }
+
+    // Find stable fixed points numerically
+    function findFixedPoints() {
+      const pts = [];
+      const step = 0.01;
+      // Use a small epsilon on the upper bound to ensure we reach PI
+      for (let phi = PHI_DOMAIN[0] + step; phi <= PHI_DOMAIN[1] + 1e-5; phi += step) {
+        const v0 = dV(phi - step);
+        const v1 = dV(phi);
+        if (v0 * v1 <= 0 && Math.abs(v0 - v1) > 1e-9) {
+          // Newton refine
+          let x = phi - step / 2;
+          for (let iter = 0; iter < 20; iter++) {
+            const fx = dV(x);
+            const dfx = a * Math.cos(x) + 4 * b * Math.cos(2 * x);
+            if (Math.abs(dfx) < 1e-12) break;
+            const dx = -fx / dfx;
+            x += dx;
+            if (Math.abs(dx) < 1e-9) break;
+          }
+          // Classify: d²V/dφ² > 0 → stable (local min)
+          const d2 = a * Math.cos(x) + 4 * b * Math.cos(2 * x);
+          const isStable = d2 > 0;
+          // Avoid duplicates
+          const dup = pts.some(p => Math.abs(p.phi - x) < 0.05);
+          if (!dup) {
+            pts.push({ phi: x, stable: isStable });
+          }
+        }
+      }
+      return pts;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // SVG SETUP
+    // ─────────────────────────────────────────────────────────────────────────────
+    const svgEl = document.getElementById('landscape-svg');
+
+    // We'll size SVG based on container width; height is fixed 500px
+    const CHART_H = 500;
+    const MARGIN = { top: 30, right: 30, bottom: 50, left: 52 };
+
+    let svgW, svgH, innerW, innerH;
+    let xScale, yScale;
+    let svg, g;
+    let landscapeData = [];
+    let fixedPoints = [];
+
+    function initSVG() {
+      svgW = svgEl.parentElement.clientWidth || 860;
+      svgH = CHART_H;
+      innerW = svgW - MARGIN.left - MARGIN.right;
+      innerH = svgH - MARGIN.top - MARGIN.bottom;
+
+      d3.select(svgEl).selectAll('*').remove();
+      d3.select(svgEl)
+        .attr('viewBox', `0 0 ${svgW} ${svgH}`)
+        .attr('preserveAspectRatio', 'xMidYMid meet');
+
+      svg = d3.select(svgEl);
+      g = svg.append('g').attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
+
+      // Scales
+      xScale = d3.scaleLinear().domain(PHI_DOMAIN).range([0, innerW]);
+
+      // Build landscape data
+      landscapeData = buildLandscapeData();
+      fixedPoints = findFixedPoints();
+
+      // y range: cover full V range with some padding
+      const vVals = landscapeData.map(d => d.v);
+      const vMin = d3.min(vVals);
+      const vMax = d3.max(vVals);
+      const pad = (vMax - vMin) * 0.18;
+      yScale = d3.scaleLinear().domain([vMin - pad, vMax + pad]).range([innerH, 0]);
+
+      drawAll();
+      attachClick();
+    }
+
+    function buildLandscapeData() {
+      const N = 600;
+      const data = [];
+      for (let i = 0; i <= N; i++) {
+        const phi = PHI_DOMAIN[0] + (PHI_DOMAIN[1] - PHI_DOMAIN[0]) * i / N;
+        data.push({ phi, v: V(phi) });
+      }
+      return data;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // DRAW
+    // ─────────────────────────────────────────────────────────────────────────────
+    function drawAll() {
+      g.selectAll('*').remove();
+
+      // ── defs: clip path ──────────────────────────────────────────────────────
+      const defs = svg.append('defs');
+      defs.append('clipPath').attr('id', 'chart-clip')
+        .append('rect').attr('width', innerW).attr('height', innerH);
+
+      // ── Background grid ──────────────────────────────────────────────────────
+      const gridG = g.append('g').attr('class', 'grid').attr('opacity', 0.35);
+      const xTicks = xScale.ticks(7);
+      xTicks.forEach(t => {
+        gridG.append('line')
+          .attr('x1', xScale(t)).attr('x2', xScale(t))
+          .attr('y1', 0).attr('y2', innerH)
+          .attr('stroke', '#e2e8f0').attr('stroke-width', 1);
+      });
+      const yTicks = yScale.ticks(6);
+      yTicks.forEach(t => {
+        gridG.append('line')
+          .attr('x1', 0).attr('x2', innerW)
+          .attr('y1', yScale(t)).attr('y2', yScale(t))
+          .attr('stroke', '#e2e8f0').attr('stroke-width', 1);
+      });
+
+      // ── Basin shading ─────────────────────────────────────────────────────────
+      // Separate stable from unstable FPs
+      const stableFPs = fixedPoints.filter(fp => fp.stable);
+      const unstableFPs = fixedPoints.filter(fp => !fp.stable).map(fp => fp.phi).sort((a, b) => a - b);
+
+      // We'll shade basins using the separatrices as boundaries
+      // In-phase basin: between separatrices closest to 0 (i.e. [-sep1, sep1])
+      // Anti-phase basins: [−π, −sep1] and [sep1, π]
+      const vBottom = yScale.domain()[0]; // very low value → bottom of chart
+
+      // Build basin regions depending on whether anti-phase exists
+      const hasAntiPhase = stableFPs.some(fp => Math.abs(Math.abs(fp.phi) - Math.PI) < 0.5);
+
+      if (unstableFPs.length >= 2 && hasAntiPhase) {
+        // Two separatrices, two basins
+        const sep1 = unstableFPs.find(s => s > 0);  // positive separatrix
+        const sep2 = unstableFPs.find(s => s < 0);  // negative separatrix
+
+        // In-phase basin (green): sep2 → sep1
+        drawBasin(g, sep2 ?? PHI_DOMAIN[0], sep1 ?? PHI_DOMAIN[1], 'rgba(240,255,244,0.5)', vBottom);
+
+        // Anti-phase basins (orange): [−π, sep2] and [sep1, π]
+        if (sep2 != null) drawBasin(g, PHI_DOMAIN[0], sep2, 'rgba(255,250,240,0.5)', vBottom);
+        if (sep1 != null) drawBasin(g, sep1, PHI_DOMAIN[1], 'rgba(255,250,240,0.5)', vBottom);
+      } else {
+        // Single-basin: everything is in-phase
+        drawBasin(g, PHI_DOMAIN[0], PHI_DOMAIN[1], 'rgba(240,255,244,0.5)', vBottom);
+      }
+
+      // ── Landscape curve ───────────────────────────────────────────────────────
+      const lineGen = d3.line()
+        .x(d => xScale(d.phi))
+        .y(d => yScale(d.v))
+        .curve(d3.curveCatmullRom.alpha(0.5));
+
+      g.append('path')
+        .datum(landscapeData)
+        .attr('fill', 'none')
+        .attr('stroke', '#d69e2e')
+        .attr('stroke-width', 3)
+        .attr('clip-path', 'url(#chart-clip)')
+        .attr('d', lineGen);
+
+      // ── Fixed-point markers & labels ─────────────────────────────────────────
+      fixedPoints.forEach(fp => {
+        const x = xScale(fp.phi);
+        const y = yScale(V(fp.phi));
+
+        if (!fp.stable) {
+          // Separatrix: red dashed vertical line + peak dot + label
+          g.append('line')
+            .attr('x1', x).attr('x2', x)
+            .attr('y1', y).attr('y2', innerH)
+            .attr('stroke', '#c53030')
+            .attr('stroke-width', 1.5)
+            .attr('stroke-dasharray', '5,4')
+            .attr('opacity', 0.7);
+
+          g.append('circle')
+            .attr('cx', x).attr('cy', y)
+            .attr('r', 6)
+            .attr('fill', '#fff')
+            .attr('stroke', '#c53030')
+            .attr('stroke-width', 2);
+
+          // Label above peak
+          const labelY = Math.max(y - 12, 10);
+          const labelX = x + (fp.phi > 0 ? 8 : -8);
+          g.append('text')
+            .attr('x', labelX).attr('y', labelY)
+            .attr('fill', '#c53030')
+            .attr('font-size', '11px')
+            .attr('font-weight', '600')
+            .attr('text-anchor', fp.phi > 0 ? 'start' : 'end')
+            .text('Separatrix');
+        } else {
+          // Stable: valley dot + label
+          const isInPhase = Math.abs(fp.phi) < 0.5;
+          const color = isInPhase ? '#276749' : '#9c4221';
+          const labelText = isInPhase
+            ? 'In-phase (\u03c6 = 0\u00b0)'
+            : 'Anti-phase (\u03c6 = 180\u00b0)';
+
+          g.append('circle')
+            .attr('cx', x).attr('cy', y)
+            .attr('r', 7)
+            .attr('fill', color)
+            .attr('opacity', 0.85);
+
+          // Valley label just above the dot
+          g.append('text')
+            .attr('x', x)
+            .attr('y', y - 13)
+            .attr('fill', color)
+            .attr('font-size', '11px')
+            .attr('font-weight', '600')
+            .attr('text-anchor', 'middle')
+            .text(labelText);
+        }
+      });
+
+      // ── Axes ──────────────────────────────────────────────────────────────────
+      // X axis
+      const xAxis = d3.axisBottom(xScale)
+        .ticks(7)
+        .tickFormat(d => {
+          const labels = {
+            '-3.14159': '-\u03c0', '-1.5708': '-\u03c0/2',
+            '0': '0',
+            '1.5708': '\u03c0/2', '3.14159': '\u03c0'
+          };
+          const key = d.toFixed(5);
+          return labels[key] ?? d3.format('.2f')(d);
+        });
+
+      g.append('g')
+        .attr('transform', `translate(0,${innerH})`)
+        .call(xAxis)
+        .call(ax => {
+          ax.selectAll('line, path').attr('stroke', '#a0aec0');
+          ax.selectAll('text').attr('fill', '#718096').attr('font-size', '12px');
+        });
+
+      // X axis label
+      g.append('text')
+        .attr('x', innerW / 2).attr('y', innerH + 42)
+        .attr('fill', '#718096').attr('font-size', '13px').attr('text-anchor', 'middle')
+        .text('Relative phase \u03c6 (radians)');
+
+      // Y axis
+      const yAxis = d3.axisLeft(yScale).ticks(5).tickFormat(d3.format('.1f'));
+      g.append('g')
+        .call(yAxis)
+        .call(ax => {
+          ax.selectAll('line, path').attr('stroke', '#a0aec0');
+          ax.selectAll('text').attr('fill', '#718096').attr('font-size', '12px');
+        });
+
+      // Y axis label
+      g.append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('x', -innerH / 2).attr('y', -40)
+        .attr('fill', '#718096').attr('font-size', '13px').attr('text-anchor', 'middle')
+        .text('Potential V(\u03c6)');
+
+      // ── Ball layer (drawn on top) ─────────────────────────────────────────────
+      g.append('g').attr('id', 'ball-layer').attr('clip-path', 'url(#chart-clip)');
+    }
+
+    // Draw a filled basin between two phi values down to the bottom of chart
+    function drawBasin(g, phiLo, phiHi, color, vBottom) {
+      const N = 300;
+      const phiRange = d3.range(phiLo, phiHi + 1e-9, (phiHi - phiLo) / N);
+
+      // area generator: top follows V(φ), bottom is chart bottom
+      const area = d3.area()
+        .x(phi => xScale(phi))
+        .y0(yScale(yScale.domain()[0]))   // chart bottom
+        .y1(phi => yScale(V(phi)))
+        .curve(d3.curveCatmullRom.alpha(0.5));
+
+      g.append('path')
+        .datum(phiRange)
+        .attr('fill', color)
+        .attr('d', area);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // CLICK HANDLER
+    // ─────────────────────────────────────────────────────────────────────────────
+    function attachClick() {
+      d3.select(svgEl).on('click', function (event) {
+        const [mx, my] = d3.pointer(event, this);
+        // Convert to chart-local coords
+        const cx = mx - MARGIN.left;
+        const phi = xScale.invert(cx);
+        if (phi < PHI_DOMAIN[0] || phi > PHI_DOMAIN[1]) return;
+        spawnBall(phi);
+      });
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // BALL MANAGEMENT
+    // ─────────────────────────────────────────────────────────────────────────────
+    function spawnBall(phi) {
+      // Remove oldest if at capacity
+      if (balls.length >= MAX_BALLS) {
+        const oldest = balls.shift();
+        removeBallDOM(oldest);
+      }
+
+      const ball = {
+        id: 'ball-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+        phi: phi,
+        trail: [],          // [{phi, v}]
+        settledFrames: 0,
+        settled: false,
+        outcome: null,        // 'inphase' | 'antiphase'
+        pulsing: false,
+      };
+      balls.push(ball);
+      createBallDOM(ball);
+    }
+
+    function createBallDOM(ball) {
+      const layer = g.select('#ball-layer');
+
+      // Trail path
+      layer.append('path')
+        .attr('id', ball.id + '-trail')
+        .attr('fill', 'none')
+        .attr('stroke-width', 2.5)
+        .attr('stroke-linecap', 'round');
+
+      // Ball circle
+      layer.append('circle')
+        .attr('id', ball.id + '-dot')
+        .attr('r', 9)
+        .attr('cx', xScale(ball.phi))
+        .attr('cy', yScale(V(ball.phi)))
+        .attr('stroke-width', 2);
+    }
+
+    function removeBallDOM(ball) {
+      d3.select('#' + ball.id + '-trail').remove();
+      d3.select('#' + ball.id + '-dot').remove();
+    }
+
+    function ballColor(ball) {
+      if (ball.outcome === 'inphase') return '#2b6cb0';
+      if (ball.outcome === 'antiphase') return '#c05621';
+      // In-flight: neutral gray-blue
+      return '#4a5568';
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // ANIMATION LOOP
+    // ─────────────────────────────────────────────────────────────────────────────
+    function startAnimation() {
+      if (animHandle) cancelAnimationFrame(animHandle);
+      lastTimestamp = null;
+      accumTime = 0;
+
+      function frame(ts) {
+        if (lastTimestamp == null) lastTimestamp = ts;
+        const elapsed = ts - lastTimestamp;
+        lastTimestamp = ts;
+
+        accumTime += elapsed;
+        const stepsNeeded = Math.floor(accumTime / (DT * 1000));
+        accumTime -= stepsNeeded * (DT * 1000);
+
+        const toRemove = [];
+
+        balls.forEach(ball => {
+          if (ball.settled) return;
+
+          // Physics steps
+          for (let s = 0; s < Math.max(1, stepsNeeded); s++) {
+            const vel = -dV(ball.phi);
+
+            // Record trail position
+            ball.trail.push({ phi: ball.phi, v: V(ball.phi) });
+            if (ball.trail.length > TRAIL_LEN) ball.trail.shift();
+
+            // Euler step
+            ball.phi = ball.phi + vel * DT;
+
+            // Wrap to [-π, π]
+            while (ball.phi > Math.PI) ball.phi -= 2 * Math.PI;
+            while (ball.phi < -Math.PI) ball.phi += 2 * Math.PI;
+
+            // Settling check
+            if (Math.abs(vel) < SETTLE_VEL) {
+              ball.settledFrames++;
+              if (ball.settledFrames >= SETTLE_FRAMES) {
+                settleB(ball);
+                break;
+              }
+            } else {
+              ball.settledFrames = 0;
+            }
+          }
+
+          // Update DOM
+          updateBallDOM(ball);
+        });
+
+        // Remove any balls that are done (keep settled ones for display)
+        animHandle = requestAnimationFrame(frame);
+      }
+
+      animHandle = requestAnimationFrame(frame);
+    }
+
+    function settleB(ball) {
+      ball.settled = true;
+
+      // Snap to nearest stable FP
+      const stableFPs = fixedPoints.filter(fp => fp.stable);
+      let nearest = stableFPs[0];
+      let minDist = Infinity;
+      stableFPs.forEach(fp => {
+        // angular distance
+        let d = Math.abs(ball.phi - fp.phi);
+        if (d > Math.PI) d = 2 * Math.PI - d;
+        if (d < minDist) { minDist = d; nearest = fp; }
+      });
+
+      if (nearest) {
+        ball.phi = nearest.phi;
+        // Classify
+        if (Math.abs(nearest.phi) < 0.5) {
+          ball.outcome = 'inphase';
+          scoreIn++;
+          document.getElementById('score-in').textContent = scoreIn;
+        } else {
+          ball.outcome = 'antiphase';
+          scoreAnti++;
+          document.getElementById('score-anti').textContent = scoreAnti;
+        }
+      }
+
+      updateBallDOM(ball);
+      // Pulse animation via D3 transition
+      const dot = d3.select('#' + ball.id + '-dot');
+      dot.transition().duration(200).attr('r', 14)
+        .transition().duration(200).attr('r', 9);
+    }
+
+    function updateBallDOM(ball) {
+      const x = xScale(ball.phi);
+      const y = yScale(V(ball.phi));
+      const col = ballColor(ball);
+
+      // Update dot
+      const dot = d3.select('#' + ball.id + '-dot');
+      if (!dot.empty()) {
+        dot.attr('cx', x).attr('cy', y)
+          .attr('fill', col)
+          .attr('stroke', ball.settled ? col : '#fff');
+
+        if (ball.settled) {
+          dot.style('filter', `drop-shadow(0 0 6px ${col})`);
+        }
+      }
+
+      // Update trail
+      const tr = d3.select('#' + ball.id + '-trail');
+      if (!tr.empty() && ball.trail.length > 1) {
+        const lineGen = d3.line()
+          .x(d => xScale(d.phi))
+          .y(d => yScale(d.v))
+          .curve(d3.curveCatmullRom.alpha(0.5));
+
+        // Gradient opacity via stroke on segments
+        // For simplicity: draw as single path with reduced opacity
+        tr.attr('d', lineGen(ball.trail))
+          .attr('stroke', col)
+          .attr('opacity', 0.45);
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // CLEAR BUTTON
+    // ─────────────────────────────────────────────────────────────────────────────
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      balls.forEach(b => removeBallDOM(b));
+      balls = [];
+      scoreIn = 0;
+      scoreAnti = 0;
+      document.getElementById('score-in').textContent = '0';
+      document.getElementById('score-anti').textContent = '0';
+    });
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // b/a SLIDER
+    // ─────────────────────────────────────────────────────────────────────────────
+    document.getElementById('ba-slider').addEventListener('input', function () {
+      const ratio = parseFloat(this.value);
+      document.getElementById('ba-value').textContent = ratio.toFixed(2);
+      b = ratio;   // a stays 1
+
+      // Rebuild landscape
+      balls.forEach(bb => removeBallDOM(bb));
+      balls = [];
+      scoreIn = 0;
+      scoreAnti = 0;
+      document.getElementById('score-in').textContent = '0';
+      document.getElementById('score-anti').textContent = '0';
+
+      landscapeData = buildLandscapeData();
+      fixedPoints = findFixedPoints();
+
+      // Recompute y scale
+      const vVals = landscapeData.map(d => d.v);
+      const vMin = d3.min(vVals);
+      const vMax = d3.max(vVals);
+      const pad = (vMax - vMin) * 0.18;
+      yScale.domain([vMin - pad, vMax + pad]);
+
+      drawAll();
+      attachClick();
+
+      // Bifurcation note
+      const noteEl = document.getElementById('bifurcation-note');
+      const hasAntiPhase = fixedPoints.some(fp => fp.stable && Math.abs(Math.abs(fp.phi) - Math.PI) < 0.5);
+      if (!hasAntiPhase) {
+        noteEl.textContent = 'Bifurcation! Anti-phase attractor has disappeared — all coordination snaps to in-phase.';
+        noteEl.style.display = 'block';
+      } else {
+        noteEl.style.display = 'none';
+      }
+    });
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // RESPONSIVE RESIZE
+    // ─────────────────────────────────────────────────────────────────────────────
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        balls.forEach(bb => removeBallDOM(bb));
+        balls = [];
+        scoreIn = 0;
+        scoreAnti = 0;
+        document.getElementById('score-in').textContent = '0';
+        document.getElementById('score-anti').textContent = '0';
+        initSVG();
+      }, 200);
+    });
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // INIT
+    // ─────────────────────────────────────────────────────────────────────────────
+    initSVG();
+    startAnimation();
+  </script>
+</body>
+
+</html>

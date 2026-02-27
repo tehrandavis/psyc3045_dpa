@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flow Function Explorer — Dynamics of Perception &amp; Action</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f8fafc;
+      color: #2d3748;
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    .header {
+      margin-bottom: 20px;
+    }
+    .header .course-label {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #718096;
+      margin-bottom: 4px;
+    }
+    .header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      color: #1a365d;
+      line-height: 1.3;
+    }
+
+    /* ── Main panel ── */
+    .panel {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    /* ── Toggle buttons ── */
+    .toggle-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .toggle-btn {
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.18s, border-color 0.18s, color 0.18s;
+      background: #f8fafc;
+      color: #2d3748;
+      border-color: #e2e8f0;
+    }
+    .toggle-btn:hover {
+      border-color: #a0aec0;
+    }
+    .toggle-btn.active-attractor {
+      background: #276749;
+      border-color: #276749;
+      color: #ffffff;
+    }
+    .toggle-btn.active-repeller {
+      background: #c53030;
+      border-color: #c53030;
+      color: #ffffff;
+    }
+
+    /* ── Chart container ── */
+    #chart-container {
+      position: relative;
+      width: 100%;
+    }
+    #chart-svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* ── Slider row ── */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .slider-label {
+      font-size: 14px;
+      color: #2d3748;
+      white-space: nowrap;
+      min-width: 120px;
+    }
+    .slider-label strong {
+      color: #1a365d;
+    }
+    #k-slider {
+      flex: 1;
+      min-width: 160px;
+      max-width: 340px;
+      accent-color: #3182ce;
+      cursor: pointer;
+      height: 6px;
+    }
+    .slider-hint {
+      font-size: 12px;
+      color: #718096;
+      white-space: nowrap;
+    }
+
+    /* ── Callout box ── */
+    .callout {
+      background: #ebf8ff;
+      border: 1px solid #bee3f8;
+      border-left: 4px solid #2b6cb0;
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+    .callout h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a365d;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+    .callout ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .callout ul li {
+      font-size: 13.5px;
+      color: #2d3748;
+      padding-left: 20px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .callout ul li::before {
+      content: "•";
+      position: absolute;
+      left: 6px;
+      color: #2b6cb0;
+      font-weight: 700;
+    }
+    .callout ul li span.green { color: #276749; font-weight: 600; }
+    .callout ul li span.red   { color: #c53030; font-weight: 600; }
+
+    /* ── Mode indicator badge (inside SVG via foreignObject fallback via text) ── */
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="course-label">Dynamics of Perception &amp; Action</div>
+    <h1>Flow Function Explorer</h1>
+  </div>
+
+  <!-- Main panel: toggles + chart + slider -->
+  <div class="panel">
+    <div class="toggle-row">
+      <button class="toggle-btn active-attractor" id="btn-attractor">Attractor: f(x) = &#x2212;kx</button>
+      <button class="toggle-btn" id="btn-repeller">Repeller: f(x) = +kx</button>
+    </div>
+
+    <div id="chart-container">
+      <svg id="chart-svg" viewBox="0 0 620 370" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+
+    <div class="slider-row">
+      <label class="slider-label" for="k-slider">Strength (k): <strong id="k-display">1.0</strong></label>
+      <input type="range" id="k-slider" min="0.2" max="2.0" step="0.1" value="1.0" />
+      <span class="slider-hint">0.2 (weak) &#x2192; 2.0 (strong)</span>
+    </div>
+  </div>
+
+  <!-- What to notice -->
+  <div class="callout">
+    <h3>What to notice</h3>
+    <ul>
+      <li>The curve crosses zero at x&nbsp;=&nbsp;0 — that is the <strong>fixed point</strong>.</li>
+      <li><span class="green">Attractor</span>: curve slopes <em>downward</em> at the crossing &#x2192; arrows point <em>inward</em> &#x2192; system returns here.</li>
+      <li><span class="red">Repeller</span>: curve slopes <em>upward</em> at the crossing &#x2192; arrows point <em>outward</em> &#x2192; system flees from here.</li>
+      <li>Steeper slope (higher k) = stronger pull (or push). Drag the particle to a new starting position.</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ── State ── */
+  let mode = "attractor"; // "attractor" | "repeller"
+  let k = 1.0;
+
+  /* ── SVG geometry ── */
+  const W = 620, H = 370;
+  const margin = { top: 30, right: 30, bottom: 70, left: 58 };
+  const innerW = W - margin.left - margin.right;
+  const innerH = H - margin.top - margin.bottom;
+
+  const xDomain = [-3, 3];
+  const yDomain = [-4, 4];
+
+  const xScale = d3.scaleLinear().domain(xDomain).range([0, innerW]);
+  const yScale = d3.scaleLinear().domain(yDomain).range([innerH, 0]);
+
+  /* ── Build SVG ── */
+  const svg = d3.select("#chart-svg");
+
+  // Background
+  svg.append("rect")
+    .attr("width", W).attr("height", H)
+    .attr("fill", "#ffffff");
+
+  const g = svg.append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  // Clip path so curve doesn't overflow plot area
+  svg.append("defs").append("clipPath").attr("id", "plot-clip")
+    .append("rect").attr("width", innerW).attr("height", innerH);
+
+  /* ── Gridlines ── */
+  const gridColor = "#f0f4f8";
+
+  // Horizontal gridlines
+  const yTicks = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
+  const xTicks = [-3, -2, -1, 0, 1, 2, 3];
+
+  g.append("g").attr("class", "grid-h")
+    .selectAll("line").data(yTicks).join("line")
+    .attr("x1", 0).attr("x2", innerW)
+    .attr("y1", d => yScale(d)).attr("y2", d => yScale(d))
+    .attr("stroke", gridColor).attr("stroke-width", 1);
+
+  g.append("g").attr("class", "grid-v")
+    .selectAll("line").data(xTicks).join("line")
+    .attr("x1", d => xScale(d)).attr("x2", d => xScale(d))
+    .attr("y1", 0).attr("y2", innerH)
+    .attr("stroke", gridColor).attr("stroke-width", 1);
+
+  /* ── Axes ── */
+  const axisColor = "#2b6cb0";
+
+  // x-axis at y=0
+  const xAxisG = g.append("g").attr("class", "x-axis")
+    .attr("transform", `translate(0,${yScale(0)})`);
+
+  xAxisG.append("line")
+    .attr("x1", 0).attr("x2", innerW)
+    .attr("stroke", axisColor).attr("stroke-width", 1.5);
+
+  xAxisG.selectAll("tick").data(xTicks.filter(d => d !== 0)).join("g")
+    .attr("transform", d => `translate(${xScale(d)},0)`)
+    .call(sel => {
+      sel.append("line").attr("y1", -4).attr("y2", 4)
+        .attr("stroke", axisColor).attr("stroke-width", 1.2);
+      sel.append("text")
+        .attr("y", 18).attr("text-anchor", "middle")
+        .attr("font-size", "11px").attr("fill", "#718096")
+        .text(d => d);
+    });
+
+  // y-axis at x=0
+  const yAxisG = g.append("g").attr("class", "y-axis")
+    .attr("transform", `translate(${xScale(0)},0)`);
+
+  yAxisG.append("line")
+    .attr("y1", 0).attr("y2", innerH)
+    .attr("stroke", axisColor).attr("stroke-width", 1.5);
+
+  yAxisG.selectAll("tick").data(yTicks.filter(d => d !== 0)).join("g")
+    .attr("transform", d => `translate(0,${yScale(d)})`)
+    .call(sel => {
+      sel.append("line").attr("x1", -4).attr("x2", 4)
+        .attr("stroke", axisColor).attr("stroke-width", 1.2);
+      sel.append("text")
+        .attr("x", -10).attr("text-anchor", "end")
+        .attr("dominant-baseline", "middle")
+        .attr("font-size", "11px").attr("fill", "#718096")
+        .text(d => d);
+    });
+
+  // Axis labels
+  g.append("text")
+    .attr("x", innerW / 2).attr("y", innerH + 48)
+    .attr("text-anchor", "middle")
+    .attr("font-size", "13px").attr("font-weight", "600").attr("fill", "#2d3748")
+    .text("x  (state)");
+
+  g.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -innerH / 2).attr("y", -44)
+    .attr("text-anchor", "middle")
+    .attr("font-size", "13px").attr("font-weight", "600").attr("fill", "#2d3748")
+    .text("dx/dt  =  f(x)");
+
+  /* ── y=0 dashed reference line ── */
+  g.append("line")
+    .attr("class", "zero-line")
+    .attr("x1", 0).attr("x2", innerW)
+    .attr("y1", yScale(0)).attr("y2", yScale(0))
+    .attr("stroke", "#a0aec0").attr("stroke-width", 1)
+    .attr("stroke-dasharray", "5,4");
+
+  /* ── Flow curve (clipped) ── */
+  const curveLine = d3.line()
+    .x(d => xScale(d.x))
+    .y(d => yScale(d.y))
+    .curve(d3.curveCatmullRom);
+
+  function buildCurveData() {
+    const xs = d3.range(xDomain[0], xDomain[1] + 0.01, 0.05);
+    const sign = mode === "attractor" ? -1 : 1;
+    return xs.map(x => ({ x, y: sign * k * x }));
+  }
+
+  const curveG = g.append("g").attr("clip-path", "url(#plot-clip)");
+
+  const curvePath = curveG.append("path")
+    .attr("class", "flow-curve")
+    .attr("fill", "none")
+    .attr("stroke", "#276749")
+    .attr("stroke-width", 2.8)
+    .attr("stroke-linecap", "round");
+
+  /* ── Flow arrows on x-axis ── */
+  // We place arrows at several x positions along the x-axis to show direction
+  const arrowXPositions = [-2.5, -1.8, -1.1, 1.1, 1.8, 2.5];
+
+  // Arrow marker defs — we create two (green + red) and switch
+  const defs = svg.select("defs");
+
+  function makeArrowMarker(id, color) {
+    defs.append("marker")
+      .attr("id", id)
+      .attr("viewBox", "0 0 10 10")
+      .attr("refX", 8).attr("refY", 5)
+      .attr("markerWidth", 5).attr("markerHeight", 5)
+      .attr("orient", "auto")
+      .append("path")
+        .attr("d", "M0,1 L9,5 L0,9 Z")
+        .attr("fill", color);
+  }
+
+  makeArrowMarker("arrow-green", "#276749");
+  makeArrowMarker("arrow-red", "#c53030");
+
+  // Arrow lines group
+  const arrowsG = g.append("g").attr("class", "flow-arrows");
+
+  /* ── Fixed point marker ── */
+  const fixedPtG = g.append("g").attr("class", "fixed-point")
+    .attr("transform", `translate(${xScale(0)},${yScale(0)})`);
+
+  const fixedPtCircle = fixedPtG.append("circle")
+    .attr("r", 7)
+    .attr("stroke", "#ffffff").attr("stroke-width", 2);
+
+  fixedPtG.append("text")
+    .attr("x", 12).attr("y", -10)
+    .attr("font-size", "12px").attr("font-weight", "600")
+    .attr("fill", "#2d3748")
+    .text("Fixed point (x* = 0)");
+
+  /* ── Mode label (top right inside chart) ── */
+  const modeLabel = g.append("text")
+    .attr("class", "mode-label")
+    .attr("x", innerW - 4).attr("y", 14)
+    .attr("text-anchor", "end")
+    .attr("font-size", "13px").attr("font-weight", "600");
+
+  /* ── Animated particle on x-axis ── */
+  let particleX = mode === "attractor" ? 2.0 : 0.5; // starting x in data coords
+  let isDragging = false;
+  let animRunning = true;
+  let lastTime = null;
+
+  const particleRadius = 9;
+
+  const particleG = g.append("g").attr("class", "particle-group")
+    .style("cursor", "grab");
+
+  particleG.append("circle")
+    .attr("class", "particle-circle")
+    .attr("r", particleRadius)
+    .attr("stroke", "#ffffff").attr("stroke-width", 2.5)
+    .attr("cy", 0);
+
+  particleG.append("text")
+    .attr("class", "particle-label")
+    .attr("y", particleRadius + 16)
+    .attr("text-anchor", "middle")
+    .attr("font-size", "11px").attr("font-weight", "500")
+    .attr("fill", "#2d3748")
+    .text("drag me");
+
+  // Drag behaviour
+  const drag = d3.drag()
+    .on("start", () => {
+      isDragging = true;
+      particleG.style("cursor", "grabbing");
+    })
+    .on("drag", (event) => {
+      // event.x is relative to the g (inner plot) — clamp to domain
+      const rawX = xScale.invert(event.x);
+      particleX = Math.max(xDomain[0] + 0.05, Math.min(xDomain[1] - 0.05, rawX));
+      updateParticlePosition();
+    })
+    .on("end", () => {
+      isDragging = false;
+      particleG.style("cursor", "grab");
+      lastTime = null; // reset time so animation doesn't jump
+    });
+
+  particleG.call(drag);
+
+  function updateParticlePosition() {
+    particleG.attr("transform", `translate(${xScale(particleX)},${yScale(0)})`);
+  }
+
+  /* ── Core update function ── */
+  function updateChart(transition) {
+    const curveColor  = mode === "attractor" ? "#276749" : "#c53030";
+    const arrowMarkerId = mode === "attractor" ? "url(#arrow-green)" : "url(#arrow-red)";
+    const sign = mode === "attractor" ? -1 : 1;
+
+    // Curve
+    const data = buildCurveData();
+    const pathStr = curveLine(data);
+
+    if (transition) {
+      curvePath.transition().duration(450).ease(d3.easeCubicInOut)
+        .attr("d", pathStr)
+        .attr("stroke", curveColor);
+    } else {
+      curvePath.attr("d", pathStr).attr("stroke", curveColor);
+    }
+
+    // Fixed point color
+    fixedPtCircle.transition().duration(350)
+      .attr("fill", curveColor);
+
+    // Mode label
+    modeLabel
+      .text(mode === "attractor" ? "f(x) = \u2212kx" : "f(x) = +kx")
+      .attr("fill", curveColor);
+
+    // Flow arrows
+    const arrowLen = 22;
+    arrowsG.selectAll(".flow-arrow").remove();
+
+    arrowXPositions.forEach(ax => {
+      const fVal = sign * k * ax;
+      if (Math.abs(fVal) < 0.01) return; // skip if exactly at zero
+
+      const dir = fVal > 0 ? 1 : -1;
+      const px = xScale(ax);
+      const py = yScale(0);
+      const x1 = px - dir * arrowLen * 0.45;
+      const x2 = px + dir * arrowLen * 0.55;
+
+      arrowsG.append("line")
+        .attr("class", "flow-arrow")
+        .attr("x1", x1).attr("y1", py)
+        .attr("x2", x2).attr("y2", py)
+        .attr("stroke", curveColor)
+        .attr("stroke-width", 2.2)
+        .attr("marker-end", arrowMarkerId)
+        .attr("opacity", 0)
+        .transition().duration(300).attr("opacity", 1);
+    });
+
+    // Particle color
+    d3.select(".particle-circle").attr("fill", curveColor);
+    updateParticlePosition();
+  }
+
+  /* ── Particle animation ── */
+  const speedScale = 0.55; // controls how fast the particle moves (data units/s)
+
+  function animStep(ts) {
+    if (!document.hidden && !isDragging) {
+      if (lastTime === null) lastTime = ts;
+      const dt = Math.min((ts - lastTime) / 1000, 0.1); // cap dt at 100ms
+      lastTime = ts;
+
+      const sign = mode === "attractor" ? -1 : 1;
+      const dxdt = sign * k * particleX;
+
+      // Clamp particle inside domain
+      if (Math.abs(particleX) > xDomain[1] - 0.1) {
+        // Reset on opposite side for attractor (shouldn't be needed), or wrap for repeller
+        if (mode === "repeller") {
+          particleX = (particleX > 0 ? -1 : 1) * 0.3;
+        } else {
+          particleX = Math.sign(particleX) * (xDomain[1] - 0.15);
+        }
+      }
+
+      // If attractor and very close to 0, nudge away slightly for visual interest
+      if (mode === "attractor" && Math.abs(particleX) < 0.05) {
+        particleX = (Math.random() > 0.5 ? 1 : -1) * (1.2 + Math.random() * 0.6);
+      }
+
+      particleX += dxdt * dt * speedScale;
+      updateParticlePosition();
+    } else {
+      lastTime = null;
+    }
+    requestAnimationFrame(animStep);
+  }
+
+  // Pause on hidden tab
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) { lastTime = null; }
+  });
+
+  /* ── Slider ── */
+  const kSlider = document.getElementById("k-slider");
+  const kDisplay = document.getElementById("k-display");
+
+  kSlider.addEventListener("input", () => {
+    k = parseFloat(kSlider.value);
+    kDisplay.textContent = k.toFixed(1);
+    updateChart(false);
+  });
+
+  /* ── Toggle buttons ── */
+  const btnAttractor = document.getElementById("btn-attractor");
+  const btnRepeller  = document.getElementById("btn-repeller");
+
+  btnAttractor.addEventListener("click", () => {
+    if (mode === "attractor") return;
+    mode = "attractor";
+    btnAttractor.className = "toggle-btn active-attractor";
+    btnRepeller.className  = "toggle-btn";
+    particleX = 2.0;
+    lastTime = null;
+    updateChart(true);
+  });
+
+  btnRepeller.addEventListener("click", () => {
+    if (mode === "repeller") return;
+    mode = "repeller";
+    btnRepeller.className  = "toggle-btn active-repeller";
+    btnAttractor.className = "toggle-btn";
+    particleX = 0.4;
+    lastTime = null;
+    updateChart(true);
+  });
+
+  /* ── Init ── */
+  updateChart(false);
+  requestAnimationFrame(animStep);
+
+})();
+</script>
+</body>
+</html>

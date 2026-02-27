@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relative Phase Visualizer</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f8fafc;
+      color: #2d3748;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    h1 {
+      font-weight: 600;
+      color: #1a365d;
+      font-size: 1.45rem;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      color: #718096;
+      font-size: 0.875rem;
+      margin-bottom: 18px;
+    }
+
+    .main-layout {
+      display: flex;
+      flex-direction: row;
+      gap: 18px;
+      max-width: 1000px;
+      margin: 0 auto;
+      align-items: flex-start;
+    }
+
+    .left-panel {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .right-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-width: 240px;
+      max-width: 300px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 16px;
+    }
+
+    .card-title {
+      font-weight: 600;
+      color: #1a365d;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+
+    /* Oscillator circles row */
+    .circles-row {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .circle-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .circle-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .phase-readout {
+      font-size: 0.78rem;
+      color: #718096;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Phase meter */
+    .meter-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .meter-label-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 320px;
+      font-size: 0.78rem;
+      color: #718096;
+    }
+
+    .phi-readout {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1a365d;
+      font-variant-numeric: tabular-nums;
+      text-align: center;
+    }
+
+    .phi-label {
+      font-size: 0.8rem;
+      color: #718096;
+      text-align: center;
+    }
+
+    /* Time series */
+    #timeseries-svg {
+      width: 100%;
+      display: block;
+    }
+
+    /* Controls */
+    .control-section {
+      margin-bottom: 14px;
+    }
+
+    .control-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .control-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .control-value {
+      font-weight: 400;
+      color: #3182ce;
+      font-variant-numeric: tabular-nums;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #3182ce;
+      height: 4px;
+      cursor: pointer;
+    }
+
+    .quick-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .quick-btn {
+      padding: 7px 6px;
+      border: 1px solid #e2e8f0;
+      border-radius: 7px;
+      background: #f7fafc;
+      color: #2d3748;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      font-family: inherit;
+    }
+
+    .quick-btn:hover {
+      background: #ebf4ff;
+      border-color: #3182ce;
+      color: #2b6cb0;
+    }
+
+    .quick-btn.active-flash {
+      background: #2b6cb0;
+      color: #fff;
+      border-color: #2b6cb0;
+    }
+
+    .pause-btn {
+      width: 100%;
+      padding: 9px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #f7fafc;
+      color: #2d3748;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      font-family: inherit;
+    }
+
+    .pause-btn.paused {
+      background: #2b6cb0;
+      color: #fff;
+      border-color: #2b6cb0;
+    }
+
+    .pause-btn:hover:not(.paused) {
+      background: #ebf4ff;
+      border-color: #3182ce;
+    }
+
+    /* Callout box */
+    .callout {
+      background: #f7fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 14px 16px;
+    }
+
+    .callout-title {
+      font-weight: 600;
+      color: #1a365d;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+
+    .callout ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .callout li {
+      font-size: 0.78rem;
+      color: #2d3748;
+      line-height: 1.5;
+      padding-left: 14px;
+      position: relative;
+    }
+
+    .callout li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: #718096;
+    }
+
+    .callout li strong {
+      color: #1a365d;
+    }
+
+    /* Divider */
+    .section-divider {
+      height: 1px;
+      background: #e2e8f0;
+      margin: 10px 0;
+    }
+
+    /* Flash animation for phase meter */
+    @keyframes meter-flash {
+      0% {
+        filter: brightness(1.0);
+      }
+
+      30% {
+        filter: brightness(1.6);
+      }
+
+      100% {
+        filter: brightness(1.0);
+      }
+    }
+
+    .meter-flash {
+      animation: meter-flash 0.35s ease-out;
+    }
+
+    @media (max-width: 680px) {
+      .main-layout {
+        flex-direction: column;
+      }
+
+      .right-panel {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div style="max-width:1000px; margin:0 auto;">
+    <h1>Relative Phase Visualizer</h1>
+    <p class="subtitle">Dynamics of Perception &amp; Action &mdash; Understanding φ = θ₁ &minus; θ₂</p>
+
+    <div class="main-layout">
+
+      <!-- ===== LEFT PANEL ===== -->
+      <div class="left-panel">
+
+        <!-- Avatars card (Inverted Pendulums / Fingers) -->
+        <div class="card">
+          <div class="card-title">Finger Avatars</div>
+          <div
+            style="display: flex; justify-content: space-around; align-items: flex-end; height: 160px; padding-bottom: 10px;">
+            <svg id="avatar1-svg" width="120" height="150"></svg>
+            <svg id="avatar2-svg" width="120" height="150"></svg>
+          </div>
+        </div>
+
+        <!-- Oscillator circles card -->
+        <div class="card">
+          <div class="card-title">Phase Space &mdash; Where Each Oscillator Is In Its Cycle</div>
+          <div class="circles-row">
+            <div class="circle-container">
+              <div class="circle-label" style="color:#2b6cb0;">Finger 1 &nbsp;(θ₁)</div>
+              <svg id="circle1-svg" width="160" height="160"></svg>
+              <div class="phase-readout" id="theta1-readout">θ₁ = 0.0°</div>
+            </div>
+
+            <!-- Relative phase display (center) -->
+            <div class="meter-container">
+              <div class="phi-readout" id="phi-big">φ = 0.0°</div>
+              <div class="phi-label">relative phase</div>
+              <div style="height:10px;"></div>
+              <svg id="meter-svg" width="160" height="90"></svg>
+              <div class="meter-label-row" style="max-width:180px;">
+                <span style="color:#276749; font-weight:600;">In-phase<br>0°</span>
+                <span style="color:#718096; text-align:center;">90°</span>
+                <span style="color:#c05621; font-weight:600; text-align:right;">Anti-phase<br>180°</span>
+              </div>
+              <div style="height:4px;"></div>
+              <div id="phase-state-label" style="font-size:0.8rem; font-weight:600; color:#718096; min-height:1.2em;">
+              </div>
+            </div>
+
+            <div class="circle-container">
+              <div class="circle-label" style="color:#c05621;">Finger 2 &nbsp;(θ₂)</div>
+              <svg id="circle2-svg" width="160" height="160"></svg>
+              <div class="phase-readout" id="theta2-readout">θ₂ = 0.0°</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Oscillator Phases time series card -->
+        <div class="card">
+          <div class="card-title">Oscillator Movements &mdash; Last 5 Seconds</div>
+          <svg id="osc-timeseries-svg" height="130"></svg>
+          <div
+            style="display:flex; justify-content:space-between; font-size:0.73rem; color:#718096; margin-top:4px; padding: 0 2px;">
+            <span>← older</span>
+            <span>y-axis: position (sin θ)</span>
+            <span>now →</span>
+          </div>
+        </div>
+
+        <!-- Time series card -->
+        <div class="card">
+          <div class="card-title">Relative Phase Over Time &mdash; Last 5 Seconds</div>
+          <svg id="timeseries-svg" height="130"></svg>
+          <div
+            style="display:flex; justify-content:space-between; font-size:0.73rem; color:#718096; margin-top:4px; padding: 0 2px;">
+            <span>← older</span>
+            <span>y-axis: φ (degrees)</span>
+            <span>now →</span>
+          </div>
+        </div>
+
+      </div><!-- end left panel -->
+
+      <!-- ===== RIGHT PANEL ===== -->
+      <div class="right-panel">
+
+        <div class="card">
+          <div class="card-title">Controls</div>
+
+          <!-- Frequency 1 -->
+          <div class="control-section">
+            <div class="control-label">
+              <span>Frequency 1 (ω₁)</span>
+              <span class="control-value" id="omega1-val">1.0 Hz</span>
+            </div>
+            <input type="range" id="omega1-slider" min="0.5" max="3.0" step="0.05" value="1.0">
+          </div>
+
+          <!-- Frequency 2 -->
+          <div class="control-section">
+            <div class="control-label">
+              <span>Frequency 2 (ω₂)</span>
+              <span class="control-value" id="omega2-val">1.0 Hz</span>
+            </div>
+            <input type="range" id="omega2-slider" min="0.5" max="3.0" step="0.05" value="1.0">
+          </div>
+
+          <!-- Phase offset -->
+          <div class="control-section">
+            <div class="control-label">
+              <span>Initial phase offset (θ₂ − θ₁)</span>
+              <span class="control-value" id="offset-val">0°</span>
+            </div>
+            <input type="range" id="offset-slider" min="0" max="360" step="1" value="0">
+          </div>
+
+          <!-- Noise / Detuning -->
+          <div class="control-section">
+            <div class="control-label">
+              <span>Phase Noise / Detuning</span>
+              <span class="control-value" id="noise-val">0.0</span>
+            </div>
+            <input type="range" id="noise-slider" min="0" max="1.0" step="0.01" value="0.0">
+          </div>
+
+          <div class="section-divider"></div>
+
+          <!-- Quick-set buttons -->
+          <div class="control-section">
+            <div class="control-label" style="margin-bottom:8px;">Quick-set coordination mode</div>
+            <div class="quick-btns">
+              <button class="quick-btn" id="btn-inphase">In-phase<br><small style="font-weight:400; color:#718096;">φ =
+                  0°</small></button>
+              <button class="quick-btn" id="btn-antiphase">Anti-phase<br><small
+                  style="font-weight:400; color:#718096;">φ = 180°</small></button>
+              <button class="quick-btn" id="btn-90deg">90° offset<br><small style="font-weight:400; color:#718096;">φ =
+                  90°</small></button>
+              <button class="quick-btn" id="btn-drift">Drift<br><small style="font-weight:400; color:#718096;">ω₂ = 1.1
+                  Hz</small></button>
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <!-- Pause / Resume -->
+          <button class="pause-btn" id="pause-btn">⏸ Pause</button>
+        </div>
+
+        <!-- Callout box -->
+        <div class="callout">
+          <div class="callout-title">What to Notice</div>
+          <ul>
+            <li><strong>Same frequency, same phase</strong> → In-phase (φ ≈ 0°): both fingers move together at all
+              times.</li>
+            <li><strong>Same frequency, opposite phases</strong> → Anti-phase (φ ≈ 180°): fingers always alternate.</li>
+            <li><strong>Different frequencies</strong> → φ drifts continuously; no stable coordination is possible.</li>
+            <li><strong>In the finger-wiggling lab</strong>, the phase <em>transition</em> was φ snapping from 180° to
+              0° as you sped up.</li>
+          </ul>
+        </div>
+
+      </div><!-- end right panel -->
+    </div><!-- end main-layout -->
+  </div><!-- end max-width wrapper -->
+
+  <script>
+    // ─────────────────────────────────────────────────────────────────────────────
+    // STATE
+    // ─────────────────────────────────────────────────────────────────────────────
+    const state = {
+      omega1: 1.0,   // Hz
+      omega2: 1.0,   // Hz
+      theta0_1: 0.0, // initial phase radians for osc 1
+      theta0_2: 0.0, // initial phase radians for osc 2
+      theta1: 0.0,   // current phase osc 1
+      theta2: 0.0,   // current phase osc 2
+      noiseLevel: 0.0,
+      t: 0.0,        // time in seconds
+      paused: false,
+      lastTimestamp: null,
+    };
+
+    // Time series buffer: circular array of {t, phi_deg} over last 300 frames
+    const BUFFER_SIZE = 300;
+    const tsBuffer = [];
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // HELPER MATH
+    // ─────────────────────────────────────────────────────────────────────────────
+    function computePhase(omega, theta0, t) {
+      // Returns phase in radians, unwrapped
+      return omega * 2 * Math.PI * t + theta0;
+    }
+
+    function wrapDeg(deg) {
+      return ((deg % 360) + 360) % 360;
+    }
+
+    function radToDeg(r) {
+      return r * 180 / Math.PI;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // D3 SETUP — OSCILLATOR CIRCLES
+    // ─────────────────────────────────────────────────────────────────────────────
+    const CW = 160, CH = 160;
+    const CR = 62; // circle radius
+    const CX = CW / 2, CY = CH / 2;
+
+    function setupCircle(svgId, color) {
+      const svg = d3.select(`#${svgId}`)
+        .attr("width", CW)
+        .attr("height", CH);
+
+      // Phase zones (subtle background fills)
+      // Just the unit circle background
+      svg.append("circle")
+        .attr("cx", CX).attr("cy", CY)
+        .attr("r", CR)
+        .attr("fill", "#f8fafc")
+        .attr("stroke", "#e2e8f0")
+        .attr("stroke-width", 1.5);
+
+      // Zero-angle reference line (3 o'clock)
+      svg.append("line")
+        .attr("class", "ref-line")
+        .attr("x1", CX).attr("y1", CY)
+        .attr("x2", CX + CR).attr("y2", CY)
+        .attr("stroke", "#e2e8f0")
+        .attr("stroke-width", 1)
+        .attr("stroke-dasharray", "3,3");
+
+      // Cross hairs
+      svg.append("line").attr("x1", CX - CR - 4).attr("y1", CY)
+        .attr("x2", CX + CR + 4).attr("y2", CY)
+        .attr("stroke", "#e2e8f0").attr("stroke-width", 0.8);
+      svg.append("line").attr("x1", CX).attr("y1", CY - CR - 4)
+        .attr("x2", CX).attr("y2", CY + CR + 4)
+        .attr("stroke", "#e2e8f0").attr("stroke-width", 0.8);
+
+      // Phase arc (from 0 to current angle)
+      svg.append("path")
+        .attr("class", "phase-arc")
+        .attr("fill", "none")
+        .attr("stroke", color)
+        .attr("stroke-width", 3)
+        .attr("stroke-linecap", "round")
+        .attr("opacity", 0.55);
+
+      // Arrow line from center to dot
+      svg.append("line")
+        .attr("class", "arrow-line")
+        .attr("x1", CX).attr("y1", CY)
+        .attr("stroke", color)
+        .attr("stroke-width", 2.5)
+        .attr("stroke-linecap", "round")
+        .attr("opacity", 0.7);
+
+      // Vertical projection: shows sin(theta) = physical finger position
+      svg.append("line")
+        .attr("class", "proj-line")
+        .attr("x1", CX).attr("y1", CY)
+        .attr("x2", CX).attr("y2", CY)
+        .attr("stroke", color)
+        .attr("stroke-width", 1)
+        .attr("stroke-dasharray", "3,2")
+        .attr("opacity", 0.4);
+
+      // Tick at the midline showing where the projection lands
+      svg.append("line")
+        .attr("class", "proj-tick")
+        .attr("y1", CY).attr("y2", CY)
+        .attr("x1", CX).attr("x2", CX)
+        .attr("stroke", color)
+        .attr("stroke-width", 2)
+        .attr("opacity", 0.6);
+
+      // Dot
+      svg.append("circle")
+        .attr("class", "osc-dot")
+        .attr("r", 7)
+        .attr("fill", color)
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 2);
+
+      // Small tick at 0° (right side)
+      svg.append("text")
+        .attr("x", CX + CR + 6).attr("y", CY + 4)
+        .attr("font-size", "9px").attr("fill", "#718096")
+        .text("0°");
+
+      // Tick at 90° (bottom — standard math convention: angles go CCW, but we draw CW for intuitive display)
+      svg.append("text")
+        .attr("x", CX + 3).attr("y", CY - CR - 4)
+        .attr("font-size", "9px").attr("fill", "#718096")
+        .text("90°");
+
+      return svg;
+    }
+
+    const svg1 = setupCircle("circle1-svg", "#2b6cb0");
+    const svg2 = setupCircle("circle2-svg", "#c05621");
+
+    // Arc generator helper
+    const arcPath = d3.arc();
+
+    function updateCircle(svg, thetaRad, color) {
+      // We draw angles going counter-clockwise from 3 o'clock (standard math convention)
+      // thetaRad is the phase; x(t)=cos(theta) is the horizontal position
+      const dotX = CX + CR * Math.cos(thetaRad);
+      const dotY = CY - CR * Math.sin(thetaRad); // minus because SVG y increases downward
+
+      // Update arrow line
+      svg.select(".arrow-line")
+        .attr("x2", dotX).attr("y2", dotY);
+
+      // Update dot
+      svg.select(".osc-dot")
+        .attr("cx", dotX).attr("cy", dotY);
+
+      // Update arc from 0 to thetaRad
+      // D3 arc: startAngle/endAngle are measured clockwise from 12 o'clock
+      // Our theta is CCW from 3 o'clock → convert:
+      // SVG angle = -theta + π/2 (to go from 3-o'clock CCW to 12-o'clock CW)
+      // For the arc we want from 0 to theta, going CCW on screen
+      const arcR = CR * 0.42;
+      let startA = -(Math.PI / 2); // 12 o'clock in d3 convention
+      // θ = 0 → 3 o'clock → d3 angle = -π/2 + 0 ... let's use a direct path instead
+
+      // Build arc as SVG path manually for clarity
+      const theta = thetaRad % (2 * Math.PI);
+      const normalizedTheta = ((theta % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+
+      // Arc on a smaller inner circle (radius arcR), going CCW from 0 to theta
+      const arcR2 = CR * 0.38;
+      let arcD;
+      if (Math.abs(normalizedTheta) < 0.01) {
+        arcD = "";
+      } else {
+        const x0 = CX + arcR2; // start at 0° (3 o'clock)
+        const y0 = CY;
+        const xEnd = CX + arcR2 * Math.cos(normalizedTheta);
+        const yEnd = CY - arcR2 * Math.sin(normalizedTheta);
+        const largeArc = normalizedTheta > Math.PI ? 1 : 0;
+        // SVG arc: sweep-flag=0 means CCW (in SVG coords, y-flipped)
+        arcD = `M ${x0} ${y0} A ${arcR2} ${arcR2} 0 ${largeArc} 0 ${xEnd} ${yEnd}`;
+      }
+
+      svg.select(".phase-arc").attr("d", arcD);
+
+      // Vertical projection from dot to horizontal midline
+      svg.select(".proj-line")
+        .attr("x1", dotX).attr("y1", dotY)
+        .attr("x2", dotX).attr("y2", CY);
+
+      // Short horizontal tick at midline showing landing point
+      const tickLen = 6;
+      svg.select(".proj-tick")
+        .attr("x1", dotX - tickLen).attr("x2", dotX + tickLen)
+        .attr("y1", CY).attr("y2", CY);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // AVATARS (Inverted pendulums)
+    // ─────────────────────────────────────────────────────────────────────────────
+    const avW = 120, avH = 150;
+    const avBase = { x: avW / 2, y: avH - 20 };
+    const avLength = 105;
+
+    function setupAvatar(svgId, color) {
+      const svg = d3.select(`#${svgId}`).attr("width", avW).attr("height", avH);
+      // Base pivot
+      svg.append("rect")
+        .attr("x", avBase.x - 20).attr("y", avBase.y)
+        .attr("width", 40).attr("height", 6)
+        .attr("fill", "#cbd5e0").attr("rx", 3);
+      svg.append("circle")
+        .attr("cx", avBase.x).attr("cy", avBase.y + 3)
+        .attr("r", 4).attr("fill", "#718096");
+
+      // Rod
+      svg.append("line")
+        .attr("class", "av-rod")
+        .attr("stroke", "#4a5568")
+        .attr("stroke-width", 6)
+        .attr("stroke-linecap", "round");
+
+      // Mass (finger tip)
+      svg.append("circle")
+        .attr("class", "av-mass")
+        .attr("r", 14)
+        .attr("fill", color)
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 2);
+
+      return svg;
+    }
+
+    const avSvg1 = setupAvatar("avatar1-svg", "#2b6cb0");
+    const avSvg2 = setupAvatar("avatar2-svg", "#c05621");
+
+    function updateAvatar(svg, thetaRad, sign=1) {
+      const maxSwing = Math.PI / 4.5; // ~40 deg max swing
+      // Use cos to match phase circle x-position (0 phase = rightmost)
+      const angle = sign * Math.cos(thetaRad) * maxSwing;
+
+      const tipX = avBase.x + avLength * Math.sin(angle);
+      const tipY = avBase.y - avLength * Math.cos(angle);
+
+      svg.select(".av-rod")
+        .attr("x1", avBase.x).attr("y1", avBase.y + 3)
+        .attr("x2", tipX).attr("y2", tipY);
+
+      svg.select(".av-mass")
+        .attr("cx", tipX).attr("cy", tipY);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // PHASE METER (semicircle, 0° to 180°)
+    // ─────────────────────────────────────────────────────────────────────────────
+    const MeterW = 160, MeterH = 88;
+    const MR = 68; // meter radius
+    const MX = MeterW / 2, MY = MeterH - 10;
+
+    const meterSvg = d3.select("#meter-svg")
+      .attr("width", MeterW)
+      .attr("height", MeterH);
+
+    // Build gradient definition
+    const defs = meterSvg.append("defs");
+    const grad = defs.append("linearGradient")
+      .attr("id", "meter-grad")
+      .attr("x1", "0%").attr("y1", "0%")
+      .attr("x2", "100%").attr("y2", "0%");
+    grad.append("stop").attr("offset", "0%").attr("stop-color", "#276749");
+    grad.append("stop").attr("offset", "50%").attr("stop-color", "#d69e2e");
+    grad.append("stop").attr("offset", "100%").attr("stop-color", "#c05621");
+
+    // Background track (full semicircle)
+    const meterArcBg = d3.arc()
+      .innerRadius(MR - 10)
+      .outerRadius(MR)
+      .startAngle(-Math.PI / 2)
+      .endAngle(Math.PI / 2);
+
+    // We build the meter as a flat arc from left (0°) to right (180°) at the bottom
+    // In-phase zone (green, left side when φ=0 is on the left)
+    // Background track
+    meterSvg.append("path")
+      .attr("d", meterArcBg())
+      .attr("transform", `translate(${MX},${MY})`)
+      .attr("fill", "#e2e8f0");
+
+    // Green zone at 0° (left side, ±30° → ±π/6 rad)
+    const greenZone = d3.arc()
+      .innerRadius(MR - 10)
+      .outerRadius(MR)
+      .startAngle(-Math.PI / 2)
+      .endAngle(-Math.PI / 2 + Math.PI / 6);
+
+    meterSvg.append("path")
+      .attr("d", greenZone())
+      .attr("transform", `translate(${MX},${MY})`)
+      .attr("fill", "rgba(39,103,73,0.25)");
+
+    // Orange zone at 180° (right side, ±30° → ±π/6 rad)
+    const orangeZone = d3.arc()
+      .innerRadius(MR - 10)
+      .outerRadius(MR)
+      .startAngle(Math.PI / 2 - Math.PI / 6)
+      .endAngle(Math.PI / 2);
+
+    meterSvg.append("path")
+      .attr("d", orangeZone())
+      .attr("transform", `translate(${MX},${MY})`)
+      .attr("fill", "rgba(192,86,33,0.25)");
+
+    // Needle (a line from center)
+    const meterNeedle = meterSvg.append("line")
+      .attr("stroke", "#1a365d")
+      .attr("stroke-width", 2.5)
+      .attr("stroke-linecap", "round");
+
+    // Needle dot
+    const meterDot = meterSvg.append("circle")
+      .attr("r", 4)
+      .attr("fill", "#1a365d")
+      .attr("cx", MX).attr("cy", MY);
+
+    // Tick marks and labels: 0°, 90°, 180°
+    // In D3, top is 0, right is +90deg (pi/2), left is -90deg (-pi/2)
+    // We want 0 at left (-90), 90 at top (0), 180 at right (+90)
+    [-90, 0, 90].forEach(d3AngleDeg => {
+      // Map back to phi degrees for the text label
+      // d3AngleDeg represents position from top
+      const phi = d3AngleDeg + 90; // -90 -> 0, 0 -> 90, +90 -> 180
+      const d3A = d3AngleDeg * Math.PI / 180; // rad from top
+
+      const tickX = MX + (MR + 3) * Math.sin(d3A);
+      const tickY = MY - (MR + 3) * Math.cos(d3A);
+
+      meterSvg.append("text")
+        .attr("x", tickX)
+        .attr("y", tickY + (d3AngleDeg === 0 ? -4 : 4))
+        .attr("text-anchor", "middle")
+        .attr("font-size", "9px")
+        .attr("fill", "#718096")
+        .text(phi + "°");
+    });
+
+    function updateMeter(phiDeg) {
+      // phiDeg in [0, 360); map to [0, 180] — wrap values > 180 back (since phase is circular)
+      // For display purposes, show the absolute angular difference in [0°, 180°]
+      let displayPhi = phiDeg;
+      if (displayPhi > 180) displayPhi = 360 - displayPhi;
+      // displayPhi is in [0, 180]
+      // Map to d3 arc angle: φ=0 → left (d3 = -90°), φ=180 → right (d3 = +90°)
+      const d3Angle = displayPhi - 90; // degrees from top
+
+      // SVG coords:
+      const needleLen = MR - 4;
+      const nx = MX + needleLen * Math.sin(d3Angle * Math.PI / 180);
+      const ny = MY - needleLen * Math.cos(d3Angle * Math.PI / 180);
+
+      meterNeedle
+        .attr("x1", MX).attr("y1", MY)
+        .attr("x2", nx).attr("y2", ny);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // TIME SERIES
+    // ─────────────────────────────────────────────────────────────────────────────
+    const tsMargin = { top: 10, right: 22, bottom: 22, left: 38 };
+    let tsWidth, tsHeight;
+    const tsSvg = d3.select("#timeseries-svg");
+
+    // Scales
+    let xScale, yScale;
+    let tsPath, tsInZone, tsAntiZone, tsXAxis, tsYAxis;
+    let tsInitialized = false;
+
+    function initTimeSeries() {
+      const bbox = document.getElementById("timeseries-svg").getBoundingClientRect();
+      tsWidth = bbox.width - tsMargin.left - tsMargin.right;
+      tsHeight = 130 - tsMargin.top - tsMargin.bottom;
+
+      tsSvg.selectAll("*").remove();
+
+      const g = tsSvg.append("g")
+        .attr("transform", `translate(${tsMargin.left},${tsMargin.top})`);
+
+      xScale = d3.scaleLinear().domain([0, BUFFER_SIZE - 1]).range([0, tsWidth]);
+      yScale = d3.scaleLinear().domain([0, 360]).range([tsHeight, 0]);
+
+      // In-phase zone (±30° around 0°, so [0,30] and [330,360])
+      g.append("rect")
+        .attr("x", 0).attr("y", yScale(30))
+        .attr("width", tsWidth).attr("height", yScale(0) - yScale(30))
+        .attr("fill", "rgba(39,103,73,0.10)");
+
+      // Also top band (330-360)
+      g.append("rect")
+        .attr("x", 0).attr("y", yScale(360))
+        .attr("width", tsWidth).attr("height", yScale(330) - yScale(360))
+        .attr("fill", "rgba(39,103,73,0.10)");
+
+      // Anti-phase zone (180 ± 30°)
+      g.append("rect")
+        .attr("x", 0).attr("y", yScale(210))
+        .attr("width", tsWidth).attr("height", yScale(150) - yScale(210))
+        .attr("fill", "rgba(192,86,33,0.10)");
+
+      // Reference lines
+      g.append("line")
+        .attr("x1", 0).attr("y1", yScale(0))
+        .attr("x2", tsWidth).attr("y2", yScale(0))
+        .attr("stroke", "#276749").attr("stroke-width", 1).attr("stroke-dasharray", "4,3");
+
+      g.append("line")
+        .attr("x1", 0).attr("y1", yScale(180))
+        .attr("x2", tsWidth).attr("y2", yScale(180))
+        .attr("stroke", "#c05621").attr("stroke-width", 1).attr("stroke-dasharray", "4,3");
+
+      // Reference line labels
+      g.append("text").attr("x", tsWidth + 2).attr("y", yScale(0) + 4)
+        .attr("font-size", "8px").attr("fill", "#276749").text("0°");
+      g.append("text").attr("x", tsWidth + 2).attr("y", yScale(180) + 4)
+        .attr("font-size", "8px").attr("fill", "#c05621").text("180°");
+
+      // Y axis
+      tsYAxis = g.append("g").call(
+        d3.axisLeft(yScale)
+          .tickValues([0, 90, 180, 270, 360])
+          .tickFormat(d => d + "°")
+          .tickSize(3)
+      );
+      tsYAxis.select(".domain").attr("stroke", "#e2e8f0");
+      tsYAxis.selectAll("text").attr("font-size", "9px").attr("fill", "#718096");
+      tsYAxis.selectAll("line").attr("stroke", "#e2e8f0");
+
+      // Path for the time series line — we'll draw it as colored segments
+      tsPath = g.append("g").attr("class", "ts-lines");
+
+      tsInitialized = true;
+    }
+
+    // Color interpolation: green at 0°, orange at 180°
+    function phiColor(phiDeg) {
+      let d = phiDeg;
+      if (d > 180) d = 360 - d; // fold to [0,180]
+      const t = d / 180; // 0=green, 1=orange
+      // interpolate in RGB
+      const r = Math.round(39 + (192 - 39) * t);
+      const g = Math.round(103 + (86 - 103) * t);
+      const b = Math.round(73 + (33 - 73) * t);
+      return `rgb(${r},${g},${b})`;
+    }
+
+    function updateTimeSeries() {
+      if (!tsInitialized) return;
+      const g = tsSvg.select("g");
+      const lines = g.select(".ts-lines");
+      lines.selectAll("*").remove();
+
+      if (tsBuffer.length < 2) return;
+
+      // Draw line segments colored by phi
+      for (let i = 1; i < tsBuffer.length; i++) {
+        const prev = tsBuffer[i - 1];
+        const cur = tsBuffer[i];
+        lines.append("line")
+          .attr("x1", xScale(i - 1)).attr("y1", yScale(prev.phi))
+          .attr("x2", xScale(i)).attr("y2", yScale(cur.phi))
+          .attr("stroke", phiColor(cur.phi))
+          .attr("stroke-width", 2)
+          .attr("stroke-linecap", "round");
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // OSCILLATOR TIME SERIES
+    // ─────────────────────────────────────────────────────────────────────────────
+    let oscWidth, oscHeight;
+    const oscSvg = d3.select("#osc-timeseries-svg");
+    let oscXScale, oscYScale;
+    let oscInitialized = false;
+
+    function initOscTimeSeries() {
+      const bbox = document.getElementById("osc-timeseries-svg").getBoundingClientRect();
+      oscWidth = bbox.width - tsMargin.left - tsMargin.right;
+      oscHeight = 130 - tsMargin.top - tsMargin.bottom;
+
+      oscSvg.selectAll("*").remove();
+
+      const g = oscSvg.append("g")
+        .attr("transform", `translate(${tsMargin.left},${tsMargin.top})`);
+
+      oscXScale = d3.scaleLinear().domain([0, BUFFER_SIZE - 1]).range([0, oscWidth]);
+      oscYScale = d3.scaleLinear().domain([-1.2, 1.2]).range([oscHeight, 0]);
+
+      // Reference line (zero)
+      g.append("line")
+        .attr("x1", 0).attr("y1", oscYScale(0))
+        .attr("x2", oscWidth).attr("y2", oscYScale(0))
+        .attr("stroke", "#e2e8f0").attr("stroke-width", 1).attr("stroke-dasharray", "4,3");
+
+      // Y axis
+      const oscYAxis = g.append("g").call(
+        d3.axisLeft(oscYScale).tickValues([-1, 0, 1]).tickSize(3)
+      );
+      oscYAxis.select(".domain").attr("stroke", "#e2e8f0");
+      oscYAxis.selectAll("text").attr("font-size", "9px").attr("fill", "#718096");
+      oscYAxis.selectAll("line").attr("stroke", "#e2e8f0");
+
+      g.append("g").attr("class", "osc-lines1");
+      g.append("g").attr("class", "osc-lines2");
+
+      oscInitialized = true;
+    }
+
+    function updateOscTimeSeries() {
+      if (!oscInitialized || tsBuffer.length < 2) return;
+
+      const g = oscSvg.select("g");
+      const lines1 = g.select(".osc-lines1");
+      const lines2 = g.select(".osc-lines2");
+
+      lines1.selectAll("*").remove();
+      lines2.selectAll("*").remove();
+
+      const line1Gen = d3.line().x((d, i) => oscXScale(i)).y(d => oscYScale(d.y1));
+      const line2Gen = d3.line().x((d, i) => oscXScale(i)).y(d => oscYScale(d.y2));
+
+      lines1.append("path").datum(tsBuffer)
+        .attr("fill", "none").attr("stroke", "#2b6cb0").attr("stroke-width", 2)
+        .attr("d", line1Gen);
+      lines2.append("path").datum(tsBuffer)
+        .attr("fill", "none").attr("stroke", "#c05621").attr("stroke-width", 2)
+        .attr("d", line2Gen);
+
+      // Labels at right edge — lets students identify each line for Q2
+      g.select(".osc-lines1").append("text")
+        .attr("x", oscWidth + 2).attr("y", oscYScale(1.0))
+        .attr("font-size", 9).attr("fill", "#2b6cb0")
+        .attr("font-weight", 600).text("F1");
+
+      g.select(".osc-lines2").append("text")
+        .attr("x", oscWidth + 2).attr("y", oscYScale(-1.0) + 4)
+        .attr("font-size", 9).attr("fill", "#c05621")
+        .attr("font-weight", 600).text("F2");
+    }
+
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // ANIMATION LOOP
+    // ─────────────────────────────────────────────────────────────────────────────
+    function tick(timestamp) {
+      if (!state.paused) {
+        if (state.lastTimestamp !== null) {
+          const dt = Math.min((timestamp - state.lastTimestamp) / 1000, 0.05); // cap at 50ms
+          state.t += dt;
+
+          // Inject deterministic movement and a phase random walk (noise)
+          const noise1 = (Math.random() - 0.5) * state.noiseLevel * 30 * dt;
+          const noise2 = (Math.random() - 0.5) * state.noiseLevel * 30 * dt;
+
+          state.theta1 += (state.omega1 * 2 * Math.PI * dt) + noise1;
+          state.theta2 += (state.omega2 * 2 * Math.PI * dt) + noise2;
+        }
+        state.lastTimestamp = timestamp;
+
+        const theta1 = state.theta1;
+        const theta2 = state.theta2;
+
+        // Relative phase (degrees, wrapped to [0,360))
+        const phiRaw = theta1 - theta2;
+        const phiDeg = wrapDeg(radToDeg(phiRaw));
+
+        // Update circles
+        updateCircle(svg1, theta1, "#2b6cb0");
+        updateCircle(svg2, theta2, "#c05621");
+
+        // Update avatars
+        updateAvatar(avSvg1, theta1, 1);
+        updateAvatar(avSvg2, theta2, -1);
+
+        // Update readouts
+        document.getElementById("theta1-readout").textContent =
+          `θ₁ = ${wrapDeg(radToDeg(theta1)).toFixed(1)}°`;
+        document.getElementById("theta2-readout").textContent =
+          `θ₂ = ${wrapDeg(radToDeg(theta2)).toFixed(1)}°`;
+        document.getElementById("phi-big").textContent =
+          `φ = ${phiDeg.toFixed(1)}°`;
+
+        // Phase state label
+        const stateLabel = document.getElementById("phase-state-label");
+        let absDisplay = phiDeg > 180 ? 360 - phiDeg : phiDeg;
+        if (absDisplay <= 30) {
+          stateLabel.textContent = "In-phase";
+          stateLabel.style.color = "#276749";
+        } else if (absDisplay >= 150) {
+          stateLabel.textContent = "Anti-phase";
+          stateLabel.style.color = "#c05621";
+        } else {
+          stateLabel.textContent = "";
+        }
+
+        // Update meter
+        updateMeter(phiDeg);
+
+        // Update time series buffer
+        tsBuffer.push({
+          phi: phiDeg,
+          y1: Math.sin(theta1),
+          y2: Math.sin(theta2)
+        });
+        if (tsBuffer.length > BUFFER_SIZE) tsBuffer.shift();
+        updateTimeSeries();
+        updateOscTimeSeries();
+      } else {
+        state.lastTimestamp = null;
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // CONTROLS
+    // ─────────────────────────────────────────────────────────────────────────────
+    function resetTime() {
+      state.t = 0;
+      state.theta1 = state.theta0_1;
+      state.theta2 = state.theta0_2;
+      state.lastTimestamp = null;
+      tsBuffer.length = 0;
+    }
+
+    function flashMeter() {
+      const el = document.getElementById("meter-svg");
+      el.classList.remove("meter-flash");
+      void el.offsetWidth; // force reflow
+      el.classList.add("meter-flash");
+      setTimeout(() => el.classList.remove("meter-flash"), 400);
+    }
+
+    function flashBtn(btn) {
+      btn.classList.add("active-flash");
+      setTimeout(() => btn.classList.remove("active-flash"), 350);
+    }
+
+    // Omega1 slider
+    document.getElementById("omega1-slider").addEventListener("input", function () {
+      state.omega1 = +this.value;
+      document.getElementById("omega1-val").textContent = state.omega1.toFixed(2) + " Hz";
+      resetTime();
+    });
+
+    // Omega2 slider
+    document.getElementById("omega2-slider").addEventListener("input", function () {
+      state.omega2 = +this.value;
+      document.getElementById("omega2-val").textContent = state.omega2.toFixed(2) + " Hz";
+      resetTime();
+    });
+
+    // Phase offset slider
+    document.getElementById("offset-slider").addEventListener("input", function () {
+      const deg = +this.value;
+      document.getElementById("offset-val").textContent = deg + "°";
+      state.theta0_1 = 0;
+      state.theta0_2 = deg * Math.PI / 180;
+      resetTime();
+    });
+
+    // Noise slider
+    document.getElementById("noise-slider").addEventListener("input", function () {
+      state.noiseLevel = +this.value;
+      document.getElementById("noise-val").textContent = state.noiseLevel.toFixed(2);
+    });
+
+    function setSliderAndDispatch(id, val) {
+      const el = document.getElementById(id);
+      el.value = val;
+      el.dispatchEvent(new Event("input"));
+    }
+
+    // Quick-set: In-phase
+    document.getElementById("btn-inphase").addEventListener("click", function () {
+      setSliderAndDispatch("omega1-slider", 1.0);
+      setSliderAndDispatch("omega2-slider", 1.0);
+      setSliderAndDispatch("offset-slider", 0);
+      flashMeter();
+      flashBtn(this);
+    });
+
+    // Quick-set: Anti-phase
+    document.getElementById("btn-antiphase").addEventListener("click", function () {
+      setSliderAndDispatch("omega1-slider", 1.0);
+      setSliderAndDispatch("omega2-slider", 1.0);
+      setSliderAndDispatch("offset-slider", 180);
+      flashMeter();
+      flashBtn(this);
+    });
+
+    // Quick-set: 90° offset
+    document.getElementById("btn-90deg").addEventListener("click", function () {
+      setSliderAndDispatch("omega1-slider", 1.0);
+      setSliderAndDispatch("omega2-slider", 1.0);
+      setSliderAndDispatch("offset-slider", 90);
+      flashMeter();
+      flashBtn(this);
+    });
+
+    // Quick-set: Drift
+    document.getElementById("btn-drift").addEventListener("click", function () {
+      setSliderAndDispatch("omega1-slider", 1.0);
+      setSliderAndDispatch("omega2-slider", 1.1);
+      setSliderAndDispatch("offset-slider", 0);
+      flashMeter();
+      flashBtn(this);
+    });
+
+    // Pause / Resume
+    document.getElementById("pause-btn").addEventListener("click", function () {
+      state.paused = !state.paused;
+      if (state.paused) {
+        this.textContent = "▶ Resume";
+        this.classList.add("paused");
+      } else {
+        this.textContent = "⏸ Pause";
+        this.classList.remove("paused");
+      }
+    });
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // INIT
+    // ─────────────────────────────────────────────────────────────────────────────
+    window.addEventListener("DOMContentLoaded", () => {
+      initTimeSeries();
+      initOscTimeSeries();
+      requestAnimationFrame(tick);
+    });
+
+    window.addEventListener("resize", () => {
+      initTimeSeries();
+      initOscTimeSeries();
+    });
+  </script>
+</body>
+
+</html>

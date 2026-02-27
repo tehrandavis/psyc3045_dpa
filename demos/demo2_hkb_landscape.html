@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HKB Landscape Explorer — Dynamics of Perception &amp; Action</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #2d3748;
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .page-header .course-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #718096;
+      margin-bottom: 4px;
+    }
+
+    .page-header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      color: #1a365d;
+      line-height: 1.3;
+    }
+
+    .page-header .subtitle {
+      font-size: 13px;
+      color: #718096;
+      margin-top: 4px;
+    }
+
+    /* ── Controls ── */
+    .controls-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 18px 24px;
+      margin-bottom: 16px;
+    }
+
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .slider-group {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+
+    .slider-label .param-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a365d;
+    }
+
+    .slider-label .param-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: #3182ce;
+      font-variant-numeric: tabular-nums;
+      min-width: 36px;
+      text-align: right;
+    }
+
+    .slider-label .param-desc {
+      font-size: 11px;
+      color: #718096;
+      margin-left: 8px;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 5px;
+      border-radius: 3px;
+      background: #e2e8f0;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #3182ce;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      background: #2b6cb0;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #3182ce;
+      border: none;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+    }
+
+    .slider-range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #a0aec0;
+      margin-top: 2px;
+    }
+
+    /* ── Status badge ── */
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #f0f4f8;
+      flex-wrap: wrap;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+
+    .status-badge.stable {
+      background: #f0fff4;
+      color: #276749;
+      border: 1px solid #9ae6b4;
+    }
+
+    .status-badge.bifurcated {
+      background: #fffaf0;
+      color: #c05621;
+      border: 1px solid #fbd38d;
+    }
+
+    .status-badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+
+    .ratio-info {
+      font-size: 12px;
+      color: #718096;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ratio-info span {
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    /* ── Chart panels ── */
+    .panel-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 16px 20px 12px;
+      margin-bottom: 14px;
+    }
+
+    .panel-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a365d;
+      margin-bottom: 2px;
+    }
+
+    .panel-subtitle {
+      font-size: 11px;
+      color: #718096;
+      margin-bottom: 8px;
+    }
+
+    svg text {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    /* ── Callout ── */
+    .callout {
+      background: #ebf8ff;
+      border: 1px solid #bee3f8;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      padding: 16px 20px;
+      margin-bottom: 0;
+    }
+
+    .callout-heading {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2c5282;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .callout-heading::before {
+      content: "i";
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #3182ce;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .callout-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .callout-list li {
+      font-size: 13px;
+      color: #2c5282;
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    .callout-list li::before {
+      content: "•";
+      position: absolute;
+      left: 4px;
+      color: #3182ce;
+      font-weight: 700;
+    }
+
+    .callout-list li strong {
+      color: #1a365d;
+    }
+
+    /* ── Legend ── */
+    .legend-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: #718096;
+    }
+
+    .legend-swatch {
+      width: 20px;
+      height: 3px;
+      border-radius: 2px;
+    }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+
+    /* ── D3 chart elements ── */
+    .grid line {
+      stroke: #f0f4f8;
+      stroke-width: 1;
+    }
+
+    .grid path {
+      display: none;
+    }
+
+    .axis path {
+      stroke: #cbd5e0;
+    }
+
+    .axis line {
+      stroke: #cbd5e0;
+    }
+
+    .axis text {
+      fill: #718096;
+      font-size: 11px;
+    }
+
+    .axis-label {
+      fill: #718096;
+      font-size: 12px;
+    }
+
+    .flow-curve {
+      fill: none;
+      stroke: #2b6cb0;
+      stroke-width: 2.5;
+    }
+
+    .potential-curve {
+      fill: none;
+      stroke: #d69e2e;
+      stroke-width: 2.5;
+    }
+
+    .zero-line {
+      stroke: #cbd5e0;
+      stroke-width: 1.5;
+      stroke-dasharray: 5, 4;
+    }
+
+    .bifurcation-marker {
+      stroke: #c53030;
+      stroke-width: 1;
+      stroke-dasharray: 3, 3;
+      opacity: 0.7;
+    }
+
+    .flow-arrow {
+      stroke: #3182ce;
+      stroke-width: 1.5;
+      fill: none;
+      marker-end: url(#arrowhead);
+    }
+
+    .phase-fill-stable {
+      fill: #ebf8ff;
+      opacity: 0.35;
+    }
+
+    .phase-fill-unstable {
+      fill: #fff5f5;
+      opacity: 0.25;
+    }
+
+    #chart-potential svg,
+    #chart-flow svg {
+      cursor: crosshair;
+    }
+
+    button.secondary-btn {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #2c5282;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    button.secondary-btn:hover {
+      background: #ebf8ff;
+      border-color: #bee3f8;
+    }
+
+    .slider-group {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    @media (max-width: 600px) {
+      .controls-row {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .page-header h1 {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="page-header">
+      <div class="course-label">Dynamics of Perception &amp; Action</div>
+      <h1>HKB Landscape Explorer</h1>
+      <div class="subtitle">How parameters a and b shape the stability landscape — and why anti-phase can disappear
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-card">
+      <div class="controls-row">
+        <div class="slider-group">
+          <div class="slider-label">
+            <span class="param-name">a <span class="param-desc">in-phase coupling</span></span>
+            <span class="param-value" id="val-a">1.00</span>
+          </div>
+          <input type="range" id="slider-a" min="0.5" max="8.0" step="0.05" value="1.0">
+          <div class="slider-range-labels"><span>0.5</span><span>8.0</span></div>
+        </div>
+        <div class="slider-group">
+          <div class="slider-label">
+            <span class="param-name">b <span class="param-desc">anti-phase coupling</span></span>
+            <span class="param-value" id="val-b">1.00</span>
+          </div>
+          <input type="range" id="slider-b" min="0.5" max="2.0" step="0.05" value="1.0">
+          <div class="slider-range-labels"><span>0.5</span><span>2.0</span></div>
+        </div>
+        <div class="slider-group">
+          <div class="slider-label">
+            <span class="param-name">Perturbation <span class="param-desc">magnitude</span></span>
+            <span class="param-value" id="val-noise">6.0</span>
+          </div>
+          <input type="range" id="slider-noise" min="1.0" max="15.0" step="0.5" value="6.0">
+          <div class="slider-range-labels"><span>1.0</span><span>15.0</span></div>
+        </div>
+        <div style="display: flex; align-items: flex-end; padding-bottom: 2px;">
+          <button id="btn-perturb" class="secondary-btn">Perturb Ball (click repeatedly)</button>
+        </div>
+      </div>
+      <div class="status-row">
+        <div class="status-badge stable" id="status-badge">
+          <span class="dot"></span>
+          <span id="status-text">Both attractors stable</span>
+        </div>
+        <div class="ratio-info">
+          a/b = <span id="ratio-val">1.00</span>
+          &nbsp;|&nbsp;
+          Bifurcation threshold: a/b ≥ 4.0
+        </div>
+        <div class="ratio-info" id="barrier-readout">
+          In-phase depth: <span id="inphase-depth" style="font-weight:600; color:#2b6cb0;">—</span>
+          &nbsp;|&nbsp;
+          Anti-phase depth: <span id="antiphase-depth" style="font-weight:600; color:#c05621;">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Potential landscape panel -->
+    <div class="panel-card" id="panel-potential">
+      <div class="panel-title">Potential Landscape &nbsp; V(&phi;)</div>
+      <div class="panel-subtitle">Valleys are attractors. The ball rolls toward the nearest valley. Watch what happens
+        to the anti-phase (±180°) valley as a increases.</div>
+      <div class="panel-subtitle" style="font-style:italic;">
+        Click anywhere on the landscape to drop the ball and watch where it rolls.
+      </div>
+      <div class="legend-row">
+        <div class="legend-item">
+          <div class="legend-swatch" style="background:#d69e2e;"></div> V(&phi;)
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot"
+            style="background:#2d3748; width:11px; height:11px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div> ball
+          (position)
+        </div>
+      </div>
+      <div id="chart-potential"></div>
+    </div>
+
+    <!-- Flow function panel -->
+    <div class="panel-card" id="panel-flow">
+      <div class="panel-title">Flow Function &nbsp; d&phi;/dt = f(&phi;)</div>
+      <div class="panel-subtitle">Zero crossings are fixed points. Negative slope = stable attractor (valley). Positive
+        slope = unstable repeller (hill).</div>
+      <div class="panel-subtitle" style="font-style:italic;">
+        Click anywhere on the flow function to drop the ball.
+      </div>
+      <div class="legend-row">
+        <div class="legend-item">
+          <div class="legend-swatch" style="background:#2b6cb0;"></div> f(&phi;)
+        </div>
+        <div class="legend-item">
+          <div class="legend-swatch" style="background:#cbd5e0; height:2px; border-top: 2px dashed #cbd5e0;"></div> zero
+          line
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#276749;"></div> stable attractor
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#c53030;"></div> unstable repeller
+        </div>
+      </div>
+      <div id="chart-flow"></div>
+    </div>
+
+    <!-- Callout -->
+    <div class="callout">
+      <div class="callout-heading">What to notice</div>
+      <ul class="callout-list">
+        <li><strong>Both panels show the same information</strong> — the flow function is the negative slope of the
+          landscape: f(&phi;) = &minus;dV/d&phi;.</li>
+        <li><strong>Valleys in the landscape</strong> = zero crossings where the flow curve has <em>negative</em> slope.
+        </li>
+        <li><strong>Increase a relative to b</strong> (push the a slider right): watch the anti-phase valleys at ±180°
+          flatten, then vanish.</li>
+        <li><strong>When anti-phase disappears</strong>, the ball must roll to in-phase — that is the
+          <em>finger-wiggling transition</em> you felt in lab.
+        </li>
+      </ul>
+    </div>
+
+  </div><!-- /container -->
+
+  <script>
+    (function () {
+      "use strict";
+
+      // ── Constants ──────────────────────────────────────────────────────────────
+      const PI = Math.PI;
+      const N_POINTS = 500;
+      const MARGIN = { top: 20, right: 24, bottom: 44, left: 52 };
+      const CHART_HEIGHT = 280;
+
+      // ── State ──────────────────────────────────────────────────────────────────
+      let a = 1.0;
+      let b = 1.0;
+
+      // Ball state: position in radians, velocity (rad/s virtual time)
+      let ballPos = PI;        // start at anti-phase
+      let ballVel = 0.0;
+      let animFrame = null;
+      let lastTimestamp = null;
+
+      // ── Math helpers ──────────────────────────────────────────────────────────
+      function flow(phi, _a, _b) {
+        return -_a * Math.sin(phi) - 2 * _b * Math.sin(2 * phi);
+      }
+      function potential(phi, _a, _b) {
+        return -_a * Math.cos(phi) - _b * Math.cos(2 * phi);
+      }
+      // dV/dphi = a*sin(phi) + 2b*sin(2phi) — same magnitude as flow, sign flipped
+      function dVdphi(phi, _a, _b) {
+        return _a * Math.sin(phi) + 2 * _b * Math.sin(2 * phi);
+      }
+      // Returns barrier heights for in-phase and anti-phase attractors.
+      // Saddle at φ* = arccos(-a/4b); V(φ*) = a²/(8b) + b
+      // In-phase barrier  = V(φ*) - V(0)   = a²/(8b) + 2b + a
+      // Anti-phase barrier = V(φ*) - V(π)  = a²/(8b) + 2b - a  (zero at a/b=4)
+      function barrierHeights(_a, _b) {
+        const vSaddle = (_a * _a) / (8 * _b) + _b;
+        const inPhase = vSaddle - (-_a - _b);   // always positive
+        const ratio = _a / _b;
+        const antiPhase = ratio < 4.0 ? vSaddle - (_a - _b) : 0;
+        return { inPhase, antiPhase, vSaddle };
+      }
+
+      // ── Fixed-point finder ────────────────────────────────────────────────────
+      function findFixedPoints(_a, _b) {
+        // Scan for sign changes in flow(phi), then Newton refine
+        const pts = [];
+        const step = 0.01;
+        for (let phi = -PI + step; phi <= PI; phi += step) {
+          const f0 = flow(phi - step, _a, _b);
+          const f1 = flow(phi, _a, _b);
+          if (f0 * f1 <= 0 && Math.abs(f0 - f1) > 1e-9) {
+            // Newton refine
+            let x = phi - step / 2;
+            for (let iter = 0; iter < 20; iter++) {
+              const fx = flow(x, _a, _b);
+              const dfx = -_a * Math.cos(x) - 4 * _b * Math.cos(2 * x);
+              if (Math.abs(dfx) < 1e-12) break;
+              const dx = -fx / dfx;
+              x += dx;
+              if (Math.abs(dx) < 1e-9) break;
+            }
+            // Classify stability by slope of flow (df/dphi)
+            const df = -_a * Math.cos(x) - 4 * _b * Math.cos(2 * x);
+            const isStable = df < 0;
+            // Avoid duplicates
+            const dup = pts.some(p => Math.abs(p.phi - x) < 0.05);
+            if (!dup) {
+              pts.push({ phi: x, stable: isStable });
+            }
+          }
+        }
+        return pts;
+      }
+
+      // Nearest stable fixed point to current ballPos
+      function nearestStableAttractor(pos, _a, _b) {
+        const fps = findFixedPoints(_a, _b).filter(p => p.stable);
+        if (fps.length === 0) return 0;
+        let best = fps[0].phi;
+        let bestD = Infinity;
+        fps.forEach(p => {
+          const d = Math.abs(p.phi - pos);
+          const d2 = Math.min(d, 2 * PI - d); // wrap
+          if (d2 < bestD) { bestD = d2; best = p.phi; }
+        });
+        return best;
+      }
+
+      // ── Build domain arrays ───────────────────────────────────────────────────
+      function buildDomain() {
+        return d3.range(N_POINTS + 1).map(i => -PI + (2 * PI * i) / N_POINTS);
+      }
+
+      // ── Chart dimensions (responsive) ─────────────────────────────────────────
+      function chartWidth() {
+        const container = document.getElementById("chart-flow");
+        return Math.max(300, container.clientWidth || 700);
+      }
+
+      // ── D3 setup ───────────────────────────────────────────────────────────────
+      // Shared scales (rebuilt on each render for responsive support)
+      function makeXScale(w) {
+        return d3.scaleLinear().domain([-PI, PI])
+          .range([MARGIN.left, w - MARGIN.right]);
+      }
+
+      // ── x-axis tick config ────────────────────────────────────────────────────
+      const X_TICKS = [
+        { val: -PI, label: "−π" },
+        { val: -PI / 2, label: "−π/2" },
+        { val: 0, label: "0" },
+        { val: PI / 2, label: "π/2" },
+        { val: PI, label: "π" }
+      ];
+
+      // ════════════════════════════════════════════════════════════════════════════
+      // FLOW CHART
+      // ════════════════════════════════════════════════════════════════════════════
+      let svgFlow = null;
+
+      function initFlowChart() {
+        const el = document.getElementById("chart-flow");
+        const W = Math.max(300, el.clientWidth || 700);
+        const H = CHART_HEIGHT;
+
+        svgFlow = d3.select("#chart-flow").append("svg")
+          .attr("width", "100%")
+          .attr("height", H)
+          .attr("viewBox", `0 0 ${W} ${H}`)
+          .attr("preserveAspectRatio", "xMidYMid meet");
+
+        const defs = svgFlow.append("defs");
+
+        // Arrowhead marker
+        defs.append("marker")
+          .attr("id", "arrowhead")
+          .attr("viewBox", "0 -4 8 8")
+          .attr("refX", 7)
+          .attr("refY", 0)
+          .attr("markerWidth", 6)
+          .attr("markerHeight", 6)
+          .attr("orient", "auto")
+          .append("path")
+          .attr("d", "M0,-4L8,0L0,4")
+          .attr("fill", "#3182ce");
+
+        svgFlow.append("g").attr("class", "grid-x");
+        svgFlow.append("g").attr("class", "grid-y");
+        svgFlow.append("line").attr("class", "zero-line");
+        svgFlow.append("g").attr("class", "flow-arrows");
+        svgFlow.append("path").attr("class", "flow-curve");
+        svgFlow.append("g").attr("class", "fixed-points");
+        svgFlow.append("circle").attr("class", "ball")
+          .attr("r", 9)
+          .attr("fill", "#2d3748")
+          .attr("filter", "url(#ball-shadow)");
+        svgFlow.append("g").attr("class", "axis-x");
+        svgFlow.append("g").attr("class", "axis-y");
+        svgFlow.append("text").attr("class", "axis-label axis-label-x");
+        svgFlow.append("text").attr("class", "axis-label axis-label-y");
+
+        svgFlow.on("click", function (event) {
+          const W = +svgFlow.attr("viewBox").split(" ")[2];
+          const xScale = makeXScale(W);
+          let clickedPhi = xScale.invert(event.offsetX);
+          clickedPhi = Math.max(-PI, Math.min(PI, clickedPhi));
+          ballPos = clickedPhi;
+          ballVel = 0;
+          startBallAnimation();
+        });
+      }
+
+      function updateFlowChart(animate) {
+        const el = document.getElementById("chart-flow");
+        const W = +svgFlow.attr("viewBox").split(" ")[2];
+        const H = CHART_HEIGHT;
+
+        const domain = buildDomain();
+        const values = domain.map(phi => ({ phi, f: flow(phi, a, b) }));
+
+        const yDomain = yScaleFromFlowExtent(W);
+
+        const xScale = makeXScale(W);
+        const yScale = d3.scaleLinear().domain(yDomain)
+          .range([H - MARGIN.bottom, MARGIN.top]);
+
+        // Gridlines
+        svgFlow.select(".grid-x")
+          .attr("transform", `translate(0,${H - MARGIN.bottom})`)
+          .call(d3.axisBottom(xScale).tickValues(X_TICKS.map(t => t.val))
+            .tickSize(-(H - MARGIN.top - MARGIN.bottom))
+            .tickFormat("")
+          ).attr("class", "grid grid-x");
+
+        svgFlow.select(".grid-y")
+          .attr("transform", `translate(${MARGIN.left},0)`)
+          .call(d3.axisLeft(yScale).ticks(5)
+            .tickSize(-(W - MARGIN.left - MARGIN.right))
+            .tickFormat("")
+          ).attr("class", "grid grid-y");
+
+        // Zero line
+        const y0 = yScale(0);
+        svgFlow.select(".zero-line")
+          .attr("x1", MARGIN.left).attr("x2", W - MARGIN.right)
+          .attr("y1", y0).attr("y2", y0);
+
+        // Flow curve
+        const line = d3.line()
+          .x(d => xScale(d.phi))
+          .y(d => yScale(d.f))
+          .curve(d3.curveCatmullRom.alpha(0.5));
+
+        const path = svgFlow.select(".flow-curve");
+        if (animate) {
+          path.transition().duration(300).attr("d", line(values));
+        } else {
+          path.attr("d", line(values));
+        }
+
+        // Flow arrows along x-axis (horizontal tick marks showing direction)
+        const arrowPhis = [-2.4, -1.8, -1.0, -0.4, 0.4, 1.0, 1.8, 2.4];
+        const arrowLen = 12;
+        const arrowY = yScale(0);
+
+        const arrowGroup = svgFlow.select(".flow-arrows");
+        const arrowData = arrowPhis.map(phi => {
+          const f = flow(phi, a, b);
+          return { phi, dir: f > 0 ? 1 : f < 0 ? -1 : 0 };
+        });
+
+        const arrows = arrowGroup.selectAll(".arrow-segment").data(arrowData);
+        arrows.enter().append("line").attr("class", "arrow-segment flow-arrow")
+          .merge(arrows)
+          .transition().duration(animate ? 300 : 0)
+          .attr("x1", d => xScale(d.phi) - (d.dir * arrowLen / 2))
+          .attr("x2", d => xScale(d.phi) + (d.dir * arrowLen / 2))
+          .attr("y1", arrowY).attr("y2", arrowY)
+          .attr("stroke", d => d.dir === 0 ? "transparent" : "#3182ce")
+          .attr("stroke-width", 1.5)
+          .attr("marker-end", d => d.dir !== 0 ? "url(#arrowhead)" : null);
+        arrows.exit().remove();
+
+        // Fixed points
+        const fps = findFixedPoints(a, b);
+        const fpGroup = svgFlow.select(".fixed-points");
+        const circles = fpGroup.selectAll("circle").data(fps);
+
+        circles.enter().append("circle").attr("r", 6)
+          .merge(circles)
+          .transition().duration(animate ? 300 : 0)
+          .attr("cx", d => xScale(d.phi))
+          .attr("cy", y0)
+          .attr("fill", d => d.stable ? "#276749" : "#c53030")
+          .attr("stroke", "#fff")
+          .attr("stroke-width", 1.5);
+        circles.exit().remove();
+
+        // Axes
+        svgFlow.select(".axis-x")
+          .attr("transform", `translate(0,${H - MARGIN.bottom})`)
+          .call(d3.axisBottom(xScale)
+            .tickValues(X_TICKS.map(t => t.val))
+            .tickFormat((v) => {
+              const t = X_TICKS.find(t => Math.abs(t.val - v) < 0.001);
+              return t ? t.label : "";
+            })
+          ).attr("class", "axis axis-x");
+
+        svgFlow.select(".axis-y")
+          .attr("transform", `translate(${MARGIN.left},0)`)
+          .call(d3.axisLeft(yScale).ticks(5).tickFormat(d3.format(".1f")))
+          .attr("class", "axis axis-y");
+
+        svgFlow.select(".axis-label-x")
+          .attr("x", MARGIN.left + (W - MARGIN.left - MARGIN.right) / 2)
+          .attr("y", H - 4)
+          .attr("text-anchor", "middle")
+          .attr("fill", "#718096")
+          .attr("font-size", 12)
+          .text("φ (relative phase)");
+
+        svgFlow.select(".axis-label-y")
+          .attr("transform", `translate(13,${MARGIN.top + (H - MARGIN.top - MARGIN.bottom) / 2}) rotate(-90)`)
+          .attr("text-anchor", "middle")
+          .attr("fill", "#718096")
+          .attr("font-size", 12)
+          .text("dφ/dt");
+      }
+
+      // ════════════════════════════════════════════════════════════════════════════
+      // POTENTIAL CHART
+      // ════════════════════════════════════════════════════════════════════════════
+      let svgPot = null;
+      let potYScale = null;
+      let potXScale = null;
+
+      function initPotentialChart() {
+        const el = document.getElementById("chart-potential");
+        const W = Math.max(300, el.clientWidth || 700);
+        const H = CHART_HEIGHT;
+
+        svgPot = d3.select("#chart-potential").append("svg")
+          .attr("width", "100%")
+          .attr("height", H)
+          .attr("viewBox", `0 0 ${W} ${H}`)
+          .attr("preserveAspectRatio", "xMidYMid meet");
+
+        const defs = svgPot.append("defs");
+        // Drop shadow filter for ball
+        const filter = defs.append("filter").attr("id", "ball-shadow")
+          .attr("x", "-50%").attr("y", "-50%").attr("width", "200%").attr("height", "200%");
+        filter.append("feDropShadow")
+          .attr("dx", 0).attr("dy", 2)
+          .attr("stdDeviation", 2)
+          .attr("flood-color", "rgba(0,0,0,0.35)");
+
+        svgPot.append("g").attr("class", "grid-x");
+        svgPot.append("g").attr("class", "grid-y");
+        svgPot.append("g").attr("class", "basin-fills");
+        svgPot.append("path").attr("class", "potential-curve");
+        svgPot.append("g").attr("class", "valley-labels");
+        svgPot.append("g").attr("class", "valley-depth-annotations");
+        svgPot.append("circle").attr("class", "ball")
+          .attr("r", 9)
+          .attr("fill", "#2d3748")
+          .attr("filter", "url(#ball-shadow)");
+        svgPot.append("g").attr("class", "axis-x");
+        svgPot.append("g").attr("class", "axis-y");
+        svgPot.append("text").attr("class", "axis-label axis-label-x");
+        svgPot.append("text").attr("class", "axis-label axis-label-y");
+
+        svgPot.on("click", function (event) {
+          if (!potXScale) return;
+          let clickedPhi = potXScale.invert(event.offsetX);
+          clickedPhi = Math.max(-PI, Math.min(PI, clickedPhi));
+          ballPos = clickedPhi;
+          ballVel = 0;
+          startBallAnimation();
+        });
+      }
+
+      function updatePotentialChart(animate) {
+        const H = CHART_HEIGHT;
+        const W = +svgPot.attr("viewBox").split(" ")[2];
+
+        const domain = buildDomain();
+        const values = domain.map(phi => ({ phi, v: potential(phi, a, b) }));
+
+        const vExtent = d3.extent(values, d => d.v);
+        const vPad = Math.max(0.5, (vExtent[1] - vExtent[0]) * 0.2);
+        const yDomain = [vExtent[0] - vPad, vExtent[1] + vPad];
+
+        potXScale = makeXScale(W);
+        potYScale = d3.scaleLinear().domain(yDomain)
+          .range([H - MARGIN.bottom, MARGIN.top]);
+
+        // Gridlines
+        svgPot.select(".grid-x")
+          .attr("transform", `translate(0,${H - MARGIN.bottom})`)
+          .call(d3.axisBottom(potXScale).tickValues(X_TICKS.map(t => t.val))
+            .tickSize(-(H - MARGIN.top - MARGIN.bottom)).tickFormat("")
+          ).attr("class", "grid grid-x");
+
+        svgPot.select(".grid-y")
+          .attr("transform", `translate(${MARGIN.left},0)`)
+          .call(d3.axisLeft(potYScale).ticks(5)
+            .tickSize(-(W - MARGIN.left - MARGIN.right)).tickFormat("")
+          ).attr("class", "grid grid-y");
+
+        // Basin fills
+        const basinGroup = svgPot.select(".basin-fills");
+        basinGroup.selectAll("*").remove();
+
+        const ratio = a / b;
+        const hFull = H - MARGIN.bottom - MARGIN.top;
+        if (ratio >= 4.0) {
+          basinGroup.append("rect")
+            .attr("x", potXScale(-PI))
+            .attr("y", MARGIN.top)
+            .attr("width", potXScale(PI) - potXScale(-PI))
+            .attr("height", hFull)
+            .attr("fill", "rgba(240,255,244,0.5)");
+        } else {
+          const sep = Math.acos(-a / (4 * b));
+          const sepXRight = potXScale(sep);
+          const sepXLeft = potXScale(-sep);
+
+          basinGroup.append("rect")
+            .attr("x", potXScale(-PI))
+            .attr("y", MARGIN.top)
+            .attr("width", sepXLeft - potXScale(-PI))
+            .attr("height", hFull)
+            .attr("fill", "rgba(255,250,240,0.5)");
+
+          basinGroup.append("rect")
+            .attr("x", sepXLeft)
+            .attr("y", MARGIN.top)
+            .attr("width", sepXRight - sepXLeft)
+            .attr("height", hFull)
+            .attr("fill", "rgba(240,255,244,0.5)");
+
+          basinGroup.append("rect")
+            .attr("x", sepXRight)
+            .attr("y", MARGIN.top)
+            .attr("width", potXScale(PI) - sepXRight)
+            .attr("height", hFull)
+            .attr("fill", "rgba(255,250,240,0.5)");
+        }
+
+        // Potential curve
+        const line = d3.line()
+          .x(d => potXScale(d.phi))
+          .y(d => potYScale(d.v))
+          .curve(d3.curveCatmullRom.alpha(0.5));
+
+        const curvePath = svgPot.select(".potential-curve");
+        if (animate) {
+          curvePath.transition().duration(300).attr("d", line(values));
+        } else {
+          curvePath.attr("d", line(values));
+        }
+
+        // Valley labels (in-phase at 0, anti-phase at ±π)
+        const labelGroup = svgPot.select(".valley-labels");
+        const fps = findFixedPoints(a, b).filter(p => p.stable);
+
+        const stablePhi = fps.map(p => p.phi);
+
+        // Determine if anti-phase attractor exists (|phi| > 2.5)
+        const hasAntiPhase = fps.some(p => Math.abs(Math.abs(p.phi) - PI) < 0.4);
+        const hasInPhase = fps.some(p => Math.abs(p.phi) < 0.3);
+
+        const labelData = [];
+        if (hasInPhase) {
+          labelData.push({ phi: 0, label: "In-phase (0°)", color: "#2b6cb0" });
+        }
+        if (hasAntiPhase) {
+          labelData.push({ phi: PI, label: "Anti-phase (180°)", color: "#c05621" });
+          labelData.push({ phi: -PI, label: "Anti-phase (−180°)", color: "#c05621" });
+        }
+
+        const labels = labelGroup.selectAll(".valley-label").data(labelData, d => d.label);
+
+        labels.enter().append("text").attr("class", "valley-label")
+          .attr("text-anchor", "middle")
+          .attr("font-size", 10)
+          .attr("font-weight", 600)
+          .attr("opacity", 0)
+          .merge(labels)
+          .transition().duration(animate ? 300 : 0)
+          .attr("x", d => potXScale(d.phi))
+          .attr("y", d => potYScale(potential(d.phi, a, b)) - 10)
+          .attr("fill", d => d.color)
+          .attr("opacity", 1)
+          .text(d => d.label);
+
+        labels.exit().transition().duration(200).attr("opacity", 0).remove();
+
+        // Axes
+        svgPot.select(".axis-x")
+          .attr("transform", `translate(0,${H - MARGIN.bottom})`)
+          .call(d3.axisBottom(potXScale)
+            .tickValues(X_TICKS.map(t => t.val))
+            .tickFormat((v) => {
+              const t = X_TICKS.find(t => Math.abs(t.val - v) < 0.001);
+              return t ? t.label : "";
+            })
+          ).attr("class", "axis axis-x");
+
+        svgPot.select(".axis-y")
+          .attr("transform", `translate(${MARGIN.left},0)`)
+          .call(d3.axisLeft(potYScale).ticks(5).tickFormat(d3.format(".1f")))
+          .attr("class", "axis axis-y");
+
+        svgPot.select(".axis-label-x")
+          .attr("x", MARGIN.left + (W - MARGIN.left - MARGIN.right) / 2)
+          .attr("y", H - 4)
+          .attr("text-anchor", "middle")
+          .attr("fill", "#718096")
+          .attr("font-size", 12)
+          .text("φ (relative phase)");
+
+        svgPot.select(".axis-label-y")
+          .attr("transform", `translate(13,${MARGIN.top + (H - MARGIN.top - MARGIN.bottom) / 2}) rotate(-90)`)
+          .attr("text-anchor", "middle")
+          .attr("fill", "#718096")
+          .attr("font-size", 12)
+          .text("V(φ)");
+
+        drawValleyDepthAnnotations(animate);
+      }
+
+      function drawValleyDepthAnnotations(animate) {
+        const W = +svgPot.attr("viewBox").split(" ")[2];
+        const group = svgPot.select(".valley-depth-annotations");
+        group.selectAll("*").remove();
+
+        const { inPhase, antiPhase, vSaddle } = barrierHeights(a, b);
+        const ratio = a / b;
+
+        function drawArrow(x, yTop, yBot, color, label) {
+          if (Math.abs(yBot - yTop) < 6) return;
+
+          const g = group.append("g").attr("class", "depth-arrow");
+          const tickHalf = 5;
+
+          g.append("line")
+            .attr("x1", x).attr("y1", yTop)
+            .attr("x2", x).attr("y2", yBot)
+            .attr("stroke", color).attr("stroke-width", 1.5)
+            .attr("stroke-dasharray", "4,3")
+            .attr("opacity", animate ? 0 : 1)
+            .transition().duration(animate ? 300 : 0)
+            .attr("opacity", 1);
+
+          g.append("line")
+            .attr("x1", x - tickHalf).attr("y1", yTop)
+            .attr("x2", x + tickHalf).attr("y2", yTop)
+            .attr("stroke", color).attr("stroke-width", 1.5)
+            .attr("stroke-dasharray", "4,3");
+
+          g.append("line")
+            .attr("x1", x - tickHalf).attr("y1", yBot)
+            .attr("x2", x + tickHalf).attr("y2", yBot)
+            .attr("stroke", color).attr("stroke-width", 1.5)
+            .attr("stroke-dasharray", "4,3");
+
+          g.append("text")
+            .attr("x", x + 8)
+            .attr("y", (yTop + yBot) / 2 + 4)
+            .attr("font-size", 10)
+            .attr("font-weight", 600)
+            .attr("fill", color)
+            .text("\u0394=" + label.toFixed(2));
+        }
+
+        const saddleX = ratio < 4.0
+          ? potXScale(Math.acos(-a / (4 * b)))
+          : null;
+
+        const ySaddle = potYScale(vSaddle);
+        const yInPhase = potYScale(-a - b);
+        const yAntiPhase = potYScale(a - b);
+
+        if (saddleX !== null) {
+          drawArrow(saddleX - 12, ySaddle, yInPhase, "#2b6cb0", inPhase);
+          group.append("line")
+            .attr("x1", saddleX - 12).attr("y1", yInPhase)
+            .attr("x2", potXScale(0) + 4).attr("y2", yInPhase)
+            .attr("stroke", "#2b6cb0").attr("stroke-width", 1)
+            .attr("stroke-dasharray", "3,3").attr("opacity", 0.5);
+        }
+
+        if (ratio < 4.0 && antiPhase > 0.1) {
+          const saddleXLeft = potXScale(-Math.acos(-a / (4 * b)));
+          drawArrow(saddleXLeft + 12, ySaddle, yAntiPhase, "#c05621", antiPhase);
+          group.append("line")
+            .attr("x1", saddleXLeft + 12).attr("y1", yAntiPhase)
+            .attr("x2", potXScale(-PI) - 4).attr("y2", yAntiPhase)
+            .attr("stroke", "#c05621").attr("stroke-width", 1)
+            .attr("stroke-dasharray", "3,3").attr("opacity", 0.5);
+        }
+
+        // HOOK: guided-tour step advancement could fire here
+      }
+
+      // ════════════════════════════════════════════════════════════════════════════
+      // BALL ANIMATION (requestAnimationFrame physics)
+      // ════════════════════════════════════════════════════════════════════════════
+      // The ball is a "overdamped particle" rolling on the potential landscape.
+      // We integrate:  dv/dt = -dV/dphi(pos) - damping*v
+      //               dpos/dt = v
+      // in virtual time, then map to screen coords using the current scales.
+
+      const BALL_DAMPING = 5.0;     // heavy damping so it settles fast
+      const BALL_FORCE_SCALE = 8.0; // scale of restoring force
+      const DT_SCALE = 0.003;       // virtual time step per ms of real time
+
+      function stepBall(dtMs) {
+        const dt = dtMs * DT_SCALE;
+        const force = -dVdphi(ballPos, a, b) * BALL_FORCE_SCALE;
+        ballVel += (force - BALL_DAMPING * ballVel) * dt;
+        ballPos += ballVel * dt;
+        // Clamp to [-π, π]
+        ballPos = Math.max(-PI, Math.min(PI, ballPos));
+      }
+
+      function drawBall() {
+        if (!potXScale || !potYScale) return;
+        const bx = potXScale(ballPos);
+        const by = potYScale(potential(ballPos, a, b));
+        svgPot.select(".ball")
+          .attr("cx", bx)
+          .attr("cy", by);
+
+        const W = +svgFlow.attr("viewBox").split(" ")[2];
+        const xScale = makeXScale(W);
+        const yDomain = yScaleFromFlowExtent(W);
+        const yS = d3.scaleLinear().domain(yDomain)
+          .range([CHART_HEIGHT - MARGIN.bottom, MARGIN.top]);
+        const fy = yS(flow(ballPos, a, b));
+        svgFlow.select(".ball")
+          .attr("cx", bx)
+          .attr("cy", fy);
+      }
+
+      let _lastFlowYDomain = [-1, 1];
+      function yScaleFromFlowExtent(W) {
+        const domain = buildDomain();
+        const values = domain.map(phi => ({ phi, f: flow(phi, a, b) }));
+        const fExtent = d3.extent(values, d => d.f);
+        const fPad = Math.max(0.3, (fExtent[1] - fExtent[0]) * 0.15);
+        _lastFlowYDomain = [fExtent[0] - fPad, fExtent[1] + fPad];
+        return _lastFlowYDomain;
+      }
+
+      function animateBall(timestamp) {
+        if (lastTimestamp !== null) {
+          const dtMs = Math.min(timestamp - lastTimestamp, 50); // cap at 50ms
+          stepBall(dtMs);
+        }
+        lastTimestamp = timestamp;
+        drawBall();
+
+        // Check if settled (near a stable FP)
+        const nearestFP = nearestStableAttractor(ballPos, a, b);
+        const settled = Math.abs(ballPos - nearestFP) < 0.005 && Math.abs(ballVel) < 0.01;
+        if (!settled) {
+          animFrame = requestAnimationFrame(animateBall);
+        } else {
+          ballPos = nearestFP;
+          ballVel = 0;
+          drawBall();
+          animFrame = null;
+          lastTimestamp = null;
+        }
+      }
+
+      function startBallAnimation() {
+        if (animFrame !== null) {
+          cancelAnimationFrame(animFrame);
+          animFrame = null;
+        }
+        lastTimestamp = null;
+        animFrame = requestAnimationFrame(animateBall);
+      }
+
+      function perturbBall() {
+        const noiseMag = parseFloat(document.getElementById("slider-noise").value);
+        const randomForce = (Math.random() - 0.5) * noiseMag * 2.0;
+        ballVel += randomForce;
+        startBallAnimation();
+      }
+
+      // When params change: if ball is no longer near a stable attractor, kick it
+      function nudgeBallIfNeeded() {
+        const fps = findFixedPoints(a, b).filter(p => p.stable);
+        if (fps.length === 0) return;
+        // Check if current ball position is still near a stable FP
+        const nearStable = fps.some(p => Math.abs(p.phi - ballPos) < 0.4);
+        if (!nearStable) {
+          // Nudge toward nearest stable FP
+          const target = nearestStableAttractor(ballPos, a, b);
+          ballVel += (target - ballPos) * 0.5;
+        }
+        startBallAnimation();
+      }
+
+      // ════════════════════════════════════════════════════════════════════════════
+      // STATUS BADGE
+      // ════════════════════════════════════════════════════════════════════════════
+      function updateStatus() {
+        const ratio = a / b;
+        const bifurcated = ratio >= 4.0;
+        const badge = document.getElementById("status-badge");
+        const text = document.getElementById("status-text");
+        const ratioEl = document.getElementById("ratio-val");
+
+        ratioEl.textContent = ratio.toFixed(2);
+
+        if (bifurcated) {
+          badge.className = "status-badge bifurcated";
+          text.textContent = "Anti-phase lost stability";
+        } else {
+          badge.className = "status-badge stable";
+          text.textContent = "Both attractors stable";
+        }
+
+        const { inPhase, antiPhase } = barrierHeights(a, b);
+        document.getElementById("inphase-depth").textContent = inPhase.toFixed(2);
+        document.getElementById("antiphase-depth").textContent =
+          (a / b < 4.0) ? antiPhase.toFixed(2) : "—";
+      }
+
+      // ════════════════════════════════════════════════════════════════════════════
+      // SLIDERS
+      // ════════════════════════════════════════════════════════════════════════════
+      document.getElementById("slider-a").addEventListener("input", function () {
+        a = parseFloat(this.value);
+        document.getElementById("val-a").textContent = a.toFixed(2);
+        onParamsChanged();
+      });
+
+      document.getElementById("slider-b").addEventListener("input", function () {
+        b = parseFloat(this.value);
+        document.getElementById("val-b").textContent = b.toFixed(2);
+        onParamsChanged();
+      });
+
+      document.getElementById("slider-noise").addEventListener("input", function () {
+        document.getElementById("val-noise").textContent = parseFloat(this.value).toFixed(1);
+      });
+
+      document.getElementById("btn-perturb").addEventListener("click", perturbBall);
+
+      function onParamsChanged() {
+        updateStatus();
+        updateFlowChart(true);
+        updatePotentialChart(true);
+        nudgeBallIfNeeded();
+      }
+
+      // ════════════════════════════════════════════════════════════════════════════
+      // INIT
+      // ════════════════════════════════════════════════════════════════════════════
+      function init() {
+        initFlowChart();
+        initPotentialChart();
+        updateStatus();
+        updateFlowChart(false);
+        updatePotentialChart(false);
+        // Place ball at anti-phase initially and animate
+        ballPos = PI * 0.98;
+        ballVel = 0;
+        setTimeout(() => {
+          startBallAnimation();
+        }, 400);
+      }
+
+      // Wait for D3 and DOM to be ready, then init
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+      } else {
+        init();
+      }
+
+      // Resize handler (debounced) — rebuilds charts to fill new width
+      let resizeTimer = null;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          const newW = Math.max(300, document.getElementById("chart-flow").clientWidth || 700);
+
+          // Update flow svg viewBox
+          svgFlow.attr("viewBox", `0 0 ${newW} ${CHART_HEIGHT}`);
+          // Update potential svg viewBox
+          svgPot.attr("viewBox", `0 0 ${newW} ${CHART_HEIGHT}`);
+
+          updateFlowChart(false);
+          updatePotentialChart(false);
+          drawBall();
+        }, 150);
+      });
+
+    })();
+  </script>
+</body>
+
+</html>
