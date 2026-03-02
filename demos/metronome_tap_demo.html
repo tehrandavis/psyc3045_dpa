@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metronome & Tap Tempo</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f8fafc;
+            color: #2d3748;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            font-weight: 600;
+            color: #1a365d;
+            font-size: 1.45rem;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 0.875rem;
+            margin-bottom: 18px;
+        }
+
+        .page-wrapper {
+            max-width: 720px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: #1a365d;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 14px;
+        }
+
+        .card-desc {
+            font-size: 0.82rem;
+            color: #4a5568;
+            line-height: 1.55;
+            margin-bottom: 16px;
+        }
+
+        /* ─── TAP SECTION ─── */
+        .tap-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .tap-button {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            border: 3px solid #3182ce;
+            background: linear-gradient(135deg, #ebf4ff 0%, #bee3f8 100%);
+            color: #2b6cb0;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.08s, box-shadow 0.08s, background 0.08s;
+            box-shadow: 0 4px 14px rgba(49, 130, 206, 0.18);
+            user-select: none;
+            -webkit-user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .tap-button:active,
+        .tap-button.tapped {
+            transform: scale(0.93);
+            background: linear-gradient(135deg, #bee3f8 0%, #90cdf4 100%);
+            box-shadow: 0 2px 8px rgba(49, 130, 206, 0.3);
+        }
+
+        .tap-button .tap-icon {
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .tap-button .tap-label {
+            font-size: 0.82rem;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .tap-bpm-display {
+            text-align: center;
+        }
+
+        .tap-bpm-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1a365d;
+            font-variant-numeric: tabular-nums;
+            line-height: 1.1;
+        }
+
+        .tap-bpm-unit {
+            font-size: 1rem;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .tap-stats {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .stat-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 16px;
+            min-width: 100px;
+        }
+
+        .stat-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #718096;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .tap-reset-btn {
+            padding: 7px 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 7px;
+            background: #f7fafc;
+            color: #718096;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+            font-family: inherit;
+        }
+
+        .tap-reset-btn:hover {
+            background: #ebf4ff;
+            border-color: #3182ce;
+            color: #2b6cb0;
+        }
+
+        /* ─── METRONOME SECTION ─── */
+        .metro-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .metro-bpm-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .metro-bpm-input {
+            width: 100px;
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: #1a365d;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: #f7fafc;
+            font-family: inherit;
+            font-variant-numeric: tabular-nums;
+            padding: 4px 0;
+            transition: border-color 0.15s;
+        }
+
+        .metro-bpm-input:focus {
+            outline: none;
+            border-color: #3182ce;
+            background: #fff;
+        }
+
+        .metro-bpm-unit {
+            font-size: 1rem;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .metro-nudge-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .nudge-btn {
+            padding: 6px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 7px;
+            background: #f7fafc;
+            color: #2d3748;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+            font-family: inherit;
+            min-width: 48px;
+        }
+
+        .nudge-btn:hover {
+            background: #ebf4ff;
+            border-color: #3182ce;
+            color: #2b6cb0;
+        }
+
+        .metro-slider-row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .metro-slider-row span {
+            font-size: 0.75rem;
+            color: #a0aec0;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: #3182ce;
+            height: 4px;
+            cursor: pointer;
+        }
+
+        .metro-play-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #3182ce;
+            background: linear-gradient(135deg, #ebf4ff 0%, #bee3f8 100%);
+            color: #2b6cb0;
+            font-size: 2rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.1s, box-shadow 0.1s, background 0.15s;
+            box-shadow: 0 4px 14px rgba(49, 130, 206, 0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .metro-play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(49, 130, 206, 0.25);
+        }
+
+        .metro-play-btn.playing {
+            background: linear-gradient(135deg, #2b6cb0 0%, #3182ce 100%);
+            color: #fff;
+            border-color: #2b6cb0;
+        }
+
+        /* Beat indicator */
+        .beat-indicator-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            min-height: 40px;
+        }
+
+        .beat-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            transition: background 0.06s, transform 0.06s, box-shadow 0.06s;
+        }
+
+        .beat-dot.flash {
+            background: #3182ce;
+            transform: scale(1.35);
+            box-shadow: 0 0 16px rgba(49, 130, 206, 0.5);
+        }
+
+        /* Pendulum visualization */
+        .pendulum-container {
+            display: flex;
+            justify-content: center;
+            margin: 4px 0;
+        }
+
+        /* ─── CALLOUT ─── */
+        .callout {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 14px 16px;
+        }
+
+        .callout-title {
+            font-weight: 600;
+            color: #1a365d;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 10px;
+        }
+
+        .callout ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .callout li {
+            font-size: 0.78rem;
+            color: #2d3748;
+            line-height: 1.5;
+            padding-left: 14px;
+            position: relative;
+        }
+
+        .callout li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #718096;
+        }
+
+        .callout li strong {
+            color: #1a365d;
+        }
+
+        /* Keyboard hint */
+        kbd {
+            display: inline-block;
+            padding: 2px 6px;
+            font-size: 0.72rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            background: #edf2f7;
+            color: #4a5568;
+            font-family: inherit;
+            line-height: 1.3;
+        }
+
+        @media (max-width: 520px) {
+            .tap-button {
+                width: 130px;
+                height: 130px;
+                font-size: 0.95rem;
+            }
+
+            .tap-button .tap-icon {
+                font-size: 1.6rem;
+            }
+
+            .tap-bpm-value {
+                font-size: 2.2rem;
+            }
+
+            .metro-bpm-input {
+                font-size: 1.8rem;
+                width: 80px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <div>
+            <h1>Metronome & Tap Tempo</h1>
+            <p class="subtitle">Dynamics of Perception &amp; Action &mdash; Preferred Rate &amp; Rhythmic Timing</p>
+        </div>
+
+        <!-- ═══════════ SECTION 1: TAP TEMPO ═══════════ -->
+        <div class="card">
+            <div class="card-title">Section 1 — Find Your Preferred Tapping Rate</div>
+            <p class="card-desc">
+                Tap the button below (or press <kbd>J</kbd>) at whatever pace feels most natural and comfortable.
+                The display will show your average tapping rate in BPM. Try to settle into a steady, comfortable rhythm.
+            </p>
+
+            <div class="tap-area">
+                <button class="tap-button" id="tap-btn">
+                    <span class="tap-icon">👆</span>
+                    <span class="tap-label">TAP</span>
+                </button>
+
+                <div class="tap-bpm-display">
+                    <span class="tap-bpm-value" id="tap-bpm">—</span>
+                    <span class="tap-bpm-unit">BPM</span>
+                </div>
+
+                <div class="tap-stats">
+                    <div class="stat-box">
+                        <span class="stat-label">Interval</span>
+                        <span class="stat-value" id="tap-interval">— ms</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Std Dev</span>
+                        <span class="stat-value" id="tap-sd">— ms</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Taps</span>
+                        <span class="stat-value" id="tap-count">0</span>
+                    </div>
+                </div>
+
+                <button class="tap-reset-btn" id="tap-reset-btn">Reset</button>
+            </div>
+        </div>
+
+        <!-- ═══════════ SECTION 2: BIMANUAL TAPPING LINK ═══════════ -->
+        <div class="card" style="text-align:center;">
+            <div class="card-title">Section 2 — Bimanual Tapping &amp; Relative Phase</div>
+            <p class="card-desc" style="margin-bottom:18px;">
+                Now that you know your preferred tapping rate, let's explore bimanual coordination.
+                Tap with both hands against a metronome and watch the relative phase between your fingers in real time.
+            </p>
+            <a href="bimanual_tapping_demo.html"
+                style="display:inline-block; padding:12px 28px; background:linear-gradient(135deg,#2b6cb0,#3182ce); color:#fff; border-radius:8px; font-weight:600; font-size:0.9rem; text-decoration:none; box-shadow:0 3px 12px rgba(49,130,206,0.25); transition:transform 0.1s, box-shadow 0.1s;">
+                Open Bimanual Tapping Demo →
+            </a>
+        </div>
+
+        <!-- ═══════════ CALLOUT ═══════════ -->
+        <div class="callout">
+            <div class="callout-title">What to Explore</div>
+            <ul>
+                <li><strong>Preferred Rate:</strong> Most people's natural tapping tempo falls between 80–160 BPM.
+                    What's yours?</li>
+                <li><strong>Variability:</strong> The standard deviation tells you how consistent your tapping is. Lower
+                    = more stable.</li>
+                <li><strong>Connection to HKB:</strong> Your preferred rate maps to the <em>reference frequency
+                        (ω₀)</em>
+                    in the HKB model. In the bimanual tapping demo, you can experience the phase transition
+                    firsthand by speeding up past ~1.3× your preferred rate.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // ─────────────────────────────────────────────────────────────────────────
+        // TAP TEMPO
+        // ─────────────────────────────────────────────────────────────────────────
+        const tapState = {
+            timestamps: [],
+            maxHistory: 20,  // keep last 20 intervals for stats
+        };
+
+        const tapBtn = document.getElementById('tap-btn');
+        const tapBpmEl = document.getElementById('tap-bpm');
+        const tapIntervalEl = document.getElementById('tap-interval');
+        const tapSdEl = document.getElementById('tap-sd');
+        const tapCountEl = document.getElementById('tap-count');
+        const tapResetBtn = document.getElementById('tap-reset-btn');
+
+        function handleTap() {
+            const now = performance.now();
+
+            // Visual feedback
+            tapBtn.classList.add('tapped');
+            setTimeout(() => tapBtn.classList.remove('tapped'), 100);
+
+            // Reset if gap > 3 seconds
+            if (tapState.timestamps.length > 0) {
+                const lastTs = tapState.timestamps[tapState.timestamps.length - 1];
+                if (now - lastTs > 3000) {
+                    tapState.timestamps = [];
+                }
+            }
+
+            tapState.timestamps.push(now);
+
+            // Trim to keep at most maxHistory + 1 timestamps (= maxHistory intervals)
+            if (tapState.timestamps.length > tapState.maxHistory + 1) {
+                tapState.timestamps.shift();
+            }
+
+            updateTapDisplay();
+        }
+
+        function updateTapDisplay() {
+            const ts = tapState.timestamps;
+            const numIntervals = ts.length - 1;
+
+            tapCountEl.textContent = ts.length;
+
+            if (numIntervals < 1) {
+                tapBpmEl.textContent = '—';
+                tapIntervalEl.textContent = '— ms';
+                tapSdEl.textContent = '— ms';
+                return;
+            }
+
+            // Compute intervals
+            const intervals = [];
+            for (let i = 1; i < ts.length; i++) {
+                intervals.push(ts[i] - ts[i - 1]);
+            }
+
+            const lastInterval = intervals[intervals.length - 1];
+            const meanInterval = intervals.reduce((s, v) => s + v, 0) / intervals.length;
+            const meanBPM = 60000 / meanInterval;
+
+            tapBpmEl.textContent = meanBPM.toFixed(1);
+            tapIntervalEl.textContent = lastInterval.toFixed(0) + ' ms';
+
+            if (intervals.length >= 2) {
+                const variance = intervals.reduce((s, v) => s + (v - meanInterval) ** 2, 0) / intervals.length;
+                const sd = Math.sqrt(variance);
+                tapSdEl.textContent = sd.toFixed(1) + ' ms';
+            } else {
+                tapSdEl.textContent = '— ms';
+            }
+        }
+
+        function resetTap() {
+            tapState.timestamps = [];
+            tapBpmEl.textContent = '—';
+            tapIntervalEl.textContent = '— ms';
+            tapSdEl.textContent = '— ms';
+            tapCountEl.textContent = '0';
+        }
+
+        tapBtn.addEventListener('click', handleTap);
+        tapBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handleTap();
+        });
+        tapResetBtn.addEventListener('click', resetTap);
+
+        // J key tap
+        document.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'j' && !e.repeat) {
+                e.preventDefault();
+                handleTap();
+            }
+        });
+    </script>
+</body>
+
+</html>
