@@ -901,9 +901,12 @@
 
                 if (tapData.recording) {
                     tapData.fTimes.push(now);
-                    // Compute phase: where does this F fall in the J cycle?
-                    const phi = computePhaseForEvent(now, tapData.jTimes);
-                    if (phi !== null) addPhase(phi);
+                    // Compute unidirectional phase: where does F fall in the J cycle?
+                    // Warm-up trim: wait until at least 5 J taps have occurred to stabilize cycle
+                    if (tapData.jTimes.length >= 5) {
+                        const phi = computePhaseForEvent(now, tapData.jTimes);
+                        if (phi !== null) addPhase(phi);
+                    }
                 }
             } else if (key === 'j') {
                 keyJEl.classList.add('pressed-j');
@@ -911,9 +914,7 @@
 
                 if (tapData.recording) {
                     tapData.jTimes.push(now);
-                    // Compute phase: where does this J fall in the F cycle?
-                    const phi = computePhaseForEvent(now, tapData.fTimes);
-                    if (phi !== null) addPhase(phi);
+                    // Cycle reference hand only: do not compute phase here.
                 }
             }
         });
