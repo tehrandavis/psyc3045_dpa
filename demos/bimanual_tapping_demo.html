@@ -834,7 +834,10 @@
             if (period <= 0) return null;
 
             const fraction = (eventTime - lastBefore) / period;
-            const phi = (fraction * 360) % 360;
+            let phi = (fraction * 360) % 360;
+            // Wrap to (-180, 180] so in-phase values near 360° fold back to ~0°
+            // e.g. 359° → -1°, keeping the SD well-behaved for in-phase tapping
+            if (phi > 180) phi -= 360;
             return phi;
         }
 
@@ -868,8 +871,8 @@
                 const sinSum = phases.reduce((s, p) => s + Math.sin(p.phi * Math.PI / 180), 0);
                 const cosSum = phases.reduce((s, p) => s + Math.cos(p.phi * Math.PI / 180), 0);
                 const meanAngle = Math.atan2(sinSum / phases.length, cosSum / phases.length) * 180 / Math.PI;
-                const circMean = ((meanAngle % 360) + 360) % 360;
-                statMeanEl.textContent = circMean.toFixed(1) + '°';
+                // Keep in (-180, 180] — atan2 already returns this range
+                statMeanEl.textContent = meanAngle.toFixed(1) + '°';
 
                 // Circular SD: sqrt(-2 * ln(R)) where R = resultant length
                 const R = Math.sqrt((sinSum / phases.length) ** 2 + (cosSum / phases.length) ** 2);
@@ -949,14 +952,14 @@
         let chartWidth, chartHeight;
 
         const xScale = d3.scaleLinear();
-        const yScale = d3.scaleLinear().domain([0, 360]);
+        const yScale = d3.scaleLinear().domain([-180, 180]);
 
         const xAxis = d3.axisBottom(xScale).ticks(5).tickFormat(() => '');
-        const yAxis = d3.axisLeft(yScale).tickValues([0, 90, 180, 270, 360]).tickFormat(d => d + '°');
+        const yAxis = d3.axisLeft(yScale).tickValues([-180, -90, 0, 90, 180]).tickFormat(d => d + '°');
 
         const chartG = chartSvg.append('g');
 
-        // Reference lines at 0°, 180°, 360°
+        // Reference lines at 0° (in-phase) and ±180° (anti-phase)
         const refLines = chartG.append('g').attr('class', 'ref-lines');
 
         const xAxisG = chartG.append('g').attr('class', 'x-axis');
@@ -981,13 +984,13 @@
 
             xAxisG.attr('transform', `translate(0,${chartHeight})`);
 
-            // Ref lines
+            // Ref lines: 0° = in-phase, ±180° = anti-phase
             refLines.selectAll('*').remove();
-            [0, 180, 360].forEach(deg => {
+            [0, 180, -180].forEach(deg => {
                 refLines.append('line')
                     .attr('x1', 0).attr('x2', chartWidth)
                     .attr('y1', yScale(deg)).attr('y2', yScale(deg))
-                    .attr('stroke', deg === 180 ? '#c05621' : '#276749')
+                    .attr('stroke', deg === 0 ? '#276749' : '#c05621')
                     .attr('stroke-width', 1)
                     .attr('stroke-dasharray', '4,3')
                     .attr('opacity', 0.5);
@@ -995,8 +998,8 @@
                 refLines.append('text')
                     .attr('x', chartWidth + 4).attr('y', yScale(deg) + 3)
                     .attr('font-size', '9px')
-                    .attr('fill', deg === 180 ? '#c05621' : '#276749')
-                    .text(deg === 180 ? 'anti' : 'in');
+                    .attr('fill', deg === 0 ? '#276749' : '#c05621')
+                    .text(deg === 0 ? 'in' : 'anti');
             });
         }
 
