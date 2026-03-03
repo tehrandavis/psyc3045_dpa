@@ -499,6 +499,89 @@
                 font-size: 1.8rem;
             }
         }
+
+        /* ─── SAVE TRIAL LOG ─── */
+        .save-trial-btn {
+            padding: 7px 18px;
+            border: 2px solid #38a169;
+            border-radius: 8px;
+            background: #f0fff4;
+            color: #276749;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.15s;
+        }
+
+        .save-trial-btn:hover {
+            background: #c6f6d5;
+            border-color: #276749;
+        }
+
+        .trial-log-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+            margin-top: 10px;
+        }
+
+        .trial-log-table th {
+            background: #f7fafc;
+            color: #1a365d;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            font-size: 0.72rem;
+            padding: 6px 8px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .trial-log-table td {
+            padding: 5px 8px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .trial-log-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .clear-log-btn {
+            padding: 4px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            background: #f7fafc;
+            color: #718096;
+            font-size: 0.72rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.15s;
+        }
+
+        .clear-log-btn:hover {
+            background: #fed7d7;
+            border-color: #e53e3e;
+            color: #c53030;
+        }
+
+        .metro-note {
+            font-size: 0.75rem;
+            color: #718096;
+            background: #f0fff4;
+            border: 1px solid #c6f6d5;
+            border-radius: 8px;
+            padding: 8px 12px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .metro-note strong {
+            color: #276749;
+        }
     </style>
 </head>
 
@@ -554,6 +637,9 @@
                     </label>
                     <button class="metro-play-btn" id="metro-play-btn">▶</button>
                 </div>
+            </div>
+            <div class="metro-note" style="margin-top:8px;">
+                <strong>Wagging task (Phase 2)?</strong> Use the metronome only — no need to record F/J keys below.
             </div>
         </div>
 
@@ -615,6 +701,33 @@
                     <span>now →</span>
                 </div>
             </div>
+
+            <div class="section-divider" style="margin:12px 0;"></div>
+
+            <!-- Save Trial Log -->
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <button class="save-trial-btn" id="save-trial-btn">📋 Save Trial</button>
+                    <span style="font-size:0.75rem; color:#718096;">Snapshot current BPM, Mode, Mean φ, SD, and sample
+                        count</span>
+                </div>
+                <button class="clear-log-btn" id="clear-log-btn">Clear Log</button>
+            </div>
+            <div id="trial-log-container" style="overflow-x:auto;">
+                <table class="trial-log-table" id="trial-log-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>BPM</th>
+                            <th>Mode</th>
+                            <th>Mean φ</th>
+                            <th>SD</th>
+                            <th>n</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trial-log-body"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- ═══════════ CALLOUT ═══════════ -->
@@ -624,13 +737,17 @@
                 <li><strong>Anti-phase tapping:</strong> Alternate F-J-F-J at a comfortable speed.
                     φ should hover around 180°.</li>
                 <li><strong>In-phase tapping:</strong> Press F and J at the same time.
-                    φ should be near 0° (or 360°).</li>
+                    φ should be near 0°.</li>
                 <li><strong>Speed up:</strong> Gradually increase the metronome BPM while tapping anti-phase.
-                    At some critical speed, you may involuntarily switch to in-phase — a <em>phase transition</em>.</li>
-                <li><strong>Variability:</strong> Watch the SD of φ. It should increase right before a transition —
-                    these are <em>critical fluctuations</em>, a hallmark of the HKB model.</li>
-                <li><strong>Hysteresis:</strong> After switching to in-phase, try slowing back down.
-                    Can you return to anti-phase, or does in-phase persist?</li>
+                    Watch the SD — it should <em>increase</em> as speed rises, reflecting growing instability.</li>
+                <li><strong>Tapping ≠ Wagging:</strong> Unlike free finger wagging in the air, tapping on keys
+                    typically does <em>not</em> produce a clean phase transition. Instead, the coordination pattern
+                    breaks down into noisy phase wandering. This is due to <strong>haptic anchoring</strong> — the
+                    tactile feedback from hitting the keys resists the smooth phase slip that the HKB model predicts
+                    for unconstrained oscillation (Forrester &amp; Whitall, 2000).</li>
+                <li><strong>Compare your data:</strong> Use the <em>Save Trial</em> button to log your stats at
+                    each speed step. How does the SD at high speeds compare between in-phase and anti-phase?
+                    How does it compare to what you observed during wagging?</li>
             </ul>
         </div>
     </div>
@@ -1045,6 +1162,35 @@
         }
 
         updateChart();
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // SAVE TRIAL LOG
+        // ═══════════════════════════════════════════════════════════════════════════
+        let trialCount = 0;
+        const trialLogBody = document.getElementById('trial-log-body');
+
+        document.getElementById('save-trial-btn').addEventListener('click', () => {
+            trialCount++;
+            const bpm = metroState.bpm;
+            const mode = metroState.antiPhase ? 'Anti-Phase' : 'In-Phase';
+            const meanText = statMeanEl.textContent;
+            const sdText = statSdEl.textContent;
+            const nText = statCountEl.textContent;
+
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${trialCount}</td><td>${bpm}</td><td>${mode}</td><td>${meanText}</td><td>${sdText}</td><td>${nText}</td>`;
+            trialLogBody.appendChild(row);
+
+            // Flash the button green briefly for feedback
+            const btn = document.getElementById('save-trial-btn');
+            btn.style.background = '#c6f6d5';
+            setTimeout(() => btn.style.background = '', 300);
+        });
+
+        document.getElementById('clear-log-btn').addEventListener('click', () => {
+            trialLogBody.innerHTML = '';
+            trialCount = 0;
+        });
     </script>
 </body>
 
