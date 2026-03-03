@@ -838,7 +838,7 @@
             // Wrap to (-180, 180] so in-phase values near 360° fold back to ~0°
             // e.g. 359° → -1°, keeping the SD well-behaved for in-phase tapping
             if (phi > 180) phi -= 360;
-            return phi;
+            return Math.abs(phi); // Clamp to 0-180° (absolute relative phase)
         }
 
         function addPhase(phi) {
@@ -867,17 +867,14 @@
             statCountEl.textContent = phases.length;
 
             if (phases.length >= 2) {
-                // Circular mean
-                const sinSum = phases.reduce((s, p) => s + Math.sin(p.phi * Math.PI / 180), 0);
-                const cosSum = phases.reduce((s, p) => s + Math.cos(p.phi * Math.PI / 180), 0);
-                const meanAngle = Math.atan2(sinSum / phases.length, cosSum / phases.length) * 180 / Math.PI;
-                // Keep in (-180, 180] — atan2 already returns this range
-                statMeanEl.textContent = meanAngle.toFixed(1) + '°';
+                // Linear mean & SD for clamped 0-180° range
+                const sum = phases.reduce((s, p) => s + p.phi, 0);
+                const mean = sum / phases.length;
+                statMeanEl.textContent = mean.toFixed(1) + '°';
 
-                // Circular SD: sqrt(-2 * ln(R)) where R = resultant length
-                const R = Math.sqrt((sinSum / phases.length) ** 2 + (cosSum / phases.length) ** 2);
-                const circSD = R > 0.0001 ? Math.sqrt(-2 * Math.log(R)) * (180 / Math.PI) : 999;
-                statSdEl.textContent = circSD.toFixed(1) + '°';
+                const sqDiffs = phases.reduce((s, p) => s + Math.pow(p.phi - mean, 2), 0);
+                const sd = Math.sqrt(sqDiffs / (phases.length - 1));
+                statSdEl.textContent = sd.toFixed(1) + '°';
             } else {
                 statMeanEl.textContent = lastPhi.toFixed(1) + '°';
                 statSdEl.textContent = '—°';
@@ -953,10 +950,10 @@
         let chartWidth, chartHeight;
 
         const xScale = d3.scaleLinear();
-        const yScale = d3.scaleLinear().domain([-180, 180]);
+        const yScale = d3.scaleLinear().domain([0, 180]);
 
         const xAxis = d3.axisBottom(xScale).ticks(5).tickFormat(() => '');
-        const yAxis = d3.axisLeft(yScale).tickValues([-180, -90, 0, 90, 180]).tickFormat(d => d + '°');
+        const yAxis = d3.axisLeft(yScale).tickValues([0, 45, 90, 135, 180]).tickFormat(d => d + '°');
 
         const chartG = chartSvg.append('g');
 
@@ -985,9 +982,9 @@
 
             xAxisG.attr('transform', `translate(0,${chartHeight})`);
 
-            // Ref lines: 0° = in-phase, ±180° = anti-phase
+            // Ref lines: 0° = in-phase, 180° = anti-phase
             refLines.selectAll('*').remove();
-            [0, 180, -180].forEach(deg => {
+            [0, 180].forEach(deg => {
                 refLines.append('line')
                     .attr('x1', 0).attr('x2', chartWidth)
                     .attr('y1', yScale(deg)).attr('y2', yScale(deg))
