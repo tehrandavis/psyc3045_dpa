@@ -582,6 +582,73 @@
         .metro-note strong {
             color: #276749;
         }
+
+        /* ─── PREFERRED RATE ─── */
+        .pref-rate-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 8px;
+        }
+
+        .pref-rate-row label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #2b6cb0;
+        }
+
+        .pref-input {
+            width: 70px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2b6cb0;
+            text-align: center;
+            border: 2px solid #bee3f8;
+            border-radius: 6px;
+            background: #fff;
+            font-family: inherit;
+            font-variant-numeric: tabular-nums;
+            padding: 3px 0;
+            transition: border-color 0.15s;
+        }
+
+        .pref-input:focus {
+            outline: none;
+            border-color: #3182ce;
+        }
+
+        .pref-set-btn {
+            padding: 5px 12px;
+            border: 2px solid #3182ce;
+            border-radius: 6px;
+            background: #3182ce;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.15s;
+        }
+
+        .pref-set-btn:hover {
+            background: #2b6cb0;
+        }
+
+        .ratio-badge {
+            display: inline-block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #2b6cb0;
+            background: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 6px;
+            padding: 3px 8px;
+            font-variant-numeric: tabular-nums;
+        }
     </style>
 </head>
 
@@ -597,6 +664,13 @@
         <div class="card">
             <div class="card-title">Metronome</div>
             <div style="display:flex; flex-direction:column; gap:12px;">
+                <!-- Preferred rate input -->
+                <div class="pref-rate-row">
+                    <label for="pref-bpm-input">Preferred BPM:</label>
+                    <input type="text" class="pref-input" id="pref-bpm-input" placeholder="—" inputmode="numeric">
+                    <button class="pref-set-btn" id="pref-set-btn">Set</button>
+                    <span id="ratio-display" class="ratio-badge" style="display:none;">1.0×</span>
+                </div>
                 <!-- Coordination mode toggle -->
                 <div style="display:flex; justify-content:center; gap:4px;">
                     <button class="mode-btn active" id="mode-inphase" onclick="setMode('inphase')">In-Phase</button>
@@ -615,9 +689,9 @@
                     <button class="nudge-btn" id="nudge-p5">+5</button>
                 </div>
                 <div class="metro-slider-row">
-                    <span>50</span>
+                    <span id="slider-min-label">50</span>
                     <input type="range" id="metro-slider" min="50" max="1000" step="1" value="120">
-                    <span>1000</span>
+                    <span id="slider-max-label">1000</span>
                 </div>
                 <div id="effective-bpm-note" style="font-size:0.72rem; color:#a0aec0; text-align:center; display:none;">
                     Internal tick rate: <strong id="effective-bpm">240</strong> BPM (2× displayed)
@@ -719,6 +793,7 @@
                         <tr>
                             <th>#</th>
                             <th>BPM</th>
+                            <th>Ratio</th>
                             <th>Mode</th>
                             <th>Mean φ</th>
                             <th>SD</th>
@@ -780,11 +855,60 @@
 
         function clampBPM(v) { return Math.max(50, Math.min(1000, Math.round(v))); }
 
+        let preferredBPM = null;
+        const ratioDisplay = document.getElementById('ratio-display');
+        const prefBpmInput = document.getElementById('pref-bpm-input');
+        const sliderMinLabel = document.getElementById('slider-min-label');
+        const sliderMaxLabel = document.getElementById('slider-max-label');
+
+        function updateRatioDisplay() {
+            if (preferredBPM && preferredBPM > 0) {
+                const ratio = metroState.bpm / preferredBPM;
+                ratioDisplay.textContent = ratio.toFixed(1) + '×';
+                ratioDisplay.style.display = 'inline-block';
+                // Color code: green near 1.0, orange near 1.3 (transition zone), red above 1.5
+                if (ratio <= 1.1) ratioDisplay.style.color = '#276749';
+                else if (ratio <= 1.4) ratioDisplay.style.color = '#c05621';
+                else ratioDisplay.style.color = '#c53030';
+            } else {
+                ratioDisplay.style.display = 'none';
+            }
+        }
+
+        function setPreferredBPM(val) {
+            const v = Math.round(val);
+            if (isNaN(v) || v < 30) return;
+            preferredBPM = v;
+            prefBpmInput.value = v;
+            // Scale slider from preferred to 3× preferred
+            const sliderMin = v;
+            const sliderMax = Math.min(v * 3, 1000);
+            metroSlider.min = sliderMin;
+            metroSlider.max = sliderMax;
+            sliderMinLabel.textContent = sliderMin;
+            sliderMaxLabel.textContent = sliderMax;
+            // Set current BPM to preferred
+            setBPM(v);
+        }
+
+        document.getElementById('pref-set-btn').addEventListener('click', () => {
+            const v = parseInt(prefBpmInput.value, 10);
+            if (!isNaN(v)) setPreferredBPM(v);
+        });
+        prefBpmInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.target.blur();
+                const v = parseInt(prefBpmInput.value, 10);
+                if (!isNaN(v)) setPreferredBPM(v);
+            }
+        });
+
         function setBPM(val) {
             metroState.bpm = clampBPM(val);
             metroBpmInput.value = metroState.bpm;
             metroSlider.value = metroState.bpm;
             updateEffectiveBPM();
+            updateRatioDisplay();
         }
 
         function updateEffectiveBPM() {
@@ -1172,13 +1296,14 @@
         document.getElementById('save-trial-btn').addEventListener('click', () => {
             trialCount++;
             const bpm = metroState.bpm;
+            const ratioText = preferredBPM ? (bpm / preferredBPM).toFixed(1) + '×' : '—';
             const mode = metroState.antiPhase ? 'Anti-Phase' : 'In-Phase';
             const meanText = statMeanEl.textContent;
             const sdText = statSdEl.textContent;
             const nText = statCountEl.textContent;
 
             const row = document.createElement('tr');
-            row.innerHTML = `<td>${trialCount}</td><td>${bpm}</td><td>${mode}</td><td>${meanText}</td><td>${sdText}</td><td>${nText}</td>`;
+            row.innerHTML = `<td>${trialCount}</td><td>${bpm}</td><td>${ratioText}</td><td>${mode}</td><td>${meanText}</td><td>${sdText}</td><td>${nText}</td>`;
             trialLogBody.appendChild(row);
 
             // Flash the button green briefly for feedback
