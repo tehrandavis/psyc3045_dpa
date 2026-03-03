@@ -681,17 +681,15 @@
                     Both fingers tap together on each beat.
                 </p>
                 <div class="metro-row">
-                    <button class="nudge-btn" id="nudge-m5">−5</button>
-                    <button class="nudge-btn" id="nudge-m1">−1</button>
-                    <input type="text" class="metro-bpm-input" id="metro-bpm-input" value="120" inputmode="numeric">
-                    <span class="metro-bpm-unit">BPM</span>
-                    <button class="nudge-btn" id="nudge-p1">+1</button>
-                    <button class="nudge-btn" id="nudge-p5">+5</button>
-                </div>
-                <div class="metro-slider-row">
-                    <span id="slider-min-label">50</span>
-                    <input type="range" id="metro-slider" min="50" max="1000" step="1" value="120">
-                    <span id="slider-max-label">1000</span>
+                    <button class="nudge-btn" id="ratio-down" style="font-size:0.85rem; min-width:50px;">−0.1</button>
+                    <div style="text-align:center;">
+                        <div id="ratio-main-display"
+                            style="font-size:2rem; font-weight:700; color:#1a365d; font-variant-numeric:tabular-nums; line-height:1.1;">
+                            —</div>
+                        <div id="bpm-sub-display" style="font-size:0.82rem; color:#718096; font-weight:500;">Set
+                            preferred BPM first</div>
+                    </div>
+                    <button class="nudge-btn" id="ratio-up" style="font-size:0.85rem; min-width:50px;">+0.1</button>
                 </div>
                 <div id="effective-bpm-note" style="font-size:0.72rem; color:#a0aec0; text-align:center; display:none;">
                     Internal tick rate: <strong id="effective-bpm">240</strong> BPM (2× displayed)
@@ -843,8 +841,6 @@
             lookAhead: 25,
         };
 
-        const metroBpmInput = document.getElementById('metro-bpm-input');
-        const metroSlider = document.getElementById('metro-slider');
         const metroPlayBtn = document.getElementById('metro-play-btn');
         const beatDots = [
             document.getElementById('beat-dot-1'),
@@ -856,23 +852,32 @@
         function clampBPM(v) { return Math.max(50, Math.min(1000, Math.round(v))); }
 
         let preferredBPM = null;
+        let currentRatio = 1.0;
         const ratioDisplay = document.getElementById('ratio-display');
         const prefBpmInput = document.getElementById('pref-bpm-input');
-        const sliderMinLabel = document.getElementById('slider-min-label');
-        const sliderMaxLabel = document.getElementById('slider-max-label');
+        const ratioMainDisplay = document.getElementById('ratio-main-display');
+        const bpmSubDisplay = document.getElementById('bpm-sub-display');
 
         function updateRatioDisplay() {
             if (preferredBPM && preferredBPM > 0) {
-                const ratio = metroState.bpm / preferredBPM;
-                ratioDisplay.textContent = ratio.toFixed(1) + '×';
+                ratioMainDisplay.textContent = currentRatio.toFixed(1) + '×';
+                bpmSubDisplay.textContent = metroState.bpm + ' BPM';
+                ratioDisplay.textContent = currentRatio.toFixed(1) + '×';
                 ratioDisplay.style.display = 'inline-block';
                 // Color code: green near 1.0, orange near 1.3 (transition zone), red above 1.5
-                if (ratio <= 1.1) ratioDisplay.style.color = '#276749';
-                else if (ratio <= 1.4) ratioDisplay.style.color = '#c05621';
-                else ratioDisplay.style.color = '#c53030';
+                const color = currentRatio <= 1.1 ? '#276749' : currentRatio <= 1.4 ? '#c05621' : '#c53030';
+                ratioDisplay.style.color = color;
+                ratioMainDisplay.style.color = color;
             } else {
                 ratioDisplay.style.display = 'none';
             }
+        }
+
+        function setRatio(newRatio) {
+            if (!preferredBPM) return;
+            currentRatio = Math.round(newRatio * 10) / 10; // avoid floating point drift
+            currentRatio = Math.max(0.5, Math.min(3.0, currentRatio));
+            setBPM(Math.round(preferredBPM * currentRatio));
         }
 
         function setPreferredBPM(val) {
@@ -880,14 +885,7 @@
             if (isNaN(v) || v < 30) return;
             preferredBPM = v;
             prefBpmInput.value = v;
-            // Scale slider from preferred to 3× preferred
-            const sliderMin = v;
-            const sliderMax = Math.min(v * 3, 1000);
-            metroSlider.min = sliderMin;
-            metroSlider.max = sliderMax;
-            sliderMinLabel.textContent = sliderMin;
-            sliderMaxLabel.textContent = sliderMax;
-            // Set current BPM to preferred
+            currentRatio = 1.0;
             setBPM(v);
         }
 
@@ -903,10 +901,11 @@
             }
         });
 
+        document.getElementById('ratio-down').addEventListener('click', () => setRatio(currentRatio - 0.1));
+        document.getElementById('ratio-up').addEventListener('click', () => setRatio(currentRatio + 0.1));
+
         function setBPM(val) {
             metroState.bpm = clampBPM(val);
-            metroBpmInput.value = metroState.bpm;
-            metroSlider.value = metroState.bpm;
             updateEffectiveBPM();
             updateRatioDisplay();
         }
@@ -940,18 +939,6 @@
 
             updateEffectiveBPM();
         }
-
-        metroBpmInput.addEventListener('change', () => {
-            const v = parseInt(metroBpmInput.value, 10);
-            if (!isNaN(v)) setBPM(v); else metroBpmInput.value = metroState.bpm;
-        });
-        metroBpmInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.target.blur(); });
-        metroSlider.addEventListener('input', () => setBPM(parseInt(metroSlider.value, 10)));
-
-        document.getElementById('nudge-m5').addEventListener('click', () => setBPM(metroState.bpm - 5));
-        document.getElementById('nudge-m1').addEventListener('click', () => setBPM(metroState.bpm - 1));
-        document.getElementById('nudge-p1').addEventListener('click', () => setBPM(metroState.bpm + 1));
-        document.getElementById('nudge-p5').addEventListener('click', () => setBPM(metroState.bpm + 5));
 
         function ensureAudioCtx() {
             if (!metroState.audioCtx) {
@@ -1125,7 +1112,7 @@
         // ── Keystroke handler ──
         document.addEventListener('keydown', (e) => {
             if (e.repeat) return;
-            if (document.activeElement === metroBpmInput) return;
+            if (document.activeElement === prefBpmInput) return;
 
             const key = e.key.toLowerCase();
             if (key !== 'f' && key !== 'j') return;
